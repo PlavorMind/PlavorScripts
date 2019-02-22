@@ -34,8 +34,6 @@ else
 {"nginx archive download is failed!"
 exit}
 
-."${env:temp}\nginx\fetch_nginx_conf.ps1"
-
 "Configuring default web directory"
 New-Item "${env:temp}\nginx\web" -Force -ItemType Directory
 Move-Item "${env:temp}\nginx\html" "${env:temp}\nginx\web\Main" -Force
