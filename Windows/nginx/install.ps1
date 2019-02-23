@@ -43,6 +43,10 @@ Copy-Item "${tempdir}/Configurations-Main/Web" "${tempdir}/nginx/web/Wiki" -Forc
 "Deleting a temporary directory"
 Remove-Item "${tempdir}/Configurations-Main" -Force -Recurse
 
+if (Test-Path "${PSScriptRoot}/private")
+{"Copying private directory"
+Copy-Item "${PSScriptRoot}/private" "${tempdir}/nginx/conf/" -Force -Recurse}
+
 ."${PSScriptRoot}/../../filter_nginx_conf.ps1" -savepath "${tempdir}/nginx/conf/nginx.conf"
 if (!($fnc_success))
 {"Cannot filter nginx.conf file."
