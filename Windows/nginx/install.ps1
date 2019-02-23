@@ -54,6 +54,11 @@ Remove-Item "${tempdir}/nginx/contrib" -Force -Recurse
 Remove-Item "${tempdir}/nginx/docs" -Force -Recurse
 Remove-Item "${tempdir}/nginx/web/Main/50x.html" -Force
 
+"Stopping nginx"
+Stop-Process -Force -Name "nginx"
+"Stopping PHP FastCGI"
+Stop-Process -Force -Name "php-cgi"
+
 if (Test-Path $dir)
 {"Renaming existing nginx directory"
 Move-Item $dir "${dir}_old" -Force}
