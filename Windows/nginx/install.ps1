@@ -10,17 +10,6 @@ if (!($isWindows))
 {"Your operating system is not supported."
 exit}
 
-"Downloading Configurations repository archive"
-Invoke-WebRequest "https://github.com/PlavorMind/Configurations/archive/Main.zip" -OutFile "${tempdir}/Configurations.zip"
-if (Test-Path "${tempdir}/Configurations.zip")
-{"Extracting"
-Expand-Archive "${tempdir}/Configurations.zip" $env:temp -Force
-"Deleting a temporary file"
-Remove-Item "${tempdir}/Configurations.zip" -Force}
-else
-{"Configurations repository archive download is failed!"
-exit}
-
 "Downloading nginx archive"
 Invoke-WebRequest "http://nginx.org/download/nginx-${version}.zip" -OutFile "${tempdir}/nginx.zip"
 if (Test-Path "${tempdir}/nginx.zip")
@@ -34,26 +23,40 @@ else
 {"nginx archive download is failed!"
 exit}
 
+"Downloading Configurations repository archive"
+Invoke-WebRequest "https://github.com/PlavorMind/Configurations/archive/Main.zip" -OutFile "${tempdir}/Configurations.zip"
+if (Test-Path "${tempdir}/Configurations.zip")
+{"Extracting"
+Expand-Archive "${tempdir}/Configurations.zip" $env:temp -Force
+"Deleting a temporary file"
+Remove-Item "${tempdir}/Configurations.zip" -Force}
+else
+{"Configurations repository archive download is failed!"
+exit}
+
 "Configuring default web directory"
 New-Item "${tempdir}/nginx/web" -Force -ItemType Directory
-Move-Item "${tempdir}/nginx/html" "${tempdir}/nginx/web/Main" -Force
-Move-Item "${tempdir}/Configurations-Main/Web/*" "${tempdir}/nginx/web/Main/" -Force
+Copy-Item "${tempdir}/Configurations-Main/Web" "${tempdir}/nginx/web/Main" -Force -Recurse
+Move-Item "${tempdir}/nginx/html/index.html" "${tempdir}/nginx/web/Main/" -Force
+Remove-Item "${tempdir}/nginx/html" -Force -Recurse
+Copy-Item "${tempdir}/Configurations-Main/Web" "${tempdir}/nginx/web/Wiki" -Force -Recurse
 "Deleting a temporary directory"
 Remove-Item "${tempdir}/Configurations-Main" -Force -Recurse
 
+."${PSScriptRoot}/../../filter_nginx_conf.ps1" -savepath "${tempdir}/nginx/conf/nginx.conf"
+if (!($fnc_success))
+{"Cannot filter nginx.conf file."
+exit}
+
 "Deleting unnecessary files"
 "Warning: This will remove documentations and license notices that are unnecessary for running."
-Remove-Item "${env:temp}\nginx\contrib" -Force -Recurse
-Remove-Item "${env:temp}\nginx\docs" -Force -Recurse
-Remove-Item "${env:temp}\nginx\web\Main\50x.html" -Force
-
-."${PSScriptRoot}\uninstall.ps1" -dir "${env:temp}\nginx" -soft
+Remove-Item "${tempdir}/nginx/contrib" -Force -Recurse
+Remove-Item "${tempdir}/nginx/docs" -Force -Recurse
+Remove-Item "${tempdir}/nginx/web/Main/50x.html" -Force
 
 if (Test-Path $dir)
 {"Renaming existing nginx directory"
 Move-Item $dir "${dir}_old" -Force}
 
 "Moving nginx directory"
-Move-Item "${env:temp}\nginx" $dir -Force
-
-."${dir}\create_service.ps1"
+Move-Item "${tempdir}/nginx" $dir -Force
