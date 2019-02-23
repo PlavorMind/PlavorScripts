@@ -1,2 +1,2 @@
 # PlavorScripts
-PowerShell scripts for convenience
+Scripts for convenience
