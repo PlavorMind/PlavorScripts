@@ -52,7 +52,6 @@ exit}
 "Warning: This will remove documentations and license notices that are unnecessary for running."
 Remove-Item "${tempdir}/nginx/contrib" -Force -Recurse
 Remove-Item "${tempdir}/nginx/docs" -Force -Recurse
-Remove-Item "${tempdir}/nginx/web/Main/50x.html" -Force
 
 "Stopping nginx"
 Stop-Process -Force -Name "nginx"
