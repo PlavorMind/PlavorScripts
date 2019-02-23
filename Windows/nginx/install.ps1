@@ -35,11 +35,11 @@ else
 exit}
 
 "Configuring default web directory"
-New-Item "${env:temp}\nginx\web" -Force -ItemType Directory
-Move-Item "${env:temp}\nginx\html" "${env:temp}\nginx\web\Main" -Force
-Move-Item "${env:temp}\Configurations-Main\Web\*" "${env:temp}\nginx\web\Main\" -Force
+New-Item "${tempdir}/nginx/web" -Force -ItemType Directory
+Move-Item "${tempdir}/nginx/html" "${tempdir}/nginx/web/Main" -Force
+Move-Item "${tempdir}/Configurations-Main/Web/*" "${tempdir}/nginx/web/Main/" -Force
 "Deleting a temporary directory"
-Remove-Item "${env:temp}\Configurations-Main" -Force -Recurse
+Remove-Item "${tempdir}/Configurations-Main" -Force -Recurse
 
 "Deleting unnecessary files"
 "Warning: This will remove documentations and license notices that are unnecessary for running."
