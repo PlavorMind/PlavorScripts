@@ -34,6 +34,10 @@ else
 {"Configurations repository archive download is failed!"
 exit}
 
+"Configuring nginx directory"
+New-Item "${tempdir}/nginx/logs/Main" -Force -ItemType Directory
+New-Item "${tempdir}/nginx/logs/Wiki" -Force -ItemType Directory
+
 "Configuring default web directory"
 New-Item "${tempdir}/nginx/web" -Force -ItemType Directory
 Copy-Item "${tempdir}/Configurations-Main/Web" "${tempdir}/nginx/web/Main" -Force -Recurse
