@@ -13,9 +13,8 @@ if (!(Test-Path $dir))
 {"Cannot find nginx."
 exit}
 
-"Stopping nginx"
+"Stopping nginx and PHP CGI/FastCGI"
 Stop-Process -Force -Name "nginx"
-"Stopping PHP FastCGI"
 Stop-Process -Force -Name "php-cgi"
 
 "Deleting nginx directory"
