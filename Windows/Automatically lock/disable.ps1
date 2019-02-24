@@ -12,7 +12,7 @@ exit}
 if ($allusers)
 {$path="C:/ProgramData/Microsoft/Windows/Start Menu/Programs/Startup/Lock.lnk"}
 else
-{$path="${env:appdata}/Microsoft/Windows/Start Menu/Programs/Startup/Lock.lnk"}
+{$path="${env:APPDATA}/Microsoft/Windows/Start Menu/Programs/Startup/Lock.lnk"}
 
 if (Test-Path $path)
 {Remove-Item $path -Force}
