@@ -13,23 +13,19 @@ if (!(Test-Path $dir))
 {"Cannot find Dolphin."
 exit}
 
-"Stopping Dolphin-related process"
 Stop-Process -Force -Name "Dolphin"
 Stop-Process -Force -Name "DSPTool"
 Stop-Process -Force -Name "Updater"
 
-"Deleting Dolphin directory"
 Remove-Item $dir -Force -Recurse
 
-"Deleting shortcuts"
 if (Test-Path "C:/ProgramData/Microsoft/Windows/Start Menu/Programs/Dolphin.lnk")
 {Remove-Item "C:/ProgramData/Microsoft/Windows/Start Menu/Programs/Dolphin.lnk" -Force}
 if (Test-Path "C:/Users/Public/Desktop/Dolphin.lnk")
 {Remove-Item "C:/Users/Public/Desktop/Dolphin.lnk" -Force}
 
 if ($delete_userdata)
-{"Deleting Dolphin user data"
-if (Test-Path "${env:userprofile}/Documents/Dolphin Emulator")
+{if (Test-Path "${env:userprofile}/Documents/Dolphin Emulator")
   {Remove-Item "${env:userprofile}/Documents/Dolphin Emulator" -Force -Recurse}
 if (Test-Path "${env:userprofile}/OneDrive/Documents/Dolphin Emulator")
   {Remove-Item "${env:userprofile}/OneDrive/Documents/Dolphin Emulator" -Force -Recurse}
