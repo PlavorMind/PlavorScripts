@@ -20,8 +20,7 @@ if (Test-Path "${tempdir}/Dolphin.7z")
   {"Extracting"
   ."C:/Program Files/7-Zip/7z.exe" x "${tempdir}/Dolphin.7z" -aoa -bt -o"${tempdir}" -spe -y
   "Deleting a temporary file"
-  Remove-Item "${tempdir}/Dolphin.7z" -Force
-  Move-Item "${tempdir}/Dolphin-x64" $dir -Force}
+  Remove-Item "${tempdir}/Dolphin.7z" -Force}
 else
   {"Cannot download Dolphin archive."
   exit}
@@ -29,6 +28,12 @@ else
 else
 {"Cannot find 7-Zip."
 exit}
+
+"Uninstalling existing Dolphin"
+."${PSScriptRoot}/uninstall.ps1" -dir $dir
+
+"Moving Dolphin directory"
+Move-Item "${tempdir}/Dolphin-x64" $dir -Force
 
 if ($portable)
 {"Enabling portable mode"
