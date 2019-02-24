@@ -25,8 +25,8 @@ if (Test-Path "C:/Users/Public/Desktop/Dolphin.lnk")
 {Remove-Item "C:/Users/Public/Desktop/Dolphin.lnk" -Force}
 
 if ($delete_userdata)
-{if (Test-Path "${env:userprofile}/Documents/Dolphin Emulator")
-  {Remove-Item "${env:userprofile}/Documents/Dolphin Emulator" -Force -Recurse}
-if (Test-Path "${env:userprofile}/OneDrive/Documents/Dolphin Emulator")
-  {Remove-Item "${env:userprofile}/OneDrive/Documents/Dolphin Emulator" -Force -Recurse}
+{if (Test-Path "${env:USERPROFILE}/Documents/Dolphin Emulator")
+  {Remove-Item "${env:USERPROFILE}/Documents/Dolphin Emulator" -Force -Recurse}
+if (Test-Path "${env:USERPROFILE}/OneDrive/Documents/Dolphin Emulator")
+  {Remove-Item "${env:USERPROFILE}/OneDrive/Documents/Dolphin Emulator" -Force -Recurse}
 }
