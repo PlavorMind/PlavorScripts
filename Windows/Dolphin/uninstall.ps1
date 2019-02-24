@@ -16,9 +16,12 @@ if (!(Test-Path $dir))
 exit}
 
 "Stopping Dolphin process"
-Stop-Process -Force -Name "Dolphin"
-Stop-Process -Force -Name "DSPTool"
-Stop-Process -Force -Name "Updater"
+if (Get-Process "Dolphin" -ErrorAction Ignore)
+{Stop-Process -Force -Name "Dolphin"}
+if (Get-Process "DSPTool" -ErrorAction Ignore)
+{Stop-Process -Force -Name "DSPTool"}
+if (Get-Process "Updater" -ErrorAction Ignore)
+{Stop-Process -Force -Name "Updater"}
 
 "Deleting Dolphin directory"
 Remove-Item $dir -Force -Recurse
