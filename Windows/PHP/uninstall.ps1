@@ -14,10 +14,14 @@ if (!(Test-Path $dir))
 exit}
 
 "Stopping PHP-related processes"
-Stop-Process -Force -Name "php"
-Stop-Process -Force -Name "php-cgi"
-Stop-Process -Force -Name "php-win"
-Stop-Process -Force -Name "phpdbg"
+if (Get-Process "php" -ErrorAction Ignore)
+{Stop-Process -Force -Name "php"}
+if (Get-Process "php-cgi" -ErrorAction Ignore)
+{Stop-Process -Force -Name "php-cgi"}
+if (Get-Process "php-win" -ErrorAction Ignore)
+{Stop-Process -Force -Name "php-win"}
+if (Get-Process "phpdbg" -ErrorAction Ignore)
+{Stop-Process -Force -Name "phpdbg"}
 
 "Deleting PHP directory"
 Remove-Item $dir -Force -Recurse
