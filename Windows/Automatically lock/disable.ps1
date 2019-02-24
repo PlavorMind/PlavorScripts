@@ -15,6 +15,7 @@ else
 {$path="${env:APPDATA}/Microsoft/Windows/Start Menu/Programs/Startup/Lock.lnk"}
 
 if (Test-Path $path)
-{Remove-Item $path -Force}
+{"Disabling automatically lock"
+Remove-Item $path -Force}
 else
 {"Automatically lock is not enabled."}
