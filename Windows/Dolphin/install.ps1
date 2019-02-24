@@ -14,9 +14,12 @@ if (!($isWindows))
 exit}
 
 if (Test-Path "C:/Program Files/7-Zip/7z.exe")
-{Invoke-WebRequest "https://dl.dolphin-emu.org/builds/dolphin-master-${version}-x64.7z" -OutFile "${tempdir}/Dolphin.7z"
+{"Downloading Dolphin archive"
+Invoke-WebRequest "https://dl.dolphin-emu.org/builds/dolphin-master-${version}-x64.7z" -OutFile "${tempdir}/Dolphin.7z"
 if (Test-Path "${tempdir}/Dolphin.7z")
-  {."C:/Program Files/7-Zip/7z.exe" x "${tempdir}/Dolphin.7z" -aoa -bt -o"${tempdir}" -spe -y
+  {"Extracting"
+  ."C:/Program Files/7-Zip/7z.exe" x "${tempdir}/Dolphin.7z" -aoa -bt -o"${tempdir}" -spe -y
+  "Deleting a temporary file"
   Remove-Item "${tempdir}/Dolphin.7z" -Force
   Move-Item "${tempdir}/Dolphin-x64" $dir -Force}
 else
@@ -28,7 +31,9 @@ else
 exit}
 
 if ($portable)
-{"">"${dir}/portable.txt"}
+{"Enabling portable mode"
+"">"${dir}/portable.txt"}
 else
-{."${PSScriptRoot}/../../modules/CreateShortcut.ps1" -path "C:/ProgramData/Microsoft/Windows/Start Menu/Programs/Dolphin.lnk" -target "${dir}/Dolphin.exe"
+{"Creating shortcuts"
+."${PSScriptRoot}/../../modules/CreateShortcut.ps1" -path "C:/ProgramData/Microsoft/Windows/Start Menu/Programs/Dolphin.lnk" -target "${dir}/Dolphin.exe"
 ."${PSScriptRoot}/../../modules/CreateShortcut.ps1" -path "C:/Users/Public/Desktop/Dolphin.lnk" -target "${dir}/Dolphin.exe"}
