@@ -2,7 +2,7 @@
 #Installs Dolphin.
 
 param
-([string]$dir="C:/Program Files/Dolphin", #Directory to install
+([string]$dir="C:/Program Files/Dolphin", #Directory to install Dolphin
 [switch]$portable, #Installs as portable mode if this is set
 [string]$version="5.0-9620") #Version to install
 
