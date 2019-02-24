@@ -61,9 +61,8 @@ exit}
 Remove-Item "${tempdir}/nginx/contrib" -Force -Recurse
 Remove-Item "${tempdir}/nginx/docs" -Force -Recurse
 
-"Stopping nginx"
+"Stopping nginx and PHP CGI/FastCGI"
 Stop-Process -Force -Name "nginx"
-"Stopping PHP FastCGI"
 Stop-Process -Force -Name "php-cgi"
 
 if (Test-Path $dir)
