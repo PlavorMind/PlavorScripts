@@ -1,7 +1,9 @@
 #nginx installer
 #Installs nginx.
 
-param([string]$dir="C:/nginx",[string]$version="1.15.8")
+param
+([string]$dir="C:/nginx", #Directory to install nginx
+[string]$version="1.15.8") #Version to install
 
 ."${PSScriptRoot}/../../modules/OSDetectorDebug.ps1"
 ."${PSScriptRoot}/../../modules/SetTempDir.ps1"
