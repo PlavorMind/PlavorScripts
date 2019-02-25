@@ -1,7 +1,7 @@
 #nginx uninstaller
 #Uninstalls nginx.
 
-param([string]$dir="C:/nginx")
+param([string]$dir="C:/nginx") #Directory that nginx is installed
 
 ."${PSScriptRoot}/../../modules/OSDetectorDebug.ps1"
 
