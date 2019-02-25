@@ -16,7 +16,7 @@ exit}
 Invoke-WebRequest "https://github.com/PlavorMind/Configurations/archive/Main.zip" -OutFile "${tempdir}/Configurations.zip"
 if (Test-Path "${tempdir}/Configurations.zip")
 {"Extracting"
-Expand-Archive "${tempdir}/Configurations.zip" $env:temp -Force
+Expand-Archive "${tempdir}/Configurations.zip" $tempdir -Force
 "Deleting a temporary file"
 Remove-Item "${tempdir}/Configurations.zip" -Force}
 else
