@@ -12,6 +12,17 @@ if (!($isWindows))
 {"Your operating system is not supported."
 exit}
 
+"Downloading Configurations repository archive"
+Invoke-WebRequest "https://github.com/PlavorMind/Configurations/archive/Main.zip" -OutFile "${tempdir}/Configurations.zip"
+if (Test-Path "${tempdir}/Configurations.zip")
+{"Extracting"
+Expand-Archive "${tempdir}/Configurations.zip" $env:temp -Force
+"Deleting a temporary file"
+Remove-Item "${tempdir}/Configurations.zip" -Force}
+else
+{"Cannot download Configurations repository archive."
+exit}
+
 "Downloading nginx archive"
 Invoke-WebRequest "http://nginx.org/download/nginx-${version}.zip" -OutFile "${tempdir}/nginx.zip"
 if (Test-Path "${tempdir}/nginx.zip")
@@ -23,17 +34,6 @@ Remove-Item "${tempdir}/nginx.zip" -Force
 Move-Item "${tempdir}/nginx-*" "${tempdir}/nginx" -Force}
 else
 {"Cannot download nginx archive."
-exit}
-
-"Downloading Configurations repository archive"
-Invoke-WebRequest "https://github.com/PlavorMind/Configurations/archive/Main.zip" -OutFile "${tempdir}/Configurations.zip"
-if (Test-Path "${tempdir}/Configurations.zip")
-{"Extracting"
-Expand-Archive "${tempdir}/Configurations.zip" $env:temp -Force
-"Deleting a temporary file"
-Remove-Item "${tempdir}/Configurations.zip" -Force}
-else
-{"Cannot download Configurations repository archive."
 exit}
 
 "Configuring nginx directory"
