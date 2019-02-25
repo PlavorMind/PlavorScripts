@@ -22,7 +22,7 @@ Remove-Item "${tempdir}/nginx.zip" -Force
 "Renaming nginx directory"
 Move-Item "${tempdir}/nginx-*" "${tempdir}/nginx" -Force}
 else
-{"nginx archive download is failed!"
+{"Cannot download nginx archive."
 exit}
 
 "Downloading Configurations repository archive"
@@ -33,7 +33,7 @@ Expand-Archive "${tempdir}/Configurations.zip" $env:temp -Force
 "Deleting a temporary file"
 Remove-Item "${tempdir}/Configurations.zip" -Force}
 else
-{"Configurations repository archive download is failed!"
+{"Cannot download Configurations repository archive."
 exit}
 
 "Configuring nginx directory"
