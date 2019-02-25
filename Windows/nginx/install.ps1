@@ -51,6 +51,7 @@ Remove-Item "${tempdir}/Configurations-Main" -Force -Recurse
 
 "Copying additional files"
 Copy-Item "${PSScriptRoot}/install_data/start.ps1" "${tempdir}/nginx/" -Force
+Copy-Item "${PSScriptRoot}/install_data/stop.ps1" "${tempdir}/nginx/" -Force
 
 if (Test-Path "${PSScriptRoot}/private")
 {"Copying private directory"
