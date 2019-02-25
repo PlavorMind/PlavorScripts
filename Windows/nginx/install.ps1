@@ -47,6 +47,9 @@ Copy-Item "${tempdir}/Configurations-Main/Web" "${tempdir}/nginx/web/Wiki" -Forc
 "Deleting a temporary directory"
 Remove-Item "${tempdir}/Configurations-Main" -Force -Recurse
 
+"Copying additional files"
+Copy-Item "${PSScriptRoot}/install_data/start.ps1" "${tempdir}/nginx/" -Force
+
 if (Test-Path "${PSScriptRoot}/private")
 {"Copying private directory"
 Copy-Item "${PSScriptRoot}/private" "${tempdir}/nginx/conf/" -Force -Recurse}
