@@ -12,7 +12,6 @@ param
 $composer_extensions=@("AbuseFilter","AntiSpoof")
 $extensions=
 @("AbuseFilter",
-"AccountInfo",
 "AntiSpoof",
 "CheckUser",
 "ConfirmEdit",
@@ -32,6 +31,7 @@ $extensions=
 "TorBlock",
 "UserMerge",
 
+"AccountInfo",
 "PlavorMindTweaks",
 "TwoColConflict",
 #PlavorEXITBeta (exit)
