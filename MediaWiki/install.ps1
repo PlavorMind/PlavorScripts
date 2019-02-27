@@ -146,43 +146,43 @@ elseif ($wiki_code)
 {"Deleting core images directory"
 Remove-Item "${tempdir}/MediaWiki/images" -Force -Recurse
 "Creating additional directories"
-New-Item "/tmp/MediaWiki/data" -Force -ItemType Directory
-New-Item "/tmp/MediaWiki/data/${wiki_code}" -Force -ItemType Directory
-New-Item "/tmp/MediaWiki/private_data" -Force -ItemType Directory
-New-Item "/tmp/MediaWiki/private_data/databases" -Force -ItemType Directory
-New-Item "/tmp/MediaWiki/private_data/${wiki_code}" -Force -ItemType Directory
-New-Item "/tmp/MediaWiki/private_data/${wiki_code}/cache" -Force -ItemType Directory
-New-Item "/tmp/MediaWiki/private_data/${wiki_code}/deleted_files" -Force -ItemType Directory
-New-Item "/tmp/MediaWiki/private_data/${wiki_code}/files" -Force -ItemType Directory
+New-Item "${tempdir}/MediaWiki/data" -Force -ItemType Directory
+New-Item "${tempdir}/MediaWiki/data/${wiki_code}" -Force -ItemType Directory
+New-Item "${tempdir}/MediaWiki/private_data" -Force -ItemType Directory
+New-Item "${tempdir}/MediaWiki/private_data/databases" -Force -ItemType Directory
+New-Item "${tempdir}/MediaWiki/private_data/${wiki_code}" -Force -ItemType Directory
+New-Item "${tempdir}/MediaWiki/private_data/${wiki_code}/cache" -Force -ItemType Directory
+New-Item "${tempdir}/MediaWiki/private_data/${wiki_code}/deleted_files" -Force -ItemType Directory
+New-Item "${tempdir}/MediaWiki/private_data/${wiki_code}/files" -Force -ItemType Directory
 "Moving additional files"
-Move-Item "/tmp/Configurations-Main/MediaWiki/*" "/tmp/MediaWiki/" -Force
+Move-Item "${tempdir}/Configurations-Main/MediaWiki/*" "${tempdir}/MediaWiki/" -Force
 if (Test-Path "${PSScriptRoot}/private")
   {"Copying private files"
-  Copy-Item "${PSScriptRoot}/private/*" "/tmp/MediaWiki/private_data/" -Force -Recurse}
+  Copy-Item "${PSScriptRoot}/private/*" "${tempdir}/MediaWiki/private_data/" -Force -Recurse}
 }
 
 "Deleting a temporary directory"
-Remove-Item "/tmp/Configurations-Main" -Force -Recurse
+Remove-Item "${tempdir}/Configurations-Main" -Force -Recurse
 
 "Deleting unnecessary files"
 "Warning: This will remove documentations and license notices that are unnecessary for running."
-Remove-Item "/tmp/MediaWiki/docs" -Force -Recurse
-Remove-Item "/tmp/MediaWiki/CODE_OF_CONDUCT.md" -Force
-Remove-Item "/tmp/MediaWiki/CREDITS" -Force
-Remove-Item "/tmp/MediaWiki/FAQ" -Force
-Remove-Item "/tmp/MediaWiki/HISTORY" -Force
-Remove-Item "/tmp/MediaWiki/INSTALL" -Force
-Remove-Item "/tmp/MediaWiki/README" -Force
-Remove-Item "/tmp/MediaWiki/RELEASE-NOTES-*" -Force
-Remove-Item "/tmp/MediaWiki/SECURITY" -Force
-Remove-Item "/tmp/MediaWiki/UPGRADE" -Force
+Remove-Item "${tempdir}/MediaWiki/docs" -Force -Recurse
+Remove-Item "${tempdir}/MediaWiki/CODE_OF_CONDUCT.md" -Force
+Remove-Item "${tempdir}/MediaWiki/CREDITS" -Force
+Remove-Item "${tempdir}/MediaWiki/FAQ" -Force
+Remove-Item "${tempdir}/MediaWiki/HISTORY" -Force
+Remove-Item "${tempdir}/MediaWiki/INSTALL" -Force
+Remove-Item "${tempdir}/MediaWiki/README" -Force
+Remove-Item "${tempdir}/MediaWiki/RELEASE-NOTES-*" -Force
+Remove-Item "${tempdir}/MediaWiki/SECURITY" -Force
+Remove-Item "${tempdir}/MediaWiki/UPGRADE" -Force
 
 if (Test-Path $dir)
-{"Renaming existing MediaWiki folder"
+{"Renaming existing MediaWiki directory"
 Move-Item $dir "${dir}_old" -Force}
 
-"Moving MediaWiki folder"
-Move-Item "/tmp/MediaWiki" $dir -Force
+"Moving MediaWiki directory"
+Move-Item "${tempdir}/MediaWiki" $dir -Force
 
 "Changing ownership of MediaWiki directory"
 chown "www-data" $dir -R
