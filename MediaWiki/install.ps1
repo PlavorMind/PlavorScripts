@@ -9,7 +9,7 @@ param
 ."${PSScriptRoot}/../modules/OSDetectorDebug.ps1"
 ."${PSScriptRoot}/../modules/SetTempDir.ps1"
 
-$composer_extensions=@("AntiSpoof")
+$composer_extensions=@("AbuseFilter","AntiSpoof")
 $extensions=
 @("AbuseFilter",
 "AccountInfo",
