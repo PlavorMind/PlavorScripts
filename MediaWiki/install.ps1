@@ -86,7 +86,9 @@ if (Test-Path "${tempdir}/${extension_name}.zip")
   Remove-Item "${tempdir}/${extension_name}.zip" -Force
   "Renaming ${extension_name} extension directory"
   switch ($extension_name)
-    {"PlavorMindTweaks"
+    {"Highlightjs_Integration"
+      {Move-Item "${tempdir}/MediaWiki/extensions/Highlightjs_Integration-master" "${tempdir}/MediaWiki/extensions/${extension_name}" -Force}
+    "PlavorMindTweaks"
       {Move-Item "${tempdir}/MediaWiki/extensions/PlavorMindTweaks-Main" "${tempdir}/MediaWiki/extensions/${extension_name}" -Force}
     default
       {Move-Item "${tempdir}/MediaWiki/extensions/mediawiki-extensions-${extension_name}-*" "${tempdir}/MediaWiki/extensions/${extension_name}" -Force}
