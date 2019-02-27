@@ -6,17 +6,20 @@ param
 [switch]$upgrade,
 [string]$wiki_code)
 
-."${PSScriptRoot}/../../modules/OSDetectorDebug.ps1"
-."${PSScriptRoot}/../../modules/SetTempDir.ps1"
+."${PSScriptRoot}/../modules/OSDetectorDebug.ps1"
+."${PSScriptRoot}/../modules/SetTempDir.ps1"
 
 $composer_extensions=@("AntiSpoof")
 $extensions=
-@("AntiSpoof",
+@("AbuseFilter",
+"AccountInfo",
+"AntiSpoof",
 "CheckUser",
 "ConfirmEdit",
 "DeletePagesForGood",
 "GoToShell",
 "Highlightjs_Integration",
+"MinimumNameLength",
 "MultimediaViewer",
 "Nuke",
 "PageImages",
@@ -25,6 +28,7 @@ $extensions=
 "SyntaxHighlight_GeSHi",
 "StaffPowers",
 "TextExtracts",
+"TitleBlacklist",
 "TorBlock",
 "UserMerge",
 
@@ -68,7 +72,9 @@ Remove-Item "${tempdir}/MediaWiki/skins/*" -Force -Recurse
 foreach ($extension_name in $extensions)
 {"Downloading ${extension_name} extension archive"
 switch ($extension_name)
-  {"PlavorMindTweaks"
+  {"Highlightjs_Integration"
+    {Invoke-WebRequest "https://github.com/Nicolas01/Highlightjs_Integration/archive/master.zip" -OutFile "${tempdir}/${extension_name}.zip"}
+  "PlavorMindTweaks"
     {Invoke-WebRequest "https://github.com/PlavorMind/PlavorMindTweaks/archive/Main.zip" -OutFile "${tempdir}/${extension_name}.zip"}
   default
     {Invoke-WebRequest "https://github.com/wikimedia/mediawiki-extensions-${extension_name}/archive/${extensions_branch}.zip" -OutFile "${tempdir}/${extension_name}.zip"}
@@ -114,11 +120,11 @@ if (Test-Path "${tempdir}/${skin_name}.zip")
   "Renaming ${skin_name} skin directory"
   switch ($skin_name)
     {"Liberty"
-      {Move-Item "/tmp/MediaWiki/skins/Liberty-MW-Skin-REL1_31" "${tempdir}/MediaWiki/skins/${skin_name}" -Force}
+      {Move-Item "${tempdir}/MediaWiki/skins/Liberty-MW-Skin-REL1_31" "${tempdir}/MediaWiki/skins/${skin_name}" -Force}
     "PlavorMindView"
-      {Move-Item "/tmp/MediaWiki/skins/PlavorMindView-Main" "${tempdir}/MediaWiki/skins/${skin_name}" -Force}
+      {Move-Item "${tempdir}/MediaWiki/skins/PlavorMindView-Main" "${tempdir}/MediaWiki/skins/${skin_name}" -Force}
     default
-      {Move-Item "/tmp/MediaWiki/skins/mediawiki-skins-${skin_name}-*" "${tempdir}/MediaWiki/skins/${skin_name}" -Force}
+      {Move-Item "${tempdir}/MediaWiki/skins/mediawiki-skins-${skin_name}-*" "${tempdir}/MediaWiki/skins/${skin_name}" -Force}
     }
   }
 else
