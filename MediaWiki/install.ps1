@@ -151,6 +151,11 @@ php "${tempdir}/MediaWiki/maintenance/update.php" --doshared --quick}
 elseif ($wiki_code)
 {"Deleting core images directory"
 Remove-Item "${tempdir}/MediaWiki/images" -Force -Recurse
+"Moving additional files"
+Move-Item "${tempdir}/Configurations-Main/MediaWiki/*" "${tempdir}/MediaWiki/" -Force
+if (Test-Path "${PSScriptRoot}/private")
+  {"Copying private files"
+  Copy-Item "${PSScriptRoot}/private/*" "${tempdir}/MediaWiki/private_data/" -Force -Recurse}
 "Creating additional directories"
 New-Item "${tempdir}/MediaWiki/data" -Force -ItemType Directory
 New-Item "${tempdir}/MediaWiki/data/${wiki_code}" -Force -ItemType Directory
@@ -159,13 +164,7 @@ New-Item "${tempdir}/MediaWiki/private_data/databases" -Force -ItemType Director
 New-Item "${tempdir}/MediaWiki/private_data/${wiki_code}" -Force -ItemType Directory
 New-Item "${tempdir}/MediaWiki/private_data/${wiki_code}/cache" -Force -ItemType Directory
 New-Item "${tempdir}/MediaWiki/private_data/${wiki_code}/deleted_files" -Force -ItemType Directory
-New-Item "${tempdir}/MediaWiki/private_data/${wiki_code}/files" -Force -ItemType Directory
-"Moving additional files"
-Move-Item "${tempdir}/Configurations-Main/MediaWiki/*" "${tempdir}/MediaWiki/" -Force
-if (Test-Path "${PSScriptRoot}/private")
-  {"Copying private files"
-  Copy-Item "${PSScriptRoot}/private/*" "${tempdir}/MediaWiki/private_data/" -Force -Recurse}
-}
+New-Item "${tempdir}/MediaWiki/private_data/${wiki_code}/files" -Force -ItemType Directory}
 
 "Deleting a temporary directory"
 Remove-Item "${tempdir}/Configurations-Main" -Force -Recurse
@@ -190,8 +189,9 @@ Move-Item $dir "${dir}_old" -Force}
 "Moving MediaWiki directory"
 Move-Item "${tempdir}/MediaWiki" $dir -Force
 
-"Changing ownership of MediaWiki directory"
+if ($isLinux)
+{"Changing ownership of MediaWiki directory"
 chown "www-data" $dir -R
 "Changing permissions of MediaWiki directory"
 chmod 755 $dir -R
-chmod 700 "${dir}/private_data" -R
+chmod 700 "${dir}/private_data" -R}
