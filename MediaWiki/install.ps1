@@ -114,37 +114,37 @@ if (Test-Path "${tempdir}/${skin_name}.zip")
   "Renaming ${skin_name} skin directory"
   switch ($skin_name)
     {"Liberty"
-      {Move-Item "/tmp/MediaWiki/skins/Liberty-MW-Skin-REL1_31" "/tmp/MediaWiki/skins/${skin_name}" -Force}
+      {Move-Item "/tmp/MediaWiki/skins/Liberty-MW-Skin-REL1_31" "${tempdir}/MediaWiki/skins/${skin_name}" -Force}
     "PlavorMindView"
-      {Move-Item "/tmp/MediaWiki/skins/PlavorMindView-Main" "/tmp/MediaWiki/skins/${skin_name}" -Force}
+      {Move-Item "/tmp/MediaWiki/skins/PlavorMindView-Main" "${tempdir}/MediaWiki/skins/${skin_name}" -Force}
     default
-      {Move-Item "/tmp/MediaWiki/skins/mediawiki-skins-${skin_name}-*" "/tmp/MediaWiki/skins/${skin_name}" -Force}
+      {Move-Item "/tmp/MediaWiki/skins/mediawiki-skins-${skin_name}-*" "${tempdir}/MediaWiki/skins/${skin_name}" -Force}
     }
   }
 else
-  {"${skin_name} skin archive download is failed!"}
+  {"Cannot download ${skin_name} skin archive."}
 }
 
 if ($upgrade)
 {if (Test-Path "${dir}/data")
   {"Copying existing data directory"
-  Copy-Item "${dir}/data" "/tmp/MediaWiki/data" -Force -Recurse}
+  Copy-Item "${dir}/data" "${tempdir}/MediaWiki/data" -Force -Recurse}
 if (Test-Path "${dir}/images")
   {"Deleting core images directory"
-  Remove-Item "/tmp/MediaWiki/images" -Force -Recurse
+  Remove-Item "${tempdir}/MediaWiki/images" -Force -Recurse
   "Copying existing images directory"
-  Copy-Item "${dir}/images" "/tmp/MediaWiki/images" -Force -Recurse}
+  Copy-Item "${dir}/images" "${tempdir}/MediaWiki/images" -Force -Recurse}
 if (Test-Path "${dir}/private_data")
   {"Copying existing private_data directory"
-  Copy-Item "${dir}/private_data" "/tmp/MediaWiki/private_data" -Force -Recurse}
+  Copy-Item "${dir}/private_data" "${tempdir}/MediaWiki/private_data" -Force -Recurse}
 if (Test-Path "${dir}/LocalSettings.php")
   {"Copying existing LocalSettings.php file"
-  Copy-Item "${dir}/LocalSettings.php" "/tmp/MediaWiki/LocalSettings.php" -Force}
+  Copy-Item "${dir}/LocalSettings.php" "${tempdir}/MediaWiki/LocalSettings.php" -Force}
 "Running update script"
-php "/tmp/MediaWiki/maintenance/update.php" --doshared --quick}
+php "${tempdir}/MediaWiki/maintenance/update.php" --doshared --quick}
 elseif ($wiki_code)
 {"Deleting core images directory"
-Remove-Item "/tmp/MediaWiki/images" -Force -Recurse
+Remove-Item "${tempdir}/MediaWiki/images" -Force -Recurse
 "Creating additional directories"
 New-Item "/tmp/MediaWiki/data" -Force -ItemType Directory
 New-Item "/tmp/MediaWiki/data/${wiki_code}" -Force -ItemType Directory
