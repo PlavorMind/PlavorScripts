@@ -4,7 +4,7 @@
 param
 ([string]$apcu_archive="https://windows.php.net/downloads/pecl/snaps/apcu/5.1.15/php_apcu-5.1.15-7.3-nts-vc15-x64.zip",
 [string]$dir="C:/PHP",
-[string]$php_archive="https://windows.php.net/downloads/snaps/php-7.3/r66fda0c/php-7.3-nts-windows-vc15-x64-r66fda0c.zip")
+[string]$php_archive="https://windows.php.net/downloads/snaps/php-7.3/rd63a7aa/php-7.3-nts-windows-vc15-x64-rd63a7aa.zip")
 
 ."${PSScriptRoot}/../../modules/OSDetectorDebug.ps1"
 ."${PSScriptRoot}/../../modules/SetTempDir.ps1"
