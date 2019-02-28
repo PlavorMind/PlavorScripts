@@ -21,5 +21,6 @@ foreach ($filter in $filters)
   $num++}
 Move-Item "${tempdir}/filtered_log_${num}" $savepath -Force
 if ($blank_source)
-  {"">$path}
+  {#"">$path should not be used because of a bug on Windows.
+  Set-Content $path "" -Encoding UTF8 -Force}
 }
