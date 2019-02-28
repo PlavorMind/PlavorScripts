@@ -14,10 +14,9 @@ if (!(Test-Path $dir))
 exit}
 
 "Stopping PHP-related processes"
+."${dir}/stop.ps1"
 if (Get-Process "php" -ErrorAction Ignore)
 {Stop-Process -Force -Name "php"}
-if (Get-Process "php-cgi" -ErrorAction Ignore)
-{Stop-Process -Force -Name "php-cgi"}
 if (Get-Process "php-win" -ErrorAction Ignore)
 {Stop-Process -Force -Name "php-win"}
 if (Get-Process "phpdbg" -ErrorAction Ignore)
