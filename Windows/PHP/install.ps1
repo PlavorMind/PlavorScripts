@@ -43,6 +43,10 @@ if (!($fpi_success))
 {"Cannot filter php.ini file."
 exit}
 
+"Copying additional files"
+Copy-Item "${PSScriptRoot}/install_data/start.ps1" "${tempdir}/PHP/" -Force
+Copy-Item "${PSScriptRoot}/install_data/stop.ps1" "${tempdir}/PHP/" -Force
+
 "Deleting unnecessary files"
 "Warning: This will remove documentations and license notices that are unnecessary for running."
 Remove-Item "${tempdir}/PHP/install.txt" -Force
