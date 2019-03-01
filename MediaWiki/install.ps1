@@ -53,7 +53,7 @@ exit}
 Invoke-WebRequest "https://github.com/wikimedia/mediawiki/archive/${core_branch}.zip" -OutFile "${tempdir}/MediaWiki.zip"
 if (Test-Path "${tempdir}/MediaWiki.zip")
 {"Extracting"
-Expand-Archive "${tempdir}/MediaWiki.zip" $tempdir
+Expand-Archive "${tempdir}/MediaWiki.zip" $tempdir -Force
 "Deleting a temporary file"
 Remove-Item "${tempdir}/MediaWiki.zip" -Force
 "Renaming MediaWiki directory"
