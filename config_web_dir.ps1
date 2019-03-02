@@ -8,7 +8,7 @@ param([string]$dir="/web")
 
 $cwd_success=$false
 
-$subdirs=@("Main","Public","Wiki")
+$subdirs=@("Main","Wiki")
 
 Invoke-WebRequest "https://github.com/PlavorMind/Configurations/archive/Main.zip" -OutFile "${tempdir}/Configurations.zip"
 if (Test-Path "${tempdir}/Configurations.zip")
