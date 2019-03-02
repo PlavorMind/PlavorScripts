@@ -3,24 +3,13 @@
 
 param
 ([string]$dir="C:/nginx", #Directory to install nginx
-[string]$version="1.15.8") #Version to install
+[string]$version="1.15.9") #Version to install
 
 ."${PSScriptRoot}/../../modules/OSDetectorDebug.ps1"
 ."${PSScriptRoot}/../../modules/SetTempDir.ps1"
 
 if (!($isWindows))
 {"Your operating system is not supported."
-exit}
-
-"Downloading Configurations repository archive"
-Invoke-WebRequest "https://github.com/PlavorMind/Configurations/archive/Main.zip" -OutFile "${tempdir}/Configurations.zip"
-if (Test-Path "${tempdir}/Configurations.zip")
-{"Extracting"
-Expand-Archive "${tempdir}/Configurations.zip" $tempdir -Force
-"Deleting a temporary file"
-Remove-Item "${tempdir}/Configurations.zip" -Force}
-else
-{"Cannot download Configurations repository archive."
 exit}
 
 "Downloading nginx archive"
@@ -36,18 +25,18 @@ else
 {"Cannot download nginx archive."
 exit}
 
-"Configuring nginx directory"
+"Configuring nginx directories"
 New-Item "${tempdir}/nginx/logs/Main" -Force -ItemType Directory
 New-Item "${tempdir}/nginx/logs/Wiki" -Force -ItemType Directory
 
-"Configuring default web directory"
-New-Item "${tempdir}/nginx/web" -Force -ItemType Directory
-Copy-Item "${tempdir}/Configurations-Main/Web" "${tempdir}/nginx/web/Main" -Force -Recurse
-Move-Item "${tempdir}/nginx/html/index.html" "${tempdir}/nginx/web/Main/" -Force
-Remove-Item "${tempdir}/nginx/html" -Force -Recurse
-Copy-Item "${tempdir}/Configurations-Main/Web" "${tempdir}/nginx/web/Wiki" -Force -Recurse
-"Deleting a temporary directory"
-Remove-Item "${tempdir}/Configurations-Main" -Force -Recurse
+$dir_temp=$dir
+."${PSScriptRoot}/../../config_web_dir.ps1" -dir "${tempdir}/nginx/web"
+if ($cwd_success)
+{Remove-Item "${tempdir}/nginx/html" -Force -Recurse}
+else
+{"Cannot configure web server directories."
+exit}
+$dir=$dir_temp
 
 "Copying additional files"
 Copy-Item "${PSScriptRoot}/install_data/start.ps1" "${tempdir}/nginx/" -Force
@@ -70,9 +59,9 @@ Remove-Item "${tempdir}/nginx/docs" -Force -Recurse
 if (Get-Process "nginx" -ErrorAction Ignore)
 {"Stopping nginx"
 Stop-Process -Force -Name "nginx"}
-if (Get-Process "php-cgi" -ErrorAction Ignore)
-{"Stopping PHP CGI/FastCGI"
-Stop-Process -Force -Name "php-cgi"}
+#if (Get-Process "php-cgi" -ErrorAction Ignore)
+#{"Stopping PHP CGI/FastCGI"
+#Stop-Process -Force -Name "php-cgi"}
 
 if (Test-Path $dir)
 {"Renaming existing nginx directory"
