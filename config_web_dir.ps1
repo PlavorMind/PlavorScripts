@@ -1,7 +1,9 @@
 #Configure web directory
 #Configure web server directories.
 
-param([string]$dir="/web")
+param
+([string]$dir="/web", #Directory to configure
+[switch]$nosubdir) #Configure web server directory without subdirectories if this is set.
 
 ."${PSScriptRoot}/modules/OSDetectorDebug.ps1"
 ."${PSScriptRoot}/modules/SetTempDir.ps1"
@@ -19,9 +21,14 @@ Remove-Item "${tempdir}/Configurations-Main" -Force -Recurse}
 else
 {exit}
 
-New-Item $dir -Force -ItemType Directory
+if ($nosubdir)
+{Copy-Item "${tempdir}/Web" $dir -Force -Recurse}
+else
+{New-Item $dir -Force -ItemType Directory
 foreach ($subdir in $subdirs)
-{Copy-Item "${tempdir}/Web" "${dir}/${subdir}" -Force -Recurse}
+  {Copy-Item "${tempdir}/Web" "${dir}/${subdir}" -Force -Recurse}
+}
+
 $cwd_success=$true
 
 Remove-Item "${tempdir}/Web" -Force -Recurse
