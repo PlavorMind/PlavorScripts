@@ -1,6 +1,9 @@
+#MediaWiki installer
+#Installs MediaWiki.
+
 param
 ([string]$core_branch="wmf/1.33.0-wmf.19",
-[string]$dir="/web/Wiki/mediawiki",
+[string]$dir="/web/Wiki/mediawiki", #Directory to install MediaWiki
 [string]$extensions_branch="master",
 [string]$skins_branch="master",
 [switch]$upgrade,
