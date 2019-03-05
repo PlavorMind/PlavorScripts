@@ -35,8 +35,10 @@ $extensions=
 "UserMerge",
 
 "AccountInfo",
+"CodeEditor",
 "PlavorMindTweaks",
 "TwoColConflict",
+"WikiEditor",
 #PlavorEXITBeta (exit)
 "UserPageEditProtection")
 $skins=@("Liberty","PlavorMindView","Timeless","Vector")
