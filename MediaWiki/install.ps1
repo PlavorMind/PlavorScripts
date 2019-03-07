@@ -44,7 +44,7 @@ $extensions=
 $skins=@("Liberty","PlavorMindView","Timeless","Vector")
 
 "Downloading Configurations repository archive"
-Invoke-WebRequest "https://github.com/PlavorMind/Configurations/archive/Main.zip" -OutFile "${tempdir}/Configurations.zip"
+Invoke-WebRequest "https://github.com/PlavorMind/Configurations/archive/Main.zip" -DisableKeepAlive -OutFile "${tempdir}/Configurations.zip"
 if (Test-Path "${tempdir}/Configurations.zip")
 {"Extracting"
 Expand-Archive "${tempdir}/Configurations.zip" $tempdir -Force
@@ -55,7 +55,7 @@ else
 exit}
 
 "Downloading MediaWiki archive"
-Invoke-WebRequest "https://github.com/wikimedia/mediawiki/archive/${core_branch}.zip" -OutFile "${tempdir}/MediaWiki.zip"
+Invoke-WebRequest "https://github.com/wikimedia/mediawiki/archive/${core_branch}.zip" -DisableKeepAlive -OutFile "${tempdir}/MediaWiki.zip"
 if (Test-Path "${tempdir}/MediaWiki.zip")
 {"Extracting"
 Expand-Archive "${tempdir}/MediaWiki.zip" $tempdir -Force
@@ -78,11 +78,11 @@ foreach ($extension_name in $extensions)
 {"Downloading ${extension_name} extension archive"
 switch ($extension_name)
   {"Highlightjs_Integration"
-    {Invoke-WebRequest "https://github.com/Nicolas01/Highlightjs_Integration/archive/master.zip" -OutFile "${tempdir}/${extension_name}.zip"}
+    {Invoke-WebRequest "https://github.com/Nicolas01/Highlightjs_Integration/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension_name}.zip"}
   "PlavorMindTweaks"
-    {Invoke-WebRequest "https://github.com/PlavorMind/PlavorMindTweaks/archive/Main.zip" -OutFile "${tempdir}/${extension_name}.zip"}
+    {Invoke-WebRequest "https://github.com/PlavorMind/PlavorMindTweaks/archive/Main.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension_name}.zip"}
   default
-    {Invoke-WebRequest "https://github.com/wikimedia/mediawiki-extensions-${extension_name}/archive/${extensions_branch}.zip" -OutFile "${tempdir}/${extension_name}.zip"}
+    {Invoke-WebRequest "https://github.com/wikimedia/mediawiki-extensions-${extension_name}/archive/${extensions_branch}.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension_name}.zip"}
   }
 if (Test-Path "${tempdir}/${extension_name}.zip")
   {"Extracting"
@@ -113,11 +113,11 @@ foreach ($skin_name in $skins)
 {"Downloading ${skin_name} skin archive"
 switch ($skin_name)
   {"Liberty"
-    {Invoke-WebRequest "https://gitlab.com/librewiki/Liberty-MW-Skin/-/archive/REL1_31/Liberty-MW-Skin-REL1_31.zip" -OutFile "${tempdir}/${skin_name}.zip"}
+    {Invoke-WebRequest "https://gitlab.com/librewiki/Liberty-MW-Skin/-/archive/REL1_31/Liberty-MW-Skin-REL1_31.zip" -DisableKeepAlive -OutFile "${tempdir}/${skin_name}.zip"}
   "PlavorMindView"
-    {Invoke-WebRequest "https://github.com/PlavorMind/PlavorMindView/archive/Main.zip" -OutFile "${tempdir}/${skin_name}.zip"}
+    {Invoke-WebRequest "https://github.com/PlavorMind/PlavorMindView/archive/Main.zip" -DisableKeepAlive -OutFile "${tempdir}/${skin_name}.zip"}
   default
-    {Invoke-WebRequest "https://github.com/wikimedia/mediawiki-skins-${skin_name}/archive/${skins_branch}.zip" -OutFile "${tempdir}/${skin_name}.zip"}
+    {Invoke-WebRequest "https://github.com/wikimedia/mediawiki-skins-${skin_name}/archive/${skins_branch}.zip" -DisableKeepAlive -OutFile "${tempdir}/${skin_name}.zip"}
   }
 if (Test-Path "${tempdir}/${skin_name}.zip")
   {"Extracting"
