@@ -13,7 +13,7 @@ if (!($isWindows))
 exit}
 
 "Downloading nginx archive"
-Invoke-WebRequest "http://nginx.org/download/nginx-${version}.zip" -OutFile "${tempdir}/nginx.zip"
+Invoke-WebRequest "http://nginx.org/download/nginx-${version}.zip" -DisableKeepAlive -OutFile "${tempdir}/nginx.zip"
 if (Test-Path "${tempdir}/nginx.zip")
 {"Extracting"
 Expand-Archive "${tempdir}/nginx.zip" $tempdir -Force
