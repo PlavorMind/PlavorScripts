@@ -15,7 +15,7 @@ exit}
 
 if (Test-Path "C:/Program Files/7-Zip/7z.exe")
 {"Downloading Dolphin archive"
-Invoke-WebRequest "https://dl.dolphin-emu.org/builds/dolphin-master-${version}-x64.7z" -OutFile "${tempdir}/Dolphin.7z"
+Invoke-WebRequest "https://dl.dolphin-emu.org/builds/dolphin-master-${version}-x64.7z" -DisableKeepAlive -OutFile "${tempdir}/Dolphin.7z"
 if (Test-Path "${tempdir}/Dolphin.7z")
   {"Extracting"
   ."C:/Program Files/7-Zip/7z.exe" x "${tempdir}/Dolphin.7z" -aoa -bt -o"${tempdir}" -spe -y
