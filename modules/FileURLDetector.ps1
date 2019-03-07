@@ -11,7 +11,7 @@ $fud_web=$false
 
 if ($path -match "https?:\/\/.+")
 {$fud_web=$true
-Invoke-WebRequest $path -OutFile "${tempdir}/fud_output"
+Invoke-WebRequest $path -DisableKeepAlive -OutFile "${tempdir}/fud_output"
 if (Test-Path "${tempdir}/fud_output")
   {$fud_output="${tempdir}/fud_output"}
 }
