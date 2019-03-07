@@ -12,7 +12,7 @@ $cwd_success=$false
 
 $subdirs=@("Main","Wiki")
 
-Invoke-WebRequest "https://github.com/PlavorMind/Configurations/archive/Main.zip" -OutFile "${tempdir}/Configurations.zip"
+Invoke-WebRequest "https://github.com/PlavorMind/Configurations/archive/Main.zip" -DisableKeepAlive -OutFile "${tempdir}/Configurations.zip"
 if (Test-Path "${tempdir}/Configurations.zip")
 {Expand-Archive "${tempdir}/Configurations.zip" $tempdir -Force
 Remove-Item "${tempdir}/Configurations.zip" -Force
