@@ -1,11 +1,11 @@
-#MediaWiki installer
-#Installs MediaWiki.
+#MediaWiki downloader
+#Downloads MediaWiki.
 
 param
-([string]$core_branch="wmf/1.33.0-wmf.20",
-[string]$dir="/web/Wiki/mediawiki", #Directory to install MediaWiki
-[string]$extensions_branch="master",
-[string]$skins_branch="master",
+([string]$core_branch="wmf/1.33.0-wmf.20", #Branch for MediaWiki core
+[string]$dir="/web/Wiki/mediawiki", #Directory to download MediaWiki
+[string]$extensions_branch="master", #Branch for extensions
+[string]$skins_branch="master", #Branch for skins
 [switch]$upgrade,
 [string]$wiki_code)
 
@@ -19,7 +19,6 @@ $extensions=
 "CheckUser",
 "ConfirmEdit",
 "DeletePagesForGood",
-"GoToShell",
 "Highlightjs_Integration",
 "MinimumNameLength",
 "MultimediaViewer",
@@ -31,16 +30,15 @@ $extensions=
 "StaffPowers",
 "TextExtracts",
 "TitleBlacklist",
-"TorBlock",
 "UserMerge",
+"UserPageEditProtection",
 
 "AccountInfo",
-"CodeEditor",
 "PlavorMindTweaks",
 "TwoColConflict",
-"WikiEditor",
 #PlavorEXITBeta (exit)
-"UserPageEditProtection")
+"CodeEditor",
+"WikiEditor")
 $skins=@("Liberty","PlavorMindView","Timeless","Vector")
 
 "Downloading Configurations repository archive"
