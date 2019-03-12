@@ -19,6 +19,7 @@ $extensions=
 "CheckUser",
 "ConfirmEdit",
 "DeletePagesForGood",
+"Discord",
 "Highlightjs_Integration",
 "MinimumNameLength",
 "MultimediaViewer",
@@ -26,18 +27,19 @@ $extensions=
 "PageImages",
 "Popups",
 "Renameuser",
-"SyntaxHighlight_GeSHi",
+"SimpleMathJax",
 "StaffPowers",
+"SyntaxHighlight_GeSHi",
 "TextExtracts",
 "TitleBlacklist",
 "UserMerge",
 "UserPageEditProtection",
 
 "AccountInfo",
+"Cite",
+"CodeEditor",
 "PlavorMindTweaks",
 "TwoColConflict",
-#PlavorEXITBeta (exit)
-"CodeEditor",
 "WikiEditor")
 $skins=@("Liberty","PlavorMindView","Timeless","Vector")
 
@@ -75,10 +77,14 @@ Remove-Item "${tempdir}/MediaWiki/skins/*" -Force -Recurse
 foreach ($extension_name in $extensions)
 {"Downloading ${extension_name} extension archive"
 switch ($extension_name)
-  {"Highlightjs_Integration"
+  {"Discord"
+    {Invoke-WebRequest "https://github.com/jaydenkieran/mw-discord/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension_name}.zip"}
+  "Highlightjs_Integration"
     {Invoke-WebRequest "https://github.com/Nicolas01/Highlightjs_Integration/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension_name}.zip"}
   "PlavorMindTweaks"
     {Invoke-WebRequest "https://github.com/PlavorMind/PlavorMindTweaks/archive/Main.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension_name}.zip"}
+  "SimpleMathJax"
+    {Invoke-WebRequest "https://github.com/jmnote/SimpleMathJax/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension_name}.zip"}
   default
     {Invoke-WebRequest "https://github.com/wikimedia/mediawiki-extensions-${extension_name}/archive/${extensions_branch}.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension_name}.zip"}
   }
@@ -89,10 +95,14 @@ if (Test-Path "${tempdir}/${extension_name}.zip")
   Remove-Item "${tempdir}/${extension_name}.zip" -Force
   "Renaming ${extension_name} extension directory"
   switch ($extension_name)
-    {"Highlightjs_Integration"
+    {"Discord"
+      {Move-Item "${tempdir}/MediaWiki/extensions/mw-discord-master" "${tempdir}/MediaWiki/extensions/${extension_name}" -Force}
+    "Highlightjs_Integration"
       {Move-Item "${tempdir}/MediaWiki/extensions/Highlightjs_Integration-master" "${tempdir}/MediaWiki/extensions/${extension_name}" -Force}
     "PlavorMindTweaks"
       {Move-Item "${tempdir}/MediaWiki/extensions/PlavorMindTweaks-Main" "${tempdir}/MediaWiki/extensions/${extension_name}" -Force}
+    "SimpleMathJax"
+      {Move-Item "${tempdir}/MediaWiki/extensions/SimpleMathJax-master" "${tempdir}/MediaWiki/extensions/${extension_name}" -Force}
     default
       {Move-Item "${tempdir}/MediaWiki/extensions/mediawiki-extensions-${extension_name}-*" "${tempdir}/MediaWiki/extensions/${extension_name}" -Force}
     }
@@ -187,11 +197,11 @@ Remove-Item "${tempdir}/MediaWiki/RELEASE-NOTES-*" -Force
 Remove-Item "${tempdir}/MediaWiki/SECURITY" -Force
 Remove-Item "${tempdir}/MediaWiki/UPGRADE" -Force
 
-if ($isWindows)
-{if (Get-Process "php-cgi" -ErrorAction Ignore)
-  {"Stopping PHP CGI/FastCGI"
-  Stop-Process -Force -Name "php-cgi"}
-}
+#if ($isWindows)
+#{if (Get-Process "php-cgi" -ErrorAction Ignore)
+  #{"Stopping PHP CGI/FastCGI"
+  #Stop-Process -Force -Name "php-cgi"}
+#}
 
 if (Test-Path $dir)
 {"Renaming existing MediaWiki directory"
