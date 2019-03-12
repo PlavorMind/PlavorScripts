@@ -2,12 +2,12 @@
 #Downloads MediaWiki.
 
 param
-([string]$core_branch="wmf/1.33.0-wmf.20", #Branch for MediaWiki core
+([string]$core_branch="wmf/1.33.0-wmf.21", #Branch for MediaWiki core
 [string]$dir="/web/Wiki/mediawiki", #Directory to download MediaWiki
 [string]$extensions_branch="master", #Branch for extensions
+[switch]$plavormind, #Configure wiki directories based on PlavorMind configurations if this parameter is set
 [string]$skins_branch="master", #Branch for skins
-[switch]$upgrade,
-[string]$wiki_code)
+[switch]$upgrade) #Use upgrade mode if this parameter is set
 
 ."${PSScriptRoot}/../modules/OSDetectorDebug.ps1"
 ."${PSScriptRoot}/../modules/SetTempDir.ps1"
@@ -147,39 +147,38 @@ else
 }
 
 if ($upgrade)
-{if (Test-Path "${dir}/data")
-  {"Copying existing data directory"
-  Copy-Item "${dir}/data" "${tempdir}/MediaWiki/data" -Force -Recurse}
-if (Test-Path "${dir}/images")
+{if ($plavormind)
+  {if (Test-Path "${dir}/data")
+    {"Copying existing data directory"
+    Copy-Item "${dir}/data" "${tempdir}/MediaWiki/data" -Force -Recurse}
+  if (Test-Path "${dir}/private_data")
+    {"Copying existing private_data directory"
+    Copy-Item "${dir}/private_data" "${tempdir}/MediaWiki/private_data" -Force -Recurse}
+  "Deleting core cache directory"
+  Remove-Item "${tempdir}/MediaWiki/cache" -Force -Recurse
+  "Deleting core images directory"
+  Remove-Item "${tempdir}/MediaWiki/images" -Force -Recurse}
+elseif (Test-Path "${dir}/images")
   {"Deleting core images directory"
   Remove-Item "${tempdir}/MediaWiki/images" -Force -Recurse
   "Copying existing images directory"
   Copy-Item "${dir}/images" "${tempdir}/MediaWiki/images" -Force -Recurse}
-if (Test-Path "${dir}/private_data")
-  {"Copying existing private_data directory"
-  Copy-Item "${dir}/private_data" "${tempdir}/MediaWiki/private_data" -Force -Recurse}
 if (Test-Path "${dir}/LocalSettings.php")
   {"Copying existing LocalSettings.php file"
   Copy-Item "${dir}/LocalSettings.php" "${tempdir}/MediaWiki/LocalSettings.php" -Force}
 "Running update script"
 php "${tempdir}/MediaWiki/maintenance/update.php" --doshared --quick}
-elseif ($wiki_code)
-{"Deleting core images directory"
-Remove-Item "${tempdir}/MediaWiki/images" -Force -Recurse
-"Moving additional files"
+elseif ($plavormind)
+{"Moving additional files"
 Move-Item "${tempdir}/Configurations-Main/MediaWiki/*" "${tempdir}/MediaWiki/" -Force
-if (Test-Path "${PSScriptRoot}/private")
-  {"Copying private files"
-  Copy-Item "${PSScriptRoot}/private/*" "${tempdir}/MediaWiki/private_data/" -Force -Recurse}
-"Creating additional directories"
-New-Item "${tempdir}/MediaWiki/data" -Force -ItemType Directory
-New-Item "${tempdir}/MediaWiki/data/${wiki_code}" -Force -ItemType Directory
-New-Item "${tempdir}/MediaWiki/private_data" -Force -ItemType Directory
-New-Item "${tempdir}/MediaWiki/private_data/databases" -Force -ItemType Directory
-New-Item "${tempdir}/MediaWiki/private_data/${wiki_code}" -Force -ItemType Directory
-New-Item "${tempdir}/MediaWiki/private_data/${wiki_code}/cache" -Force -ItemType Directory
-New-Item "${tempdir}/MediaWiki/private_data/${wiki_code}/deleted_files" -Force -ItemType Directory
-New-Item "${tempdir}/MediaWiki/private_data/${wiki_code}/files" -Force -ItemType Directory}
+if (Test-Path "${PSScriptRoot}/data")
+  {"Copying files in data directory"
+  Copy-Item "${PSScriptRoot}/data/*" "${tempdir}/MediaWiki/data/" -Force -Recurse}
+if (Test-Path "${PSScriptRoot}/private_data")
+  {"Copying files in private_data directory"
+  Copy-Item "${PSScriptRoot}/private_data/*" "${tempdir}/MediaWiki/private_data/" -Force -Recurse}
+"Deleting core images directory"
+Remove-Item "${tempdir}/MediaWiki/images" -Force -Recurse}
 
 "Deleting a temporary directory"
 Remove-Item "${tempdir}/Configurations-Main" -Force -Recurse
