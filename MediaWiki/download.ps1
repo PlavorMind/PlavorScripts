@@ -27,7 +27,6 @@ $extensions=
 "PageImages",
 "Popups",
 "Renameuser",
-"SimpleMathJax",
 "StaffPowers",
 "SyntaxHighlight_GeSHi",
 "TextExtracts",
@@ -39,6 +38,7 @@ $extensions=
 "Cite",
 "CodeEditor",
 "PlavorMindTweaks",
+"SimpleMathJax",
 "TwoColConflict",
 "WikiEditor")
 $skins=@("Liberty","PlavorMindView","Timeless","Vector")
