@@ -19,7 +19,6 @@ $extensions=
 "CheckUser",
 "ConfirmEdit",
 "DeletePagesForGood",
-"Discord",
 "Highlightjs_Integration",
 "MinimumNameLength",
 "MultimediaViewer",
