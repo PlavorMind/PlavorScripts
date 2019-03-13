@@ -19,6 +19,7 @@ $extensions=
 "CheckUser",
 "ConfirmEdit",
 "DeletePagesForGood",
+"DiscordNotifications",
 "Highlightjs_Integration",
 "MinimumNameLength",
 "MultimediaViewer",
@@ -76,8 +77,8 @@ Remove-Item "${tempdir}/MediaWiki/skins/*" -Force -Recurse
 foreach ($extension_name in $extensions)
 {"Downloading ${extension_name} extension archive"
 switch ($extension_name)
-  {"Discord"
-    {Invoke-WebRequest "https://github.com/jaydenkieran/mw-discord/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension_name}.zip"}
+  {"DiscordNotifications"
+    {Invoke-WebRequest "https://github.com/kulttuuri/DiscordNotifications/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension_name}.zip"}
   "Highlightjs_Integration"
     {Invoke-WebRequest "https://github.com/Nicolas01/Highlightjs_Integration/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension_name}.zip"}
   "PlavorMindTweaks"
@@ -94,8 +95,8 @@ if (Test-Path "${tempdir}/${extension_name}.zip")
   Remove-Item "${tempdir}/${extension_name}.zip" -Force
   "Renaming ${extension_name} extension directory"
   switch ($extension_name)
-    {"Discord"
-      {Move-Item "${tempdir}/MediaWiki/extensions/mw-discord-master" "${tempdir}/MediaWiki/extensions/${extension_name}" -Force}
+    {"DiscordNotifications"
+      {Move-Item "${tempdir}/MediaWiki/extensions/DiscordNotifications-master" "${tempdir}/MediaWiki/extensions/${extension_name}" -Force}
     "Highlightjs_Integration"
       {Move-Item "${tempdir}/MediaWiki/extensions/Highlightjs_Integration-master" "${tempdir}/MediaWiki/extensions/${extension_name}" -Force}
     "PlavorMindTweaks"
