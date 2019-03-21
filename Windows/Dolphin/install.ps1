@@ -4,7 +4,7 @@
 param
 ([string]$dir="C:/Program Files/Dolphin", #Directory to install Dolphin
 [switch]$portable, #Installs as portable mode if this is set
-[string]$version="5.0-9620") #Version to install
+[string]$version="5.0-9781") #Version to install
 
 ."${PSScriptRoot}/../../modules/OSDetectorDebug.ps1"
 ."${PSScriptRoot}/../../modules/SetTempDir.ps1"
