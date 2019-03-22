@@ -2,7 +2,7 @@
 #Downloads MediaWiki.
 
 param
-([string]$core_branch="wmf/1.33.0-wmf.21", #Branch for MediaWiki core
+([string]$core_branch="wmf/1.33.0-wmf.22", #Branch for MediaWiki core
 [string]$dir="/web/Wiki/mediawiki", #Directory to download MediaWiki
 [string]$extensions_branch="master", #Branch for extensions
 [switch]$plavormind, #Configure wiki directories based on PlavorMind configurations if this parameter is set
@@ -121,7 +121,7 @@ foreach ($skin_name in $skins)
 {"Downloading ${skin_name} skin archive"
 switch ($skin_name)
   {"Liberty"
-    {Invoke-WebRequest "https://gitlab.com/librewiki/Liberty-MW-Skin/-/archive/REL1_31/Liberty-MW-Skin-REL1_31.zip" -DisableKeepAlive -OutFile "${tempdir}/${skin_name}.zip"}
+    {Invoke-WebRequest "https://gitlab.com/librewiki/Liberty-MW-Skin/-/archive/master/Liberty-MW-Skin-master.zip" -DisableKeepAlive -OutFile "${tempdir}/${skin_name}.zip"}
   "PlavorMindView"
     {Invoke-WebRequest "https://github.com/PlavorMind/PlavorMindView/archive/Main.zip" -DisableKeepAlive -OutFile "${tempdir}/${skin_name}.zip"}
   default
@@ -135,7 +135,7 @@ if (Test-Path "${tempdir}/${skin_name}.zip")
   "Renaming ${skin_name} skin directory"
   switch ($skin_name)
     {"Liberty"
-      {Move-Item "${tempdir}/MediaWiki/skins/Liberty-MW-Skin-REL1_31" "${tempdir}/MediaWiki/skins/${skin_name}" -Force}
+      {Move-Item "${tempdir}/MediaWiki/skins/Liberty-MW-Skin-master" "${tempdir}/MediaWiki/skins/${skin_name}" -Force}
     "PlavorMindView"
       {Move-Item "${tempdir}/MediaWiki/skins/PlavorMindView-Main" "${tempdir}/MediaWiki/skins/${skin_name}" -Force}
     default
@@ -176,7 +176,7 @@ if (Test-Path "${PSScriptRoot}/data")
   Copy-Item "${PSScriptRoot}/data/*" "${tempdir}/MediaWiki/data/" -Force -Recurse}
 if (Test-Path "${PSScriptRoot}/private_data")
   {"Copying files in private_data directory"
-  Copy-Item "${PSScriptRoot}/private_data/*" "${tempdir}/MediaWiki/private_data/" -Force -Recurse}
+  Copy-Item "${PSScriptRoot}/private_data" "${tempdir}/MediaWiki/" -Force -Recurse}
 "Deleting core images directory"
 Remove-Item "${tempdir}/MediaWiki/images" -Force -Recurse}
 
