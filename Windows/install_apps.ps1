@@ -47,6 +47,16 @@ Remove-Item "${tempdir}/Discord Canary.exe" -Force}
 else
 {"Cannot download Discord Canary."}
 
+"Downloading Firefox Nightly"
+Invoke-WebRequest "https://download.mozilla.org/?product=firefox-nightly-stub" -DisableKeepAlive -OutFile "${tempdir}/Firefox Nightly.exe"
+if (Test-Path "${tempdir}/Firefox Nightly.exe")
+{"Installing"
+Start-Process "${tempdir}/Firefox Nightly.exe" -Wait
+"Deleting a temporary file"
+Remove-Item "${tempdir}/Firefox Nightly.exe" -Force}
+else
+{"Cannot download Firefox Nightly."}
+
 "Downloading Python"
 Invoke-WebRequest "https://www.python.org/ftp/python/${python_version}/python-${python_version}-amd64.exe" -DisableKeepAlive -OutFile "${tempdir}/Python.exe"
 if (Test-Path "${tempdir}/Python.exe")
