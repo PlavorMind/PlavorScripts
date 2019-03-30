@@ -1,6 +1,12 @@
 #Uninstall UWP apps
 #Uninstalls some unnecessary UWP apps that cannot be uninstalled through UI.
 
+."${PSScriptRoot}/../modules/OSDetectorDebug.ps1"
+
+if (!($isWindows))
+{"Your operating system is not supported."
+exit}
+
 "Removing Alarms & Clock app"
 Get-AppxPackage "Microsoft.WindowsAlarms" -AllUsers | Remove-AppxPackage -AllUsers
 
