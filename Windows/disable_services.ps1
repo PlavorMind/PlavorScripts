@@ -1,5 +1,5 @@
 #Disable services
-#Disables some unnecessary services
+#Disables some unnecessary services.
 
 ."${PSScriptRoot}/../modules/OSDetectorDebug.ps1"
 
