@@ -1,7 +1,7 @@
 #PHP uninstaller
 #Uninstalls PHP.
 
-param([string]$dir="C:/PHP")
+param([string]$dir="C:/PHP") #Directory that PHP is installed
 
 ."${PSScriptRoot}/../../modules/OSDetectorDebug.ps1"
 
