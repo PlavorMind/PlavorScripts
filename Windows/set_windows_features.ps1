@@ -1,3 +1,6 @@
+#Set Windows features
+#Enables or disables some Windows features.
+
 ."${PSScriptRoot}/../modules/OSDetectorDebug.ps1"
 
 if (!($isWindows))
