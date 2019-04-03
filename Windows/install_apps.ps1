@@ -72,6 +72,16 @@ Remove-Item "${tempdir}/Firefox Nightly.exe" -Force}
 else
 {"Cannot download Firefox Nightly."}
 
+"Downloading nomacs"
+Invoke-WebRequest "http://download.nomacs.org/nomacs-setup-x64.msi" -DisableKeepAlive -OutFile "${tempdir}/nomacs.msi"
+if (Test-Path "${tempdir}/nomacs.msi")
+{"Installing"
+msiexec /i "${tempdir}/nomacs.msi" /norestart /passive
+"Deleting a temporary file"
+Remove-Item "${tempdir}/nomacs.msi" -Force}
+else
+{"Cannot download nomacs."}
+
 "Downloading Python"
 Invoke-WebRequest "https://www.python.org/ftp/python/${python_version}/python-${python_version}-amd64.exe" -DisableKeepAlive -OutFile "${tempdir}/Python.exe"
 if (Test-Path "${tempdir}/Python.exe")
