@@ -3,6 +3,7 @@
 
 param
 ([string]$7zip_version="1900", #7-Zip version to install (must set without dot(.))
+[string]$bleachbit_installer="https://ci.bleachbit.org/dl/2.3.1041/BleachBit-2.3-setup-English.exe",
 [string]$python_version="3.7.2", #Python version to install
 [string]$turtl_version="0.7.2.5") #Turtl version to install
 
@@ -32,6 +33,20 @@ Start-Process "${tempdir}/7-Zip.exe" -ArgumentList "/S" -Wait
 Remove-Item "${tempdir}/7-Zip.exe" -Force}
 else
 {"Cannot download 7-Zip."}
+
+."${PSScriptRoot}/../modules/FileURLDetector.ps1" -path $bleachbit_installer
+if ($fud_output)
+{"Installing BleachBit"
+if ($fud_web)
+  {Move-Item $bleachbit_installer "${tempdir}/BleachBit.exe" -Force
+  Start-Process "${tempdir}/BleachBit.exe" -ArgumentList "/allusers /S" -Wait
+  "Deleting a temporary file"
+  Remove-Item "${tempdir}/BleachBit.exe" -Force}
+else
+  {Start-Process $bleachbit_installer -ArgumentList "/allusers /S" -Wait}
+}
+else
+{"Cannot download or find BleachBit."}
 
 "Downloading Discord Canary"
 Invoke-WebRequest "https://discordapp.com/api/download/canary?platform=win" -DisableKeepAlive -OutFile "${tempdir}/Discord Canary.exe"
@@ -71,7 +86,7 @@ else
 Invoke-WebRequest "https://github.com/turtl/desktop/releases/download/v${turtl_version}/turtl-${turtl_version}-windows64.msi" -DisableKeepAlive -OutFile "${tempdir}/Turtl.msi"
 if (Test-Path "${tempdir}/Turtl.msi")
 {"Installing"
-msiexec "${tempdir}/Turtl.msi" /norestart /passive
+msiexec /i "${tempdir}/Turtl.msi" /norestart /passive
 "Deleting a temporary file"
 Remove-Item "${tempdir}/Turtl.msi" -Force}
 else
