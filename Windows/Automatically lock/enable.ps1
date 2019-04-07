@@ -13,7 +13,7 @@ exit}
 if ($allusers)
 {$path="C:/ProgramData/Microsoft/Windows/Start Menu/Programs/Startup/Lock.lnk"}
 else
-{$path="${env:APPDATA}/Microsoft/Windows/Start Menu/Programs/Startup/Lock.lnk"}
+{$path="${Env:APPDATA}/Microsoft/Windows/Start Menu/Programs/Startup/Lock.lnk"}
 
 "Enabling automatically lock"
 ."${PSScriptRoot}/../../modules/CreateShortcut.ps1" -arguments "user32.dll,LockWorkStation" -path $path -target "C:/Windows/System32/rundll32.exe"
