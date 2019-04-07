@@ -4,7 +4,7 @@
 if ($isLinux)
 {$tempdir="/tmp"}
 elseif ($isWindows)
-{$tempdir=$env:TEMP}
+{$tempdir=$Env:TEMP}
 else
 {New-Item "${PSScriptRoot}/../temp" -Force -ItemType Directory
 $tempdir="${PSScriptRoot}/../temp"}
