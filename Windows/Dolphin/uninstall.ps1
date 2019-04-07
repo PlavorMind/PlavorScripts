@@ -34,8 +34,8 @@ if (Test-Path "C:/Users/Public/Desktop/Dolphin.lnk")
 
 if ($delete_userdata)
 {"Deleting Dolphin user data"
-if (Test-Path "${env:USERPROFILE}/Documents/Dolphin Emulator")
-  {Remove-Item "${env:USERPROFILE}/Documents/Dolphin Emulator" -Force -Recurse}
-if (Test-Path "${env:USERPROFILE}/OneDrive/Documents/Dolphin Emulator")
-  {Remove-Item "${env:USERPROFILE}/OneDrive/Documents/Dolphin Emulator" -Force -Recurse}
+if (Test-Path "${Env:USERPROFILE}/Documents/Dolphin Emulator")
+  {Remove-Item "${Env:USERPROFILE}/Documents/Dolphin Emulator" -Force -Recurse}
+if (Test-Path "${Env:USERPROFILE}/OneDrive/Documents/Dolphin Emulator")
+  {Remove-Item "${Env:USERPROFILE}/OneDrive/Documents/Dolphin Emulator" -Force -Recurse}
 }
