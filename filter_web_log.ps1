@@ -4,7 +4,7 @@
 param
 ([switch]$blank_source, #Blanks the source file after filtering if this is set
 [string]$path="/etc/nginx/logs/Main/access_log.txt", #File path to filter
-[string]$savepath="filtered_log.txt") #Path to save filtered web server log file
+[string]$savepath="filtered.log") #Path to save filtered web server log file
 
 ."${PSScriptRoot}/modules/OSDetectorDebug.ps1"
 ."${PSScriptRoot}/modules/SetTempDir.ps1"
