@@ -10,10 +10,10 @@ $fpi_success=$false
 ."${PSScriptRoot}/modules/FileURLDetector.ps1" -path $path
 if ($fud_output)
 {if ($isLinux)
-  {Select-String ".*;windows_only.*" $fud_output -Encoding utf8 -NotMatch|ForEach-Object {$_.Line}>$savepath
+  {Select-String ".*;windows_only.*" $fud_output -Encoding utf8 -NotMatch|ForEach-Object {$_.Line} > $savepath
   $fpi_success=$true}
 elseif ($isWindows)
-  {Select-String ".*;linux_only.*" $fud_output -Encoding utf8 -NotMatch|ForEach-Object {$_.Line}>$savepath
+  {Select-String ".*;linux_only.*" $fud_output -Encoding utf8 -NotMatch|ForEach-Object {$_.Line} > $savepath
   $fpi_success=$true}
 else
   {"Your operating system is not supported."}
