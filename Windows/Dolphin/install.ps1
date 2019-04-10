@@ -37,7 +37,7 @@ Move-Item "${tempdir}/Dolphin-x64" $dir -Force
 
 if ($portable)
 {"Enabling portable mode"
-"">"${dir}/portable.txt"}
+"" > "${dir}/portable.txt"}
 else
 {"Creating shortcuts"
 ."${PSScriptRoot}/../../modules/CreateShortcut.ps1" -path "C:/ProgramData/Microsoft/Windows/Start Menu/Programs/Dolphin.lnk" -target "${dir}/Dolphin.exe"
