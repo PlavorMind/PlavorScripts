@@ -3,7 +3,7 @@
 
 param
 ([string]$7zip_version="1900", #7-Zip version to install (must set without dot(.))
-[string]$bleachbit_installer="https://ci.bleachbit.org/dl/2.3.1041/BleachBit-2.3-setup-English.exe",
+[string]$bleachbit_installer="https://ci.bleachbit.org/dl/2.3.1041/BleachBit-2.3-setup-English.exe", #URL or file path to BleachBit installer
 [string]$python_version="3.7.2", #Python version to install
 [string]$turtl_version="0.7.2.5") #Turtl version to install
 
