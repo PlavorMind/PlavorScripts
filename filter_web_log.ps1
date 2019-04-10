@@ -16,7 +16,7 @@ if (Test-Path $path)
 Copy-Item $path "${tempdir}/filtered_log_${num}" -Force
 foreach ($filter in $filters)
   {$nextnum=$num+1
-  Select-String $filter "${tempdir}/filtered_log_${num}" -Encoding utf8 -NotMatch|ForEach-Object {$_.Line} > "${tempdir}/filtered_log_${nextnum}"
+  Select-String $filter "${tempdir}/filtered_log_${num}" -Encoding utf8 -NotMatch | ForEach-Object {$_.Line} > "${tempdir}/filtered_log_${nextnum}"
   Remove-Item "${tempdir}/filtered_log_${num}" -Force
   $num++}
 Move-Item "${tempdir}/filtered_log_${num}" $savepath -Force
