@@ -2,7 +2,7 @@
 #Downloads MediaWiki.
 
 param
-([string]$core_branch="wmf/1.33.0-wmf.23", #Branch for MediaWiki core
+([string]$core_branch="wmf/1.33.0-wmf.25", #Branch for MediaWiki core
 [string]$dir="/web/Wiki/mediawiki", #Directory to download MediaWiki
 [string]$extensions_branch="master", #Branch for extensions
 [switch]$plavormind, #Configure wiki directories based on PlavorMind configurations if this parameter is set
@@ -15,11 +15,13 @@ param
 $composer_extensions=@("AbuseFilter","AntiSpoof")
 $extensions=
 @("AbuseFilter",
+"AccountInfo",
 "AntiSpoof",
 "CheckUser",
+"Cite",
+"CodeEditor",
 "ConfirmEdit",
 "DeletePagesForGood",
-"DiscordNotifications",
 "Highlightjs_Integration",
 "MinimumNameLength",
 "MultimediaViewer",
@@ -27,20 +29,17 @@ $extensions=
 "PageImages",
 "Popups",
 "Renameuser",
+"SimpleMathJax",
 "StaffPowers",
 "SyntaxHighlight_GeSHi",
 "TextExtracts",
 "TitleBlacklist",
+"TwoColConflict",
 "UserMerge",
 "UserPageEditProtection",
+"WikiEditor",
 
-"AccountInfo",
-"Cite",
-"CodeEditor",
-"PlavorMindTweaks",
-"SimpleMathJax",
-"TwoColConflict",
-"WikiEditor")
+"PlavorMindTweaks")
 $skins=@("Liberty","PlavorMindView","Timeless","Vector")
 
 "Downloading Configurations repository archive"
