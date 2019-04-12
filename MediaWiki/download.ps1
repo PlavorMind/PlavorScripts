@@ -18,6 +18,7 @@ $extensions=
 "AccountInfo",
 "AntiSpoof",
 "CentralNotice",
+"ChangeAuthor",
 "CheckUser",
 "Cite",
 "CodeEditor",
