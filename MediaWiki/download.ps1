@@ -42,6 +42,7 @@ $extensions=
 "UserPageEditProtection",
 "WikiEditor",
 
+"CommonsMetadata",
 "PlavorMindTweaks")
 $skins=@("Liberty","PlavorMindView","Timeless","Vector")
 
