@@ -2,7 +2,7 @@
 #Downloads MediaWiki.
 
 param
-([string]$core_branch="wmf/1.33.0-wmf.25", #Branch for MediaWiki core
+([string]$core_branch="wmf/1.34.0-wmf.1", #Branch for MediaWiki core
 [string]$dir="/web/Wiki/mediawiki", #Directory to download MediaWiki
 [string]$extensions_branch="master", #Branch for extensions
 [switch]$plavormind, #Configure wiki directories based on PlavorMind configurations if this parameter is set
