@@ -17,14 +17,15 @@ $extensions=
 @("AbuseFilter",
 "AccountInfo",
 "AntiSpoof",
-"CentralNotice",
+#"CentralNotice",
 "ChangeAuthor",
 "CheckUser",
 "Cite",
 "CodeEditor",
+"CommonsMetadata",
 "ConfirmEdit",
 "DeletePagesForGood",
-"GlobalUserPage",
+#"GlobalUserPage",
 "Highlightjs_Integration",
 "MinimumNameLength",
 "MultimediaViewer",
@@ -42,7 +43,6 @@ $extensions=
 "UserPageEditProtection",
 "WikiEditor",
 
-"CommonsMetadata",
 "PlavorMindTweaks")
 $skins=@("Liberty","PlavorMindView","Timeless","Vector")
 
