@@ -22,6 +22,7 @@ $extensions=
 "CheckUser",
 "Cite",
 "CodeEditor",
+"CollapsibleVector",
 "CommonsMetadata",
 "ConfirmEdit",
 "DeletePagesForGood",
