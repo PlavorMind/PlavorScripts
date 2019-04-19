@@ -199,12 +199,6 @@ Remove-Item "${tempdir}/MediaWiki/RELEASE-NOTES-*" -Force
 Remove-Item "${tempdir}/MediaWiki/SECURITY" -Force
 Remove-Item "${tempdir}/MediaWiki/UPGRADE" -Force
 
-#if ($isWindows)
-#{if (Get-Process "php-cgi" -ErrorAction Ignore)
-  #{"Stopping PHP CGI/FastCGI"
-  #Stop-Process -Force -Name "php-cgi"}
-#}
-
 if (Test-Path $dir)
 {"Renaming existing MediaWiki directory"
 Move-Item $dir "${dir}_old" -Force}
