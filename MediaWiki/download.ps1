@@ -38,7 +38,6 @@ $extensions=
 "StaffPowers",
 "SyntaxHighlight_GeSHi",
 "TextExtracts",
-"Theme",
 "TitleBlacklist",
 "TwoColConflict",
 "UserMerge",
