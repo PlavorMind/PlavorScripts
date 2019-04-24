@@ -17,6 +17,7 @@ $extensions=
 @("AbuseFilter",
 "AccountInfo",
 "AntiSpoof",
+"ApprovedRevs",
 #"CentralNotice",
 "ChangeAuthor",
 "CheckUser",
