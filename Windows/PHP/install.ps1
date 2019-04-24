@@ -51,6 +51,7 @@ Remove-Item "${tempdir}/APCu" -Force -Recurse
 
 "Moving imagick"
 Move-Item "${tempdir}/imagick/php_imagick.dll" "${tempdir}/PHP/ext/" -Force
+Move-Item "${tempdir}/imagick/*.dll" "${tempdir}/PHP/" -Force
 "Deleting a temporary directory"
 Remove-Item "${tempdir}/imagick" -Force -Recurse
 
