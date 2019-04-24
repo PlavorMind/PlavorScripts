@@ -2,9 +2,10 @@
 #Installs PHP with APCu extension.
 
 param
-([string]$apcu_archive="https://windows.php.net/downloads/pecl/snaps/apcu/5.1.15/php_apcu-5.1.15-7.3-nts-vc15-x64.zip", #URL or file path to APCu archive
+([string]$apcu_archive="https://windows.php.net/downloads/pecl/releases/apcu/5.1.17/php_apcu-5.1.17-7.3-nts-vc15-x64.zip", #URL or file path to APCu archive
 [string]$dir="C:/PHP", #Directory to install PHP
-[string]$php_archive="https://windows.php.net/downloads/snaps/php-7.3/r72bfb25/php-7.3-nts-windows-vc15-x64-r72bfb25.zip") #URL or file path to PHP archive
+[string]$imagick_archive="https://windows.php.net/downloads/pecl/releases/imagick/3.4.4rc2/php_imagick-3.4.4rc2-7.3-nts-vc15-x64.zip", #URL or file path to imagick archive
+[string]$php_archive="https://windows.php.net/downloads/snaps/php-7.3/r191e153/php-7.3-nts-windows-vc15-x64-r191e153.zip") #URL or file path to PHP archive
 
 ."${PSScriptRoot}/../../modules/OSDetectorDebug.ps1"
 ."${PSScriptRoot}/../../modules/SetTempDir.ps1"
@@ -33,10 +34,25 @@ else
 {"Cannot download or find APCu archive."
 exit}
 
+."${PSScriptRoot}/../../modules/FileURLDetector.ps1" -path $imagick_archive
+if ($fud_output)
+{Expand-Archive $fud_output "${tempdir}/imagick" -Force
+if ($fud_web)
+  {Remove-Item $fud_output -Force}
+}
+else
+{"Cannot download or find imagick archive."
+exit}
+
 "Moving APCu"
-Move-Item "${tempdir}/APCu/php_apcu.dll" "${tempdir}/PHP/ext/php_apcu.dll" -Force
+Move-Item "${tempdir}/APCu/php_apcu.dll" "${tempdir}/PHP/ext/" -Force
 "Deleting a temporary directory"
 Remove-Item "${tempdir}/APCu" -Force -Recurse
+
+"Moving imagick"
+Move-Item "${tempdir}/imagick/php_imagick.dll" "${tempdir}/PHP/ext/" -Force
+"Deleting a temporary directory"
+Remove-Item "${tempdir}/imagick" -Force -Recurse
 
 ."${PSScriptRoot}/../../filter_php_ini.ps1" -savepath "${tempdir}/PHP/php.ini"
 if (!($fpi_success))
