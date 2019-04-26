@@ -1,9 +1,8 @@
 #FileURLDetector
-#Detects file path or URL and download or check if it is exists.
+#Detects URL or file path and download or check if it exists.
 
-param([string]$path) #File path or URL to download or check if it is exists
+param([string]$path) #URL or file path to a file download or check if it is exists
 
-."${PSScriptRoot}/OSDetectorDebug.ps1"
 ."${PSScriptRoot}/SetTempDir.ps1"
 
 $fud_output=$false
