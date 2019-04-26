@@ -6,9 +6,13 @@ param
 [string]$path, #Path of a shortcut
 [string]$target) #Target of a shortcut
 
-."${PSScriptRoot}/OSDetectorDebug.ps1"
+if (Test-Path "${PSScriptRoot}/OSVariables.ps1")
+{."${PSScriptRoot}/OSVariables.ps1"}
+else
+{"Cannot find OSVariables module."
+exit}
 
-if (!($isWindows))
+if (!$isWindows)
 {"Your operating system is not supported."
 exit}
 
