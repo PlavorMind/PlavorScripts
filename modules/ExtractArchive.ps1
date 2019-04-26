@@ -28,7 +28,8 @@ if ($fud_output)
     {default
       {if ($type -eq "tar.gz")
         {."${extractor_executable}" x "${tempdir}/ea_archive.${type}" -aoa -bt -o"${tempdir}" -spe -y
-        ."${extractor_executable}" x "${tempdir}/ea_archive.tar" -aoa -bt -o"${tempdir}/ea_output" -spe -y}
+        ."${extractor_executable}" x "${tempdir}/ea_archive.tar" -aoa -bt -o"${tempdir}/ea_output" -spe -y
+        Remove-Item "${tempdir}/ea_archive.tar" -Force}
       else
         {."${extractor_executable}" x "${tempdir}/ea_archive.${type}" -aoa -bt -o"${tempdir}/ea_output" -spe -y}
       }
