@@ -1,4 +1,5 @@
 #OSDetectorDebug
-#Run module OSVariables for compatibility with previous name.
+#Run OSVariables module for compatibility with previous name.
 
-."${PSScriptRoot}/OSVariables.ps1"
+if (Test-Path "${PSScriptRoot}/OSVariables.ps1")
+{."${PSScriptRoot}/OSVariables.ps1"}
