@@ -4,10 +4,9 @@
 param
 ([string]$core_branch="wmf/1.34.0-wmf.1", #Branch for MediaWiki core
 [string]$dir="/web/Wiki/mediawiki", #Directory to download MediaWiki
+[switch]$extension_DeleteUserPages, #Download DeleteUserPages extension if this parameter is set
 [string]$extensions_branch="master", #Branch for extensions
-[switch]$plavormind, #Configure wiki directories based on PlavorMind configurations if this parameter is set
-[string]$skins_branch="master", #Branch for skins
-[switch]$upgrade) #Use upgrade mode if this parameter is set
+[string]$skins_branch="master") #Branch for skins
 
 ."${PSScriptRoot}/../modules/SetTempDir.ps1"
 
@@ -47,17 +46,6 @@ $extensions=
 "PlavorMindTweaks")
 $skins=@("Liberty","PlavorMindView","Timeless","Vector")
 
-"Downloading Configurations repository archive"
-Invoke-WebRequest "https://github.com/PlavorMind/Configurations/archive/Main.zip" -DisableKeepAlive -OutFile "${tempdir}/Configurations.zip"
-if (Test-Path "${tempdir}/Configurations.zip")
-{"Extracting"
-Expand-Archive "${tempdir}/Configurations.zip" $tempdir -Force
-"Deleting a temporary file"
-Remove-Item "${tempdir}/Configurations.zip" -Force}
-else
-{"Cannot download Configurations repository archive."
-exit}
-
 "Downloading MediaWiki archive"
 Invoke-WebRequest "https://github.com/wikimedia/mediawiki/archive/${core_branch}.zip" -DisableKeepAlive -OutFile "${tempdir}/MediaWiki.zip"
 if (Test-Path "${tempdir}/MediaWiki.zip")
@@ -81,9 +69,7 @@ Remove-Item "${tempdir}/MediaWiki/skins/*" -Force -Recurse
 foreach ($extension_name in $extensions)
 {"Downloading ${extension_name} extension archive"
 switch ($extension_name)
-  {"DiscordNotifications"
-    {Invoke-WebRequest "https://github.com/kulttuuri/DiscordNotifications/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension_name}.zip"}
-  "Highlightjs_Integration"
+  {"Highlightjs_Integration"
     {Invoke-WebRequest "https://github.com/Nicolas01/Highlightjs_Integration/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension_name}.zip"}
   "PlavorMindTweaks"
     {Invoke-WebRequest "https://github.com/PlavorMind/PlavorMindTweaks/archive/Main.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension_name}.zip"}
@@ -99,9 +85,7 @@ if (Test-Path "${tempdir}/${extension_name}.zip")
   Remove-Item "${tempdir}/${extension_name}.zip" -Force
   "Renaming ${extension_name} extension directory"
   switch ($extension_name)
-    {"DiscordNotifications"
-      {Move-Item "${tempdir}/MediaWiki/extensions/DiscordNotifications-master" "${tempdir}/MediaWiki/extensions/${extension_name}" -Force}
-    "Highlightjs_Integration"
+    {"Highlightjs_Integration"
       {Move-Item "${tempdir}/MediaWiki/extensions/Highlightjs_Integration-master" "${tempdir}/MediaWiki/extensions/${extension_name}" -Force}
     "PlavorMindTweaks"
       {Move-Item "${tempdir}/MediaWiki/extensions/PlavorMindTweaks-Main" "${tempdir}/MediaWiki/extensions/${extension_name}" -Force}
@@ -113,6 +97,15 @@ if (Test-Path "${tempdir}/${extension_name}.zip")
   }
 else
   {"Cannot download ${extension_name} extension archive."}
+}
+
+if ($extension_DeleteUserPages)
+{."${PSScriptRoot}/../modules/ExtractArchive.ps1" -path "https://gerrit.wikimedia.org/r/plugins/gitiles/mediawiki/extensions/DeleteUserPages/+archive/${extensions_branch}.tar.gz" -type "tar.gz"
+if ($ea_output)
+  {"Moving DeleteUserPages extension directory"
+  Move-Item $ea_output "${tempdir}/MediaWiki/extensions/DeleteUserPages" -Force}
+else
+  {"Cannot download DeleteUserPages extension archive."}
 }
 
 foreach ($extension_name in $composer_extensions)
@@ -150,46 +143,12 @@ else
   {"Cannot download ${skin_name} skin archive."}
 }
 
-if ($upgrade)
-{if ($plavormind)
-  {if (Test-Path "${dir}/data")
-    {"Copying existing data directory"
-    Copy-Item "${dir}/data" "${tempdir}/MediaWiki/data" -Force -Recurse}
-  if (Test-Path "${dir}/private_data")
-    {"Copying existing private_data directory"
-    Copy-Item "${dir}/private_data" "${tempdir}/MediaWiki/private_data" -Force -Recurse}
-  "Deleting core cache directory"
-  Remove-Item "${tempdir}/MediaWiki/cache" -Force -Recurse
-  "Deleting core images directory"
-  Remove-Item "${tempdir}/MediaWiki/images" -Force -Recurse}
-elseif (Test-Path "${dir}/images")
-  {"Deleting core images directory"
-  Remove-Item "${tempdir}/MediaWiki/images" -Force -Recurse
-  "Copying existing images directory"
-  Copy-Item "${dir}/images" "${tempdir}/MediaWiki/images" -Force -Recurse}
-if (Test-Path "${dir}/LocalSettings.php")
-  {"Copying existing LocalSettings.php file"
-  Copy-Item "${dir}/LocalSettings.php" "${tempdir}/MediaWiki/LocalSettings.php" -Force}
-"Running update script"
-php "${tempdir}/MediaWiki/maintenance/update.php" --doshared --quick}
-elseif ($plavormind)
-{"Moving additional files"
-Move-Item "${tempdir}/Configurations-Main/MediaWiki/*" "${tempdir}/MediaWiki/" -Force
-if (Test-Path "${PSScriptRoot}/data")
-  {"Copying files in data directory"
-  Copy-Item "${PSScriptRoot}/data/*" "${tempdir}/MediaWiki/data/" -Force -Recurse}
-if (Test-Path "${PSScriptRoot}/private_data")
-  {"Copying files in private_data directory"
-  Copy-Item "${PSScriptRoot}/private_data" "${tempdir}/MediaWiki/" -Force -Recurse}
-"Deleting core images directory"
-Remove-Item "${tempdir}/MediaWiki/images" -Force -Recurse}
-
-"Deleting a temporary directory"
-Remove-Item "${tempdir}/Configurations-Main" -Force -Recurse
-
 "Deleting unnecessary files"
 "Warning: This will remove documentations and license notices that are unnecessary for running."
 Remove-Item "${tempdir}/MediaWiki/docs" -Force -Recurse
+Remove-Item "${tempdir}/MediaWiki/resources/assets/file-type-icons/COPYING" -Force
+Remove-Item "${tempdir}/MediaWiki/resources/assets/licenses/public-domain.png" -Force
+Remove-Item "${tempdir}/MediaWiki/resources/assets/licenses/README" -Force
 Remove-Item "${tempdir}/MediaWiki/CODE_OF_CONDUCT.md" -Force
 Remove-Item "${tempdir}/MediaWiki/CREDITS" -Force
 Remove-Item "${tempdir}/MediaWiki/FAQ" -Force
@@ -206,10 +165,3 @@ Move-Item $dir "${dir}_old" -Force}
 
 "Moving MediaWiki directory"
 Move-Item "${tempdir}/MediaWiki" $dir -Force
-
-if ($isLinux)
-{"Changing ownership of MediaWiki directory"
-chown "www-data" $dir -R
-"Changing permissions of MediaWiki directory"
-chmod 755 $dir -R
-chmod 700 "${dir}/private_data" -R}
