@@ -1,5 +1,5 @@
 #MediaWiki downloader
-#Downloads MediaWiki.
+#Downloads MediaWiki with some extensions and skins.
 
 param
 ([string]$core_branch="wmf/1.34.0-wmf.1", #Branch for MediaWiki core
@@ -9,7 +9,6 @@ param
 [string]$skins_branch="master", #Branch for skins
 [switch]$upgrade) #Use upgrade mode if this parameter is set
 
-."${PSScriptRoot}/../modules/OSDetectorDebug.ps1"
 ."${PSScriptRoot}/../modules/SetTempDir.ps1"
 
 $composer_extensions=@("AbuseFilter","AntiSpoof")
