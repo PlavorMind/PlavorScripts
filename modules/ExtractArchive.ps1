@@ -6,7 +6,7 @@ param
 [string]$path, #URL or file path to an archive
 [string]$type) #Archive extension
 
-."${PSScriptRoot}/OSVariables.ps1"
+."${PSScriptRoot}/SetTempDir.ps1"
 
 if (!$isWindows)
 {"Your operating system is not supported."
