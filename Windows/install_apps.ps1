@@ -52,7 +52,7 @@ Invoke-WebRequest "https://discordapp.com/api/download/canary?platform=win" -Dis
 if (Test-Path "${tempdir}/Discord Canary.exe")
 {"Installing"
 Start-Process "${tempdir}/Discord Canary.exe" -Wait
-"Discord Canary.exe is terminated at first."
+"Discord Canary.exe is terminated at first." #Added for test
 Start-Sleep 5
 while (!(Get-Process "Discord Canary" -ErrorAction Ignore))
   {}
