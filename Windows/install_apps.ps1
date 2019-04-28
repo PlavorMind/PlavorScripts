@@ -37,7 +37,7 @@ else
 if ($fud_output)
 {"Installing BleachBit"
 if ($fud_web)
-  {Move-Item $bleachbit_installer "${tempdir}/BleachBit.exe" -Force
+  {Move-Item $fud_output "${tempdir}/BleachBit.exe" -Force
   Start-Process "${tempdir}/BleachBit.exe" -ArgumentList "/allusers /S" -Wait
   "Deleting a temporary file"
   Remove-Item "${tempdir}/BleachBit.exe" -Force}
@@ -85,7 +85,7 @@ else
 if ($fud_output)
 {"Installing Python"
 if ($fud_web)
-  {Move-Item $python_installer "${tempdir}/Python.exe" -Force
+  {Move-Item $fud_output "${tempdir}/Python.exe" -Force
   Start-Process "${tempdir}/Python.exe" -ArgumentList "InstallAllUsers=1 PrependPath=1 /passive" -Wait
   "Deleting a temporary file"
   Remove-Item "${tempdir}/Python.exe" -Force}
