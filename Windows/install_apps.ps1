@@ -3,14 +3,13 @@
 
 param
 ([string]$7zip_version="1900", #7-Zip version to install (must set without dot(.))
-[string]$bleachbit_installer="https://ci.bleachbit.org/dl/2.3.1041/BleachBit-2.3-setup-English.exe", #URL or file path to BleachBit installer
-[string]$python_version="3.7.2", #Python version to install
+[string]$bleachbit_installer="https://ci.bleachbit.org/dl/2.3.1085/BleachBit-2.3-setup-English.exe", #URL or file path to BleachBit installer
+[string]$python_installer="https://www.python.org/ftp/python/3.8.0/python-3.8.0a3-amd64.exe", #URL or file path to Python installer
 [string]$turtl_version="0.7.2.5") #Turtl version to install
 
-."${PSScriptRoot}/../modules/OSDetectorDebug.ps1"
 ."${PSScriptRoot}/../modules/SetTempDir.ps1"
 
-if (!($isWindows))
+if (!$isWindows)
 {"Your operating system is not supported."
 exit}
 
@@ -53,10 +52,10 @@ Invoke-WebRequest "https://discordapp.com/api/download/canary?platform=win" -Dis
 if (Test-Path "${tempdir}/Discord Canary.exe")
 {"Installing"
 Start-Process "${tempdir}/Discord Canary.exe" -Wait
-while (!(Test-Path "${Env:LOCALAPPDATA}/DiscordCanary/app-*/DiscordCanary.exe"))
-{}
-"DiscordCanary.exe found!" #Added for test
-Start-Sleep 10
+"Discord Canary.exe is terminated at first."
+Start-Sleep 5
+while (!(Get-Process "Discord Canary" -ErrorAction Ignore))
+  {}
 "Deleting a temporary file"
 Remove-Item "${tempdir}/Discord Canary.exe" -Force}
 else
@@ -82,15 +81,19 @@ Remove-Item "${tempdir}/nomacs.msi" -Force}
 else
 {"Cannot download nomacs."}
 
-"Downloading Python"
-Invoke-WebRequest "https://www.python.org/ftp/python/${python_version}/python-${python_version}-amd64.exe" -DisableKeepAlive -OutFile "${tempdir}/Python.exe"
-if (Test-Path "${tempdir}/Python.exe")
-{"Installing"
-Start-Process "${tempdir}/Python.exe" -ArgumentList "InstallAllUsers=1 PrependPath=1 /passive" -Wait
-"Deleting a temporary file"
-Remove-Item "${tempdir}/Python.exe" -Force}
+."${PSScriptRoot}/../modules/FileURLDetector.ps1" -path $python_installer
+if ($fud_output)
+{"Installing Python"
+if ($fud_web)
+  {Move-Item $python_installer "${tempdir}/Python.exe" -Force
+  Start-Process "${tempdir}/Python.exe" -ArgumentList "InstallAllUsers=1 PrependPath=1 /passive" -Wait
+  "Deleting a temporary file"
+  Remove-Item "${tempdir}/Python.exe" -Force}
 else
-{"Cannot download Python."}
+  {Start-Process $python_installer -ArgumentList "InstallAllUsers=1 PrependPath=1 /passive" -Wait}
+}
+else
+{"Cannot download or find Python."}
 
 "Dowloading Turtl"
 Invoke-WebRequest "https://github.com/turtl/desktop/releases/download/v${turtl_version}/turtl-${turtl_version}-windows64.msi" -DisableKeepAlive -OutFile "${tempdir}/Turtl.msi"
