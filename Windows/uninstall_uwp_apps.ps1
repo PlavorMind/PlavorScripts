@@ -1,9 +1,9 @@
 #Uninstall UWP apps
 #Uninstalls some unnecessary UWP apps that cannot be uninstalled through UI.
 
-."${PSScriptRoot}/../modules/OSDetectorDebug.ps1"
+."${PSScriptRoot}/../modules/OSVariables.ps1"
 
-if (!($isWindows))
+if (!$isWindows)
 {"Your operating system is not supported."
 exit}
 
