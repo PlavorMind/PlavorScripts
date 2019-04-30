@@ -1,13 +1,13 @@
 #Set Windows features
 #Enables or disables some Windows features.
 
-."${PSScriptRoot}/../modules/OSDetectorDebug.ps1"
+."${PSScriptRoot}/../modules/OSVariables.ps1"
 
-if (!($isWindows))
+if (!$isWindows)
 {"Your operating system is not supported."
 exit}
 
-"Disabling Media Features (Root) feature"
+"Disabling Media Features (root) feature"
 Disable-WindowsOptionalFeature -FeatureName "MediaPlayback" -NoRestart -Online
 
 "Disabling Media Features/Windows Media Player feature"
@@ -16,7 +16,7 @@ Disable-WindowsOptionalFeature -FeatureName "WindowsMediaPlayer" -NoRestart -Onl
 "Disabling Microsoft XPS Document Writer feature"
 Disable-WindowsOptionalFeature -FeatureName "Printing-XPSServices-Features" -NoRestart -Online
 
-"Disabling Print and Document Services (Root) feature"
+"Disabling Print and Document Services (root) feature"
 Disable-WindowsOptionalFeature -FeatureName "Printing-Foundation-Features" -NoRestart -Online
 
 "Disabling Print and Document Services/Internet Printing Client feature"
@@ -31,7 +31,7 @@ Disable-WindowsOptionalFeature -FeatureName "MSRDC-Infrastructure" -NoRestart -O
 "Disabling SMB Direct feature"
 Disable-WindowsOptionalFeature -FeatureName "SmbDirect" -NoRestart -Online
 
-"Disabling Windows PowerShell 2.0 (Root) feature"
+"Disabling Windows PowerShell 2.0 (root) feature"
 Disable-WindowsOptionalFeature -FeatureName "MicrosoftWindowsPowerShellV2Root" -NoRestart -Online
 
 "Disabling Windows PowerShell 2.0/Windows PowerShell 2.0 Engine feature"
