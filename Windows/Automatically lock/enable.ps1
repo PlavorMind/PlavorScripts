@@ -4,9 +4,9 @@
 
 param([switch]$allusers) #Apply to all users if this parameter is set
 
-."${PSScriptRoot}/../../modules/OSDetectorDebug.ps1"
+."${PSScriptRoot}/../../modules/OSVariables.ps1"
 
-if (!($isWindows))
+if (!$isWindows)
 {"Your operating system is not supported."
 exit}
 
