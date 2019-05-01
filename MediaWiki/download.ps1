@@ -2,8 +2,8 @@
 #Downloads MediaWiki with some extensions and skins.
 
 param
-([string]$core_branch="wmf/1.34.0-wmf.1", #Branch for MediaWiki core
-[string]$dir="/web/Wiki/mediawiki", #Directory to download MediaWiki
+([string]$core_branch="wmf/1.34.0-wmf.3", #Branch for MediaWiki core
+[string]$dir="/web/wiki/mediawiki", #Directory to download MediaWiki
 [switch]$extension_DeleteUserPages, #Download DeleteUserPages extension if this parameter is set
 [string]$extensions_branch="master", #Branch for extensions
 [string]$skins_branch="master") #Branch for skins
