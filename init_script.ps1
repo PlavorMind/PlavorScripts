@@ -1,3 +1,19 @@
+function CreateShortcut
+{param
+([string]$arguments="", #Arguments of a shortcut
+[string]$path, #Path of a shortcut
+[string]$target) #Target of a shortcut
+
+if ($isWindows)
+  {$shortcut=(New-Object -ComObject WScript.Shell).CreateShortcut($path)
+  $shortcut.Arguments=$arguments
+  $shortcut.TargetPath=$target
+  $shortcut.Save()
+  if (Test-Path $path)
+    {return $true}
+  }
+}
+
 function FileURLDetector
 {if ($args[0] -match "https?:\/\/.+")
   {if ($args[0] -match "https?:\/\/.+\/(.+\..+)")
