@@ -4,7 +4,7 @@
 
 param([switch]$allusers) #Apply to all users if this parameter is set
 
-."${PSScriptRoot}/../../modules/OSVariables.ps1"
+."${PSScriptRoot}/../../init_script.ps1"
 
 if (!$isWindows)
 {"Your operating system is not supported."
@@ -15,5 +15,7 @@ if ($allusers)
 else
 {$path="${Env:APPDATA}/Microsoft/Windows/Start Menu/Programs/Startup/Lock.lnk"}
 
-"Enabling automatically lock"
-."${PSScriptRoot}/../../modules/CreateShortcut.ps1" -arguments "user32.dll,LockWorkStation" -path $path -target "C:/Windows/System32/rundll32.exe"
+if (New-Shortcut -arguments "user32.dll,LockWorkStation" -path $path -target "C:/Windows/System32/rundll32.exe")
+{"Automatically lock is enabled."}
+else
+{"Cannot enable automatically lock."}
