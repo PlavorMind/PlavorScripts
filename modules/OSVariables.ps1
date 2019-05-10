@@ -1,6 +1,5 @@
 #OSVariables
-#Sets variables used to detecting operating system and temporary directory if they aren't set.
-#This module is for backward compatiblity.
+#Sets variables used to detecting operating system and temporary directory.
 
 if (!$isLinux -and !$isMacOS -and !$isWindows)
 {$isLinux=$false
@@ -9,8 +8,11 @@ $isWindows=$true}
 
 if ($isLinux)
 {$tempdir="/tmp"}
+elseif ($isMacOS)
+{$tempdir="/private/tmp"}
 elseif ($isWindows)
 {$tempdir=$Env:TEMP}
-else
-{New-Item "${PSScriptRoot}/../temp" -Force -ItemType Directory
-$tempdir="${PSScriptRoot}/../temp"}
+
+#Seperate this to avoid non-used variable problem
+if (!$tempdir)
+{"Cannot detect temporary directory."}
