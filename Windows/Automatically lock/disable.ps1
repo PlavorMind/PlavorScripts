@@ -3,7 +3,7 @@
 
 param([switch]$allusers) #Apply to all users if this parameter is set
 
-."${PSScriptRoot}/../../modules/OSVariables.ps1"
+."${PSScriptRoot}/../../init_script.ps1"
 
 if (!$isWindows)
 {"Your operating system is not supported."
