@@ -33,16 +33,13 @@ Remove-Item "${tempdir}/7-Zip.exe" -Force}
 else
 {"Cannot download 7-Zip."}
 
-."${PSScriptRoot}/../modules/FileURLDetector.ps1" -path $bleachbit_installer
-if ($fud_output)
+$output=FileURLDetector $bleachbit_installer
+if ($output)
 {"Installing BleachBit"
-if ($fud_web)
-  {Move-Item $fud_output "${tempdir}/BleachBit.exe" -Force
-  Start-Process "${tempdir}/BleachBit.exe" -ArgumentList "/allusers /S" -Wait
-  "Deleting a temporary file"
-  Remove-Item "${tempdir}/BleachBit.exe" -Force}
-else
-  {Start-Process $bleachbit_installer -ArgumentList "/allusers /S" -Wait}
+Start-Process $output -ArgumentList "/allusers /S" -Wait
+if ($output -like "${tempdir}*")
+  {"Deleting a temporary file"
+  Remove-Item $output -Force}
 }
 else
 {"Cannot download or find BleachBit."}
@@ -81,16 +78,13 @@ Remove-Item "${tempdir}/nomacs.msi" -Force}
 else
 {"Cannot download nomacs."}
 
-."${PSScriptRoot}/../modules/FileURLDetector.ps1" -path $python_installer
-if ($fud_output)
+$output=FileURLDetector $python_installer
+if ($output)
 {"Installing Python"
-if ($fud_web)
-  {Move-Item $fud_output "${tempdir}/Python.exe" -Force
-  Start-Process "${tempdir}/Python.exe" -ArgumentList "InstallAllUsers=1 PrependPath=1 /passive" -Wait
-  "Deleting a temporary file"
-  Remove-Item "${tempdir}/Python.exe" -Force}
-else
-  {Start-Process $python_installer -ArgumentList "InstallAllUsers=1 PrependPath=1 /passive" -Wait}
+Start-Process $output -ArgumentList "InstallAllUsers=1 PrependPath=1 /passive" -Wait
+if ($output -like "${tempdir}*")
+  {"Deleting a temporary file"
+  Remove-Item $output -Force}
 }
 else
 {"Cannot download or find Python."}
