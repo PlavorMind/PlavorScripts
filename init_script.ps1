@@ -4,7 +4,7 @@ function CreateShortcut
 [string]$path, #Path of a shortcut
 [string]$target) #Target of a shortcut
 
-if ($isWindows)
+if ($isWindows -and (Test-Path $target))
   {$shortcut=(New-Object -ComObject WScript.Shell).CreateShortcut($path)
   $shortcut.Arguments=$arguments
   $shortcut.TargetPath=$target
