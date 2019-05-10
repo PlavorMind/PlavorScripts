@@ -7,7 +7,7 @@ param
 [string]$python_installer="https://www.python.org/ftp/python/3.8.0/python-3.8.0a3-amd64.exe", #URL or file path to Python installer
 [string]$turtl_version="0.7.2.5") #Turtl version to install
 
-."${PSScriptRoot}/../modules/SetTempDir.ps1"
+."${PSScriptRoot}/../init_script.ps1"
 
 if (!$isWindows)
 {"Your operating system is not supported."
@@ -54,7 +54,7 @@ if (Test-Path "${tempdir}/Discord Canary.exe")
 Start-Process "${tempdir}/Discord Canary.exe" -Wait
 "Discord Canary.exe is terminated at first." #Added for test
 Start-Sleep 5
-while (!(Get-Process "Discord Canary" -ErrorAction Ignore))
+while (Get-Process "Discord Canary" -ErrorAction Ignore)
   {}
 "Deleting a temporary file"
 Remove-Item "${tempdir}/Discord Canary.exe" -Force}
