@@ -15,7 +15,6 @@ if ($allusers)
 else
 {$path="${Env:APPDATA}/Microsoft/Windows/Start Menu/Programs/Startup/Lock.lnk"}
 
-if (New-Shortcut -arguments "user32.dll,LockWorkStation" -path $path -target "C:/Windows/System32/rundll32.exe")
-{"Automatically lock is enabled."}
-else
+"Enabling automatically lock"
+if (!(New-Shortcut -arguments "user32.dll,LockWorkStation" -path $path -target "C:/Windows/System32/rundll32.exe"))
 {"Cannot enable automatically lock."}
