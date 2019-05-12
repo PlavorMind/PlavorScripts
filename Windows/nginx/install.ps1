@@ -3,13 +3,23 @@
 
 param
 ([string]$dir="C:/nginx", #Directory to install nginx
-[string]$version="1.15.9") #Version to install
+[string]$version="1.16.0") #Version to install
 
-."${PSScriptRoot}/../../modules/OSDetectorDebug.ps1"
-."${PSScriptRoot}/../../modules/SetTempDir.ps1"
+."${PSScriptRoot}/../../init_script.ps1"
 
-if (!($isWindows))
+if (!$isWindows)
 {"Your operating system is not supported."
+exit}
+
+"Downloading Configurations repository archive"
+Invoke-WebRequest "https://github.com/PlavorMind/Configurations/archive/Main.zip" -DisableKeepAlive -OutFile "${tempdir}/Configurations.zip"
+if (Test-Path "${tempdir}/Configurations.zip")
+{"Extracting"
+Expand-Archive "${tempdir}/Configurations.zip" $tempdir -Force
+"Deleting a temporary file"
+Remove-Item "${tempdir}/Configurations.zip" -Force}
+else
+{"Cannot download Configurations repository archive."
 exit}
 
 "Downloading nginx archive"
@@ -25,31 +35,28 @@ else
 {"Cannot download nginx archive."
 exit}
 
-"Configuring nginx directories"
-New-Item "${tempdir}/nginx/logs/Main" -Force -ItemType Directory
-New-Item "${tempdir}/nginx/logs/Wiki" -Force -ItemType Directory
-
-$dir_temp=$dir
-."${PSScriptRoot}/../../config_web_dir.ps1" -dir "${tempdir}/nginx/web"
-if ($cwd_success)
-{Remove-Item "${tempdir}/nginx/html" -Force -Recurse}
-else
-{"Cannot configure web server directories."
-exit}
-$dir=$dir_temp
-
-"Copying additional files"
-Copy-Item "${PSScriptRoot}/install_data/start.ps1" "${tempdir}/nginx/" -Force
-Copy-Item "${PSScriptRoot}/install_data/stop.ps1" "${tempdir}/nginx/" -Force
+"Copying configuration files"
+Copy-Item "${tempdir}/Configurations-Main/nginx/*" "${tempdir}/nginx/conf/" -Force -Recurse
+."${PSScriptRoot}/../../filter_nginx_conf.ps1" -path "${tempdir}/Configurations-Main/nginx/nginx.conf" -savepath "${tempdir}/nginx/conf/nginx.conf"
 
 if (Test-Path "${PSScriptRoot}/private")
 {"Copying private directory"
 Copy-Item "${PSScriptRoot}/private" "${tempdir}/nginx/conf/" -Force -Recurse}
 
-."${PSScriptRoot}/../../filter_nginx_conf.ps1" -savepath "${tempdir}/nginx/conf/nginx.conf"
-if (!($fnc_success))
-{"Cannot filter nginx.conf file."
-exit}
+"Copying web directory"
+Copy-Item "${tempdir}/Configurations-Main/Web" "${tempdir}/nginx/web" -Force -Recurse
+
+"Creating log directories"
+New-Item "${tempdir}/nginx/logs/main" -Force -ItemType Directory
+New-Item "${tempdir}/nginx/logs/public" -Force -ItemType Directory
+New-Item "${tempdir}/nginx/logs/wiki" -Force -ItemType Directory
+
+"Copying additional files"
+Copy-Item "${PSScriptRoot}/install_data/start.ps1" "${tempdir}/nginx/" -Force
+Copy-Item "${PSScriptRoot}/install_data/stop.ps1" "${tempdir}/nginx/" -Force
+
+"Deleting a temporary directory"
+Remove-Item "${tempdir}/Configurations-Main" -Force -Recurse
 
 "Deleting unnecessary files"
 "Warning: This will remove documentations and license notices that are unnecessary for running."
@@ -59,9 +66,6 @@ Remove-Item "${tempdir}/nginx/docs" -Force -Recurse
 if (Get-Process "nginx" -ErrorAction Ignore)
 {"Stopping nginx"
 Stop-Process -Force -Name "nginx"}
-#if (Get-Process "php-cgi" -ErrorAction Ignore)
-#{"Stopping PHP CGI/FastCGI"
-#Stop-Process -Force -Name "php-cgi"}
 
 if (Test-Path $dir)
 {"Renaming existing nginx directory"
