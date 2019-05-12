@@ -3,9 +3,9 @@
 
 param([string]$dir="C:/nginx") #Directory that nginx is installed
 
-."${PSScriptRoot}/../../modules/OSDetectorDebug.ps1"
+."${PSScriptRoot}/../../init_script.ps1"
 
-if (!($isWindows))
+if (!$isWindows)
 {"Your operating system is not supported."
 exit}
 
@@ -16,9 +16,6 @@ exit}
 if (Get-Process "nginx" -ErrorAction Ignore)
 {"Stopping nginx"
 Stop-Process -Force -Name "nginx"}
-#if (Get-Process "php-cgi" -ErrorAction Ignore)
-#{"Stopping PHP CGI/FastCGI"
-#Stop-Process -Force -Name "php-cgi"}
 
 "Deleting nginx directory"
-Remove-Item "$dir" -Force -Recurse
+Remove-Item $dir -Force -Recurse
