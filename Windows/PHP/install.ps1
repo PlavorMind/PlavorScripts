@@ -58,9 +58,8 @@ Move-Item "${tempdir}/imagick/*.dll" "${tempdir}/PHP/" -Force
 Remove-Item "${tempdir}/imagick" -Force -Recurse
 
 ."${PSScriptRoot}/../../filter_php_ini.ps1" -savepath "${tempdir}/PHP/php.ini"
-if (!($fpi_success))
-{"Cannot filter php.ini file."
-exit}
+if (!(Test-Path "${tempdir}/PHP/php.ini"))
+{exit}
 
 "Copying additional files"
 Copy-Item "${PSScriptRoot}/install_data/start.ps1" "${tempdir}/PHP/" -Force
