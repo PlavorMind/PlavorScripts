@@ -3,12 +3,11 @@
 
 param
 ([string]$dir="C:/nginx", #Directory that nginx is installed
-[string]$version="1.15.11") #Version to upgrade
+[string]$version="1.16.0") #Version to upgrade
 
-."${PSScriptRoot}/../../modules/OSDetectorDebug.ps1"
-."${PSScriptRoot}/../../modules/SetTempDir.ps1"
+."${PSScriptRoot}/../../init_script.ps1"
 
-if (!($isWindows))
+if (!$isWindows)
 {"Your operating system is not supported."
 exit}
 
