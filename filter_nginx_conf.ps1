@@ -1,9 +1,9 @@
-#Filter nginx configuration
-#Filters a nginx configuration based on operating system.
+#Filter nginx.conf
+#Filters nginx.conf file based on operating system.
 
 param
 ([string]$path="https://raw.githubusercontent.com/PlavorMind/Configurations/Main/nginx/nginx.conf", #File path or URL to filter
-[string]$savepath="__DEFAULT__") #Path to save filtered nginx configuration
+[string]$savepath="__DEFAULT__") #Path to save filtered nginx.conf file
 
 ."${PSScriptRoot}/init_script.ps1"
 
@@ -19,7 +19,7 @@ else
 
 $output=FileURLDetector $path
 if ($output)
-{"Filtering a nginx configuration"
+{"Filtering nginx.conf file"
 if ($isLinux)
   {Select-String ".*#(macos|windows)_only.*" $output -Encoding utf8 -NotMatch | ForEach-Object {$_.Line} > $savepath}
 elseif ($IsMacOS)
@@ -31,4 +31,4 @@ if ($output -like "${tempdir}*")
   Remove-Item $output -Force}
 }
 else
-{"Cannot download or find nginx configuration."}
+{"Cannot download or find nginx.conf file."}
