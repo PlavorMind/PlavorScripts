@@ -22,7 +22,7 @@ if ($output)
 {"Filtering nginx.conf file"
 if ($isLinux)
   {Select-String ".*#(macos|windows)_only.*" $output -Encoding utf8 -NotMatch | ForEach-Object {$_.Line} > $savepath}
-elseif ($IsMacOS)
+elseif ($isMacOS)
   {Select-String ".*#(linux|windows)_only.*" $output -Encoding utf8 -NotMatch | ForEach-Object {$_.Line} > $savepath}
 elseif ($isWindows)
   {Select-String ".*#(linux|macos)_only.*" $output -Encoding utf8 -NotMatch | ForEach-Object {$_.Line} > $savepath}
