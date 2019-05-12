@@ -14,16 +14,16 @@ elseif (Test-Path $args[0])
 
 function New-Shortcut
 {param
-([string]$arguments="", #Arguments of a shortcut
-[string]$path, #Path of a shortcut
-[string]$target) #Target of a shortcut
+([string]$Arguments="", #Arguments of a shortcut
+[string]$Path, #Path of a shortcut
+[string]$TargetPath) #Target of a shortcut
 
-if ($isWindows -and (Test-Path $target))
-  {$shortcut=(New-Object -ComObject WScript.Shell).CreateShortcut($path)
-  $shortcut.Arguments=$arguments
-  $shortcut.TargetPath=$target
+if ($isWindows -and (Test-Path $TargetPath))
+  {$shortcut=(New-Object -ComObject WScript.Shell).CreateShortcut($Path)
+  $shortcut.Arguments=$Arguments
+  $shortcut.TargetPath=$TargetPath
   $shortcut.Save()
-  if (Test-Path $path)
+  if (Test-Path $Path)
     {return $true}
   }
 }
