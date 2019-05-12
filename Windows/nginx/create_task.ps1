@@ -11,7 +11,7 @@ exit}
 
 "Creating a task"
 if (Test-Path "C:/Program Files/PowerShell/6-preview/pwsh.exe")
-{$action=New-ScheduledTaskAction "C:\Program Files\PowerShell\6-preview\pwsh.exe" "`"${path}`" -ExecutionPolicy Bypass"}
+{$action=New-ScheduledTaskAction "C:/Program Files/PowerShell/6-preview/pwsh.exe" "`"${path}`" -ExecutionPolicy Bypass"}
 else
 {$action=New-ScheduledTaskAction "powershell" "`"${path}`" -ExecutionPolicy Bypass"}
 $principal=New-ScheduledTaskPrincipal "SYSTEM" -LogonType ServiceAccount -RunLevel Highest
