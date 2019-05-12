@@ -1,46 +1,48 @@
 #PHP installer
-#Installs PHP with APCu extension.
+#Installs PHP with APCu and imagick extension.
 
 param
 ([string]$apcu_archive="https://windows.php.net/downloads/pecl/releases/apcu/5.1.17/php_apcu-5.1.17-7.3-nts-vc15-x64.zip", #URL or file path to APCu archive
 [string]$dir="C:/PHP", #Directory to install PHP
-[string]$imagick_archive="https://windows.php.net/downloads/pecl/releases/imagick/3.4.4rc2/php_imagick-3.4.4rc2-7.3-nts-vc15-x64.zip", #URL or file path to imagick archive
-[string]$php_archive="https://windows.php.net/downloads/snaps/php-7.3/r191e153/php-7.3-nts-windows-vc15-x64-r191e153.zip") #URL or file path to PHP archive
+[string]$imagick_archive="https://windows.php.net/downloads/pecl/releases/imagick/3.4.4/php_imagick-3.4.4-7.3-nts-vc15-x64.zip", #URL or file path to imagick archive
+[string]$php_archive="https://windows.php.net/downloads/snaps/php-7.3/r0cad701/php-7.3-nts-windows-vc15-x64-r0cad701.zip") #URL or file path to PHP archive
 
-."${PSScriptRoot}/../../modules/OSDetectorDebug.ps1"
-."${PSScriptRoot}/../../modules/SetTempDir.ps1"
+."${PSScriptRoot}/../../init_script.ps1"
 
-if (!($isWindows))
+if (!$isWindows)
 {"Your operating system is not supported."
 exit}
 
-."${PSScriptRoot}/../../modules/FileURLDetector.ps1" -path $php_archive
-if ($fud_output)
-{Expand-Archive $fud_output "${tempdir}/PHP" -Force
-if ($fud_web)
-  {Remove-Item $fud_output -Force}
+$output=FileURLDetector $php_archive
+if ($output)
+{Expand-Archive $output "${tempdir}/PHP" -Force
+if ($output -like "${tempdir}*")
+  {"Deleting a temporary file"
+  Remove-Item $output -Force}
 }
-else
+else 
 {"Cannot download or find PHP archive."
 exit}
 
-."${PSScriptRoot}/../../modules/FileURLDetector.ps1" -path $apcu_archive
-if ($fud_output)
-{Expand-Archive $fud_output "${tempdir}/APCu" -Force
-if ($fud_web)
-  {Remove-Item $fud_output -Force}
+$output=FileURLDetector $apcu_archive
+if ($output)
+{Expand-Archive $output "${tempdir}/APCu" -Force
+if ($output -like "${tempdir}*")
+  {"Deleting a temporary file"
+  Remove-Item $output -Force}
 }
-else
+else 
 {"Cannot download or find APCu archive."
 exit}
 
-."${PSScriptRoot}/../../modules/FileURLDetector.ps1" -path $imagick_archive
-if ($fud_output)
-{Expand-Archive $fud_output "${tempdir}/imagick" -Force
-if ($fud_web)
-  {Remove-Item $fud_output -Force}
+$output=FileURLDetector $imagick_archive
+if ($output)
+{Expand-Archive $output "${tempdir}/imagick" -Force
+if ($output -like "${tempdir}*")
+  {"Deleting a temporary file"
+  Remove-Item $output -Force}
 }
-else
+else 
 {"Cannot download or find imagick archive."
 exit}
 
