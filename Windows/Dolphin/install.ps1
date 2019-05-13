@@ -4,29 +4,16 @@
 param
 ([string]$dir="C:/Program Files/Dolphin", #Directory to install Dolphin
 [switch]$portable, #Installs as portable mode if this is set
-[string]$version="5.0-9781") #Version to install
+[string]$version="5.0-10200") #Version to install
 
-."${PSScriptRoot}/../../modules/OSDetectorDebug.ps1"
-."${PSScriptRoot}/../../modules/SetTempDir.ps1"
+."${PSScriptRoot}/../../init_script.ps1"
 
-if (!($isWindows))
+if (!$isWindows)
 {"Your operating system is not supported."
 exit}
 
-if (Test-Path "C:/Program Files/7-Zip/7z.exe")
-{"Downloading Dolphin archive"
-Invoke-WebRequest "https://dl.dolphin-emu.org/builds/dolphin-master-${version}-x64.7z" -DisableKeepAlive -OutFile "${tempdir}/Dolphin.7z"
-if (Test-Path "${tempdir}/Dolphin.7z")
-  {"Extracting"
-  ."C:/Program Files/7-Zip/7z.exe" x "${tempdir}/Dolphin.7z" -aoa -bt -o"${tempdir}" -spe -y
-  "Deleting a temporary file"
-  Remove-Item "${tempdir}/Dolphin.7z" -Force}
-else
-  {"Cannot download Dolphin archive."
-  exit}
-}
-else
-{"Cannot find 7-Zip."
+if (!(Expand-ArchiveWith7Zip "https://dl.dolphin-emu.org/builds/dolphin-master-${version}-x64.7z" $tempdir))
+{"Cannot download Dolphin archive or find 7-Zip."
 exit}
 
 "Uninstalling existing Dolphin"
@@ -40,5 +27,8 @@ if ($portable)
 "" > "${dir}/portable.txt"}
 else
 {"Creating shortcuts"
-."${PSScriptRoot}/../../modules/CreateShortcut.ps1" -path "C:/ProgramData/Microsoft/Windows/Start Menu/Programs/Dolphin.lnk" -target "${dir}/Dolphin.exe"
-."${PSScriptRoot}/../../modules/CreateShortcut.ps1" -path "C:/Users/Public/Desktop/Dolphin.lnk" -target "${dir}/Dolphin.exe"}
+if (!(New-Shortcut -Path "C:/ProgramData/Microsoft/Windows/Start Menu/Programs/Dolphin.lnk" -TargetPath "${dir}/Dolphin.exe"))
+  {"Cannot create a shortcut on Start Menu."}
+if (!(New-Shortcut -Path "C:/Users/Public/Desktop/Dolphin.lnk" -TargetPath "${dir}/Dolphin.exe"))
+  {"Cannot create a shortcut on desktop."}
+}
