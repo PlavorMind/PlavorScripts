@@ -1,11 +1,11 @@
 #Delete PHP CGI/FastCGI autostart task
 #Deletes task to start PHP CGI/FastCGI automatically.
 
-."${PSScriptRoot}/../../modules/OSDetectorDebug.ps1"
+."${PSScriptRoot}/../../init_script.ps1"
 
-if (!($isWindows))
+if (!$isWindows)
 {"Your operating system is not supported."
 exit}
 
-"Deleting task"
+"Deleting a task"
 Unregister-ScheduledTask "PHP-CGI" -Confirm:$false
