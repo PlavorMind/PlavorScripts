@@ -3,14 +3,17 @@
 
 param([string]$path="C:/PHP/start.ps1") #Path to start.ps1 file
 
-."${PSScriptRoot}/../../modules/OSDetectorDebug.ps1"
+."${PSScriptRoot}/../../init_script.ps1"
 
-if (!($isWindows))
+if (!$isWindows)
 {"Your operating system is not supported."
 exit}
 
-"Creating task"
-$action=New-ScheduledTaskAction "powershell" "`"${path}`" -ExecutionPolicy Bypass"
+"Creating a task"
+if (Test-Path "C:/Program Files/PowerShell/6-preview/pwsh.exe")
+{$action=New-ScheduledTaskAction "C:/Program Files/PowerShell/6-preview/pwsh.exe" "`"${path}`" -ExecutionPolicy Bypass"}
+else
+{$action=New-ScheduledTaskAction "powershell" "`"${path}`" -ExecutionPolicy Bypass"}
 $principal=New-ScheduledTaskPrincipal "SYSTEM" -LogonType ServiceAccount -RunLevel Highest
 $settings=New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -Compatibility Win8 -DontStopIfGoingOnBatteries -DontStopOnIdleEnd -ExecutionTimeLimit 0
 $trigger=New-ScheduledTaskTrigger -AtStartup
