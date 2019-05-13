@@ -13,7 +13,7 @@ if (!$destpath)
 elseif ($isWindows)
   {$destpath="C:/nginx/conf/nginx.conf"}
 else
-  {"Cannot detect default path to save."
+  {"Cannot detect default destination path."
   exit}
 }
 
