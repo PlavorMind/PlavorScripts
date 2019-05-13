@@ -1,3 +1,17 @@
+function Expand-ArchiveWith7Zip
+{if ($isWindows -and (Test-Path "C:/Program Files/7-Zip/7z.exe"))
+  {$output=FileURLDetector $args[0]
+  if ($output)
+    {$destination=$args[1] #Added to avoid a bug when running 7z.exe
+    New-Item $destination -Force -ItemType Directory
+    ."C:/Program Files/7-Zip/7z.exe" x $output -aoa -bt -o"${destination}" -spe -y
+    return $true
+    if ($output -like "${tempdir}*")
+      {Remove-Item $output -Force}
+    }
+  }
+}
+
 function FileURLDetector
 {if ($args[0] -match "https?:\/\/.+")
   {if ($args[0] -match "https?:\/\/.+\/(.+\..+)")
