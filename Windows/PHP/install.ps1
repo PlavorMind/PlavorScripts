@@ -57,7 +57,7 @@ Move-Item "${tempdir}/imagick/*.dll" "${tempdir}/PHP/" -Force
 "Deleting a temporary directory"
 Remove-Item "${tempdir}/imagick" -Force -Recurse
 
-."${PSScriptRoot}/../../filter_php_ini.ps1" -savepath "${tempdir}/PHP/php.ini"
+."${PSScriptRoot}/../../filter_php_ini.ps1" -destpath "${tempdir}/PHP/php.ini"
 if (!(Test-Path "${tempdir}/PHP/php.ini"))
 {exit}
 
