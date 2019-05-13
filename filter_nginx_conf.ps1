@@ -2,16 +2,16 @@
 #Filters nginx.conf file based on operating system.
 
 param
-([string]$path="https://raw.githubusercontent.com/PlavorMind/Configurations/Main/nginx/nginx.conf", #File path or URL to filter
-[string]$savepath="__DEFAULT__") #Path to save filtered nginx.conf file
+([string]$destpath, #Destination path to save filtered nginx.conf file
+[string]$path="https://raw.githubusercontent.com/PlavorMind/Configurations/Main/nginx/nginx.conf") #File path or URL to filter
 
 ."${PSScriptRoot}/init_script.ps1"
 
-if ($savepath -eq "__DEFAULT__")
+if (!$destpath)
 {if ($isLinux)
-  {$savepath="/etc/nginx/nginx.conf"}
+  {$destpath="/etc/nginx/nginx.conf"}
 elseif ($isWindows)
-  {$savepath="C:/nginx/conf/nginx.conf"}
+  {$destpath="C:/nginx/conf/nginx.conf"}
 else
   {"Cannot detect default path to save."
   exit}
@@ -21,11 +21,11 @@ $output=FileURLDetector $path
 if ($output)
 {"Filtering nginx.conf file"
 if ($isLinux)
-  {Select-String ".*#(macos|windows)_only.*" $output -Encoding utf8 -NotMatch | ForEach-Object {$_.Line} > $savepath}
+  {Select-String ".*#(macos|windows)_only.*" $output -Encoding utf8 -NotMatch | ForEach-Object {$_.Line} > $destpath}
 elseif ($isMacOS)
-  {Select-String ".*#(linux|windows)_only.*" $output -Encoding utf8 -NotMatch | ForEach-Object {$_.Line} > $savepath}
+  {Select-String ".*#(linux|windows)_only.*" $output -Encoding utf8 -NotMatch | ForEach-Object {$_.Line} > $destpath}
 elseif ($isWindows)
-  {Select-String ".*#(linux|macos)_only.*" $output -Encoding utf8 -NotMatch | ForEach-Object {$_.Line} > $savepath}
+  {Select-String ".*#(linux|macos)_only.*" $output -Encoding utf8 -NotMatch | ForEach-Object {$_.Line} > $destpath}
 if ($output -like "${tempdir}*")
   {"Deleting a temporary file"
   Remove-Item $output -Force}
