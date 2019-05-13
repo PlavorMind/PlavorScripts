@@ -37,7 +37,7 @@ exit}
 
 "Copying configuration files"
 Copy-Item "${tempdir}/Configurations-Main/nginx/*" "${tempdir}/nginx/conf/" -Force -Recurse
-."${PSScriptRoot}/../../filter_nginx_conf.ps1" -path "${tempdir}/Configurations-Main/nginx/nginx.conf" -savepath "${tempdir}/nginx/conf/nginx.conf"
+."${PSScriptRoot}/../../filter_nginx_conf.ps1" -destpath "${tempdir}/nginx/conf/nginx.conf" -path "${tempdir}/Configurations-Main/nginx/nginx.conf"
 
 if (Test-Path "${PSScriptRoot}/private")
 {"Copying private directory"
