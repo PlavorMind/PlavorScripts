@@ -5,9 +5,9 @@ param
 ([switch]$delete_userdata, #Delete Dolphin user data if this parameter is set
 [string]$dir="C:/Program Files/Dolphin") #Directory that Dolphin is installed
 
-."${PSScriptRoot}/../../modules/OSDetectorDebug.ps1"
+."${PSScriptRoot}/../../init_script.ps1"
 
-if (!($isWindows))
+if (!$isWindows)
 {"Your operating system is not supported."
 exit}
 
