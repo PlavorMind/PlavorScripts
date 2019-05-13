@@ -5,7 +5,7 @@ param
 ([string]$apcu_archive="https://windows.php.net/downloads/pecl/releases/apcu/5.1.17/php_apcu-5.1.17-7.3-nts-vc15-x64.zip", #URL or file path to APCu archive
 [string]$dir="C:/PHP", #Directory to install PHP
 [string]$imagick_archive="https://windows.php.net/downloads/pecl/releases/imagick/3.4.4/php_imagick-3.4.4-7.3-nts-vc15-x64.zip", #URL or file path to imagick archive
-[string]$php_archive="https://windows.php.net/downloads/snaps/php-7.3/r0cad701/php-7.3-nts-windows-vc15-x64-r0cad701.zip") #URL or file path to PHP archive
+[string]$php_archive="https://windows.php.net/downloads/snaps/php-7.3/r43e6fd1/php-7.3-nts-windows-vc15-x64-r43e6fd1.zip") #URL or file path to PHP archive
 
 ."${PSScriptRoot}/../../init_script.ps1"
 
