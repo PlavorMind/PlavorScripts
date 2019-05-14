@@ -2,16 +2,26 @@
 #Upgrades MediaWiki.
 
 param
-([string]$core_branch="wmf/1.34.0-wmf.3", #Branch for MediaWiki core
-[string]$dir="/web/wiki/mediawiki", #Directory that MediaWiki is installed
+([string]$core_branch="wmf/1.34.0-wmf.4", #Branch for MediaWiki core
+[string]$dir, #Directory that MediaWiki is installed
 [string]$extensions_branch="master", #Branch for extensions
 [switch]$plavormind, #Configure wiki directories based on PlavorMind configurations if this parameter is set
 [string]$skins_branch="master") #Branch for skins
 
-."${PSScriptRoot}/../modules/SetTempDir.ps1"
+."${PSScriptRoot}/../init_script.ps1"
+
+if (!$dir)
+{if ($IsLinux)
+  {$dir="/web/wiki/mediawiki"}
+elseif ($IsWindows)
+  {$dir="C:/nginx/web/wiki/mediawiki"}
+else
+  {"Cannot detect default directory."
+  exit}
+}
 
 $dir_temp=$dir
-."${PSScriptRoot}/download.ps1" -core_branch $core_branch -dir "${tempdir}/MediaWiki_upgrade" -extension_DeleteUserPages -extensions_branch $extensions_branch -skins_branch $skins_branch
+."${PSScriptRoot}/download.ps1" -core_branch $core_branch -dir "${tempdir}/MediaWiki_upgrade" -extensions_branch $extensions_branch -skins_branch $skins_branch
 $dir=$dir_temp
 
 if ($plavormind)
