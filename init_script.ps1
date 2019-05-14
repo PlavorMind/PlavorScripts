@@ -1,5 +1,5 @@
 function Expand-ArchiveWith7Zip
-{if ($isWindows -and (Test-Path "C:/Program Files/7-Zip/7z.exe"))
+{if ($IsWindows -and (Test-Path "C:/Program Files/7-Zip/7z.exe"))
   {$output=FileURLDetector $args[0]
   if ($output)
     {$destination=$args[1] #Added to avoid a bug when running 7z.exe
@@ -32,7 +32,7 @@ function New-Shortcut
 [string]$Path, #Path of a shortcut
 [string]$TargetPath) #Target of a shortcut
 
-if ($isWindows -and (Test-Path $TargetPath))
+if ($IsWindows -and (Test-Path $TargetPath))
   {$shortcut=(New-Object -ComObject WScript.Shell).CreateShortcut($Path)
   $shortcut.Arguments=$Arguments
   $shortcut.TargetPath=$TargetPath
@@ -42,14 +42,14 @@ if ($isWindows -and (Test-Path $TargetPath))
   }
 }
 
-if (!$isLinux -and !$isMacOS -and !$isWindows)
-{$isLinux=$false
-$isMacOS=$false
-$isWindows=$true}
+if (!$IsLinux -and !$IsMacOS -and !$IsWindows)
+{$IsLinux=$false
+$IsMacOS=$false
+$IsWindows=$true}
 
-if ($isLinux)
+if ($IsLinux)
 {$tempdir="/tmp"}
-elseif ($isMacOS)
+elseif ($IsMacOS)
 {$tempdir="/private/tmp"}
-elseif ($isWindows)
+elseif ($IsWindows)
 {$tempdir=$Env:TEMP}

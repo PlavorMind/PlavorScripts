@@ -5,7 +5,7 @@ param([string]$dir="C:/nginx") #Directory that nginx is installed
 
 ."${PSScriptRoot}/../../init_script.ps1"
 
-if (!$isWindows)
+if (!$IsWindows)
 {"Your operating system is not supported."
 exit}
 

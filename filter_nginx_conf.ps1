@@ -8,9 +8,9 @@ param
 ."${PSScriptRoot}/init_script.ps1"
 
 if (!$destpath)
-{if ($isLinux)
+{if ($IsLinux)
   {$destpath="/etc/nginx/nginx.conf"}
-elseif ($isWindows)
+elseif ($IsWindows)
   {$destpath="C:/nginx/conf/nginx.conf"}
 else
   {"Cannot detect default destination path."
@@ -20,11 +20,11 @@ else
 $output=FileURLDetector $path
 if ($output)
 {"Filtering nginx.conf file"
-if ($isLinux)
+if ($IsLinux)
   {Select-String ".*#(macos|windows)_only.*" $output -Encoding utf8 -NotMatch | ForEach-Object {$_.Line} > $destpath}
-elseif ($isMacOS)
+elseif ($IsMacOS)
   {Select-String ".*#(linux|windows)_only.*" $output -Encoding utf8 -NotMatch | ForEach-Object {$_.Line} > $destpath}
-elseif ($isWindows)
+elseif ($IsWindows)
   {Select-String ".*#(linux|macos)_only.*" $output -Encoding utf8 -NotMatch | ForEach-Object {$_.Line} > $destpath}
 if ($output -like "${tempdir}*")
   {"Deleting a temporary file"

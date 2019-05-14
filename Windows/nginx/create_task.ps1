@@ -5,7 +5,7 @@ param([string]$path="C:/nginx/start.ps1") #Path to start.ps1 file
 
 ."${PSScriptRoot}/../../init_script.ps1"
 
-if (!$isWindows)
+if (!$IsWindows)
 {"Your operating system is not supported."
 exit}
 

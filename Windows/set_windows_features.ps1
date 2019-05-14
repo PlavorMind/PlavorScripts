@@ -3,7 +3,7 @@
 
 ."${PSScriptRoot}/../init_script.ps1"
 
-if (!$isWindows)
+if (!$IsWindows)
 {"Your operating system is not supported."
 exit}
 

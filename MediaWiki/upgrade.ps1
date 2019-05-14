@@ -46,7 +46,7 @@ Move-Item $dir "${dir}_old" -Force}
 "Moving MediaWiki directory"
 Move-Item "${tempdir}/MediaWiki_upgrade" $dir -Force
 
-if ($isLinux)
+if ($IsLinux)
 {"Changing ownership of MediaWiki directory"
 chown "www-data" $dir -R
 "Changing permissions of MediaWiki directory"

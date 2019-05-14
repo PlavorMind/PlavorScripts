@@ -9,9 +9,9 @@ param
 ."${PSScriptRoot}/init_script.ps1"
 
 if (!$path)
-{if ($isLinux)
+{if ($IsLinux)
   {$destpath="/etc/nginx/logs/main/access.log"}
-elseif ($isWindows)
+elseif ($IsWindows)
   {$destpath="C:/nginx/logs/main/access.log"}
 else
   {"Cannot detect default path."
