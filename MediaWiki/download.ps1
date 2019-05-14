@@ -2,12 +2,22 @@
 #Downloads MediaWiki with some extensions and skins.
 
 param
-([string]$core_branch="wmf/1.34.0-wmf.3", #Branch for MediaWiki core
-[string]$dir="/web/wiki/mediawiki", #Directory to download MediaWiki
+([string]$core_branch="master", #Branch for MediaWiki core
+[string]$dir, #Directory to download MediaWiki
 [string]$extensions_branch="master", #Branch for extensions
 [string]$skins_branch="master") #Branch for skins
 
 ."${PSScriptRoot}/../init_script.ps1"
+
+if (!$dir)
+{if ($IsLinux)
+  {$dir="/web/wiki/mediawiki"}
+elseif ($IsWindows)
+  {$dir="C:/nginx/web/wiki/mediawiki"}
+else
+  {"Cannot detect default directory."
+  exit}
+}
 
 $composer_extensions=@("AbuseFilter","AntiSpoof")
 $extensions=
@@ -64,81 +74,72 @@ composer update --no-dev --working-dir="${tempdir}/MediaWiki"
 Remove-Item "${tempdir}/MediaWiki/extensions/*" -Force -Recurse
 Remove-Item "${tempdir}/MediaWiki/skins/*" -Force -Recurse
 
-foreach ($extension_name in $extensions)
-{"Downloading ${extension_name} extension archive"
-switch ($extension_name)
+foreach ($extension in $extensions)
+{"Downloading ${extension} extension archive"
+switch ($extension)
   {"Highlightjs_Integration"
-    {Invoke-WebRequest "https://github.com/Nicolas01/Highlightjs_Integration/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension_name}.zip"}
-  "PlavorMindTweaks"
-    {Invoke-WebRequest "https://github.com/PlavorMind/PlavorMindTweaks/archive/Main.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension_name}.zip"}
+    {Invoke-WebRequest "https://github.com/Nicolas01/Highlightjs_Integration/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension}.zip"}
+  "PlavorMindTools"
+    {Invoke-WebRequest "https://github.com/PlavorMind/PlavorMindTools/archive/Main.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension}.zip"}
   "SimpleMathJax"
-    {Invoke-WebRequest "https://github.com/jmnote/SimpleMathJax/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension_name}.zip"}
+    {Invoke-WebRequest "https://github.com/jmnote/SimpleMathJax/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension}.zip"}
   default
-    {Invoke-WebRequest "https://github.com/wikimedia/mediawiki-extensions-${extension_name}/archive/${extensions_branch}.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension_name}.zip"}
+    {Invoke-WebRequest "https://github.com/wikimedia/mediawiki-extensions-${extension}/archive/${extensions_branch}.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension}.zip"}
   }
-if (Test-Path "${tempdir}/${extension_name}.zip")
+if (Test-Path "${tempdir}/${extension}.zip")
   {"Extracting"
-  Expand-Archive "${tempdir}/${extension_name}.zip" "${tempdir}/MediaWiki/extensions/" -Force
+  Expand-Archive "${tempdir}/${extension}.zip" "${tempdir}/MediaWiki/extensions/" -Force
   "Deleting a temporary file"
-  Remove-Item "${tempdir}/${extension_name}.zip" -Force
-  "Renaming ${extension_name} extension directory"
-  switch ($extension_name)
+  Remove-Item "${tempdir}/${extension}.zip" -Force
+  "Renaming ${extension} extension directory"
+  switch ($extension)
     {"Highlightjs_Integration"
-      {Move-Item "${tempdir}/MediaWiki/extensions/Highlightjs_Integration-master" "${tempdir}/MediaWiki/extensions/${extension_name}" -Force}
-    "PlavorMindTweaks"
-      {Move-Item "${tempdir}/MediaWiki/extensions/PlavorMindTweaks-Main" "${tempdir}/MediaWiki/extensions/${extension_name}" -Force}
+      {Move-Item "${tempdir}/MediaWiki/extensions/Highlightjs_Integration-master" "${tempdir}/MediaWiki/extensions/${extension}" -Force}
+    "PlavorMindTools"
+      {Move-Item "${tempdir}/MediaWiki/extensions/PlavorMindTools-Main" "${tempdir}/MediaWiki/extensions/${extension}" -Force}
     "SimpleMathJax"
-      {Move-Item "${tempdir}/MediaWiki/extensions/SimpleMathJax-master" "${tempdir}/MediaWiki/extensions/${extension_name}" -Force}
+      {Move-Item "${tempdir}/MediaWiki/extensions/SimpleMathJax-master" "${tempdir}/MediaWiki/extensions/${extension}" -Force}
     default
-      {Move-Item "${tempdir}/MediaWiki/extensions/mediawiki-extensions-${extension_name}-*" "${tempdir}/MediaWiki/extensions/${extension_name}" -Force}
+      {Move-Item "${tempdir}/MediaWiki/extensions/mediawiki-extensions-${extension}-*" "${tempdir}/MediaWiki/extensions/${extension}" -Force}
     }
   }
 else
-  {"Cannot download ${extension_name} extension archive."}
+  {"Cannot download ${extension} extension archive."}
 }
 
-if ($extension_DeleteUserPages)
-{."${PSScriptRoot}/../modules/ExtractArchive.ps1" -path "https://gerrit.wikimedia.org/r/plugins/gitiles/mediawiki/extensions/DeleteUserPages/+archive/${extensions_branch}.tar.gz" -type "tar.gz"
-if ($ea_output)
-  {"Moving DeleteUserPages extension directory"
-  Move-Item $ea_output "${tempdir}/MediaWiki/extensions/DeleteUserPages" -Force}
-else
-  {"Cannot download DeleteUserPages extension archive."}
+foreach ($extension in $composer_extensions)
+{if (Test-Path "${tempdir}/MediaWiki/extensions/${extension}")
+  {"Updating dependencies for ${extension} extension"
+  composer update --no-dev --working-dir="${tempdir}/MediaWiki/extensions/${extension}"}
 }
 
-foreach ($extension_name in $composer_extensions)
-{if (Test-Path "${tempdir}/MediaWiki/extensions/${extension_name}")
-  {"Updating dependencies for ${extension_name} extension"
-  composer update --no-dev --working-dir="${tempdir}/MediaWiki/extensions/${extension_name}"}
-}
-
-foreach ($skin_name in $skins)
-{"Downloading ${skin_name} skin archive"
-switch ($skin_name)
+foreach ($skin in $skins)
+{"Downloading ${skin} skin archive"
+switch ($skin)
   {"Liberty"
-    {Invoke-WebRequest "https://gitlab.com/librewiki/Liberty-MW-Skin/-/archive/master/Liberty-MW-Skin-master.zip" -DisableKeepAlive -OutFile "${tempdir}/${skin_name}.zip"}
+    {Invoke-WebRequest "https://gitlab.com/librewiki/Liberty-MW-Skin/-/archive/master/Liberty-MW-Skin-master.zip" -DisableKeepAlive -OutFile "${tempdir}/${skin}.zip"}
   "PlavorMindView"
-    {Invoke-WebRequest "https://github.com/PlavorMind/PlavorMindView/archive/Main.zip" -DisableKeepAlive -OutFile "${tempdir}/${skin_name}.zip"}
+    {Invoke-WebRequest "https://github.com/PlavorMind/PlavorMindView/archive/Main.zip" -DisableKeepAlive -OutFile "${tempdir}/${skin}.zip"}
   default
-    {Invoke-WebRequest "https://github.com/wikimedia/mediawiki-skins-${skin_name}/archive/${skins_branch}.zip" -DisableKeepAlive -OutFile "${tempdir}/${skin_name}.zip"}
+    {Invoke-WebRequest "https://github.com/wikimedia/mediawiki-skins-${skin}/archive/${skins_branch}.zip" -DisableKeepAlive -OutFile "${tempdir}/${skin}.zip"}
   }
-if (Test-Path "${tempdir}/${skin_name}.zip")
+if (Test-Path "${tempdir}/${skin}.zip")
   {"Extracting"
-  Expand-Archive "${tempdir}/${skin_name}.zip" "${tempdir}/MediaWiki/skins/" -Force
+  Expand-Archive "${tempdir}/${skin}.zip" "${tempdir}/MediaWiki/skins/" -Force
   "Deleting a temporary file"
-  Remove-Item "${tempdir}/${skin_name}.zip" -Force
-  "Renaming ${skin_name} skin directory"
-  switch ($skin_name)
+  Remove-Item "${tempdir}/${skin}.zip" -Force
+  "Renaming ${skin} skin directory"
+  switch ($skin)
     {"Liberty"
-      {Move-Item "${tempdir}/MediaWiki/skins/Liberty-MW-Skin-master" "${tempdir}/MediaWiki/skins/${skin_name}" -Force}
+      {Move-Item "${tempdir}/MediaWiki/skins/Liberty-MW-Skin-master" "${tempdir}/MediaWiki/skins/${skin}" -Force}
     "PlavorMindView"
-      {Move-Item "${tempdir}/MediaWiki/skins/PlavorMindView-Main" "${tempdir}/MediaWiki/skins/${skin_name}" -Force}
+      {Move-Item "${tempdir}/MediaWiki/skins/PlavorMindView-Main" "${tempdir}/MediaWiki/skins/${skin}" -Force}
     default
-      {Move-Item "${tempdir}/MediaWiki/skins/mediawiki-skins-${skin_name}-*" "${tempdir}/MediaWiki/skins/${skin_name}" -Force}
+      {Move-Item "${tempdir}/MediaWiki/skins/mediawiki-skins-${skin}-*" "${tempdir}/MediaWiki/skins/${skin}" -Force}
     }
   }
 else
-  {"Cannot download ${skin_name} skin archive."}
+  {"Cannot download ${skin} skin archive."}
 }
 
 "Deleting unnecessary files"
