@@ -3,14 +3,18 @@
 
 param
 ([string]$dir="C:/Program Files/Dolphin", #Directory to install Dolphin
-[switch]$portable, #Installs as portable mode if this is set
-[string]$version="5.0-10200") #Version to install
+[switch]$portable) #Installs as portable mode if this is set
 
 ."${PSScriptRoot}/../../init_script.ps1"
 
 if (!$IsWindows)
 {"Your operating system is not supported."
 exit}
+
+#This is the version that can run Mario Kart Wii with Direct3D 11 - DO NOT UPDATE
+#Broken again after https://github.com/dolphin-emu/dolphin/pull/8051
+#TW90aGVyZnVja2luZyBKb3NKdWljZQ==
+$version="5.0-10084"
 
 if (!(Expand-ArchiveWith7Zip "https://dl.dolphin-emu.org/builds/dolphin-master-${version}-x64.7z" $tempdir))
 {"Cannot download Dolphin archive or find 7-Zip."
