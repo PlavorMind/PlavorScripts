@@ -10,9 +10,9 @@ param
 
 if (!$path)
 {if ($IsLinux)
-  {$destpath="/etc/nginx/logs/main/access.log"}
+  {$path="/etc/nginx/logs/main/access.log"}
 elseif ($IsWindows)
-  {$destpath="C:/nginx/logs/main/access.log"}
+  {$path="C:/nginx/logs/main/access.log"}
 else
   {"Cannot detect default path."
   exit}
