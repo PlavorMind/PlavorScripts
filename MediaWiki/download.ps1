@@ -22,7 +22,6 @@ else
 $composer_extensions=@("AbuseFilter","AntiSpoof")
 $extensions=
 @("AbuseFilter",
-"AccountInfo",
 "AntiSpoof",
 "ApprovedRevs",
 "Babel",
