@@ -37,7 +37,7 @@ $dir=$dir_temp
 Move-Item "${tempdir}/MediaWiki_install" "${tempdir}/MediaWiki" -Force
 
 if ($plavormind)
-{"Moving configuration files" #Need test
+{"Moving configuration files"
 Move-Item "${tempdir}/Configurations-Main/MediaWiki/*" "${tempdir}/MediaWiki/" -Force
 if (Test-Path "${PSScriptRoot}/data")
   {"Copying files in data directory"
