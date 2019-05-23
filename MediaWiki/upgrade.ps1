@@ -23,38 +23,39 @@ else
 $dir_temp=$dir
 ."${PSScriptRoot}/download.ps1" -core_branch $core_branch -dir "${tempdir}/MediaWiki_upgrade" -extensions_branch $extensions_branch -skins_branch $skins_branch
 $dir=$dir_temp
+Move-Item "${tempdir}/MediaWiki_upgrade" "${tempdir}/MediaWiki" -Force
 
 if ($plavormind)
 {if (Test-Path "${dir}/data")
   {"Copying existing data directory"
-  Copy-Item "${dir}/data" "${tempdir}/MediaWiki_upgrade/" -Force -Recurse}
+  Copy-Item "${dir}/data" "${tempdir}/MediaWiki/" -Force -Recurse}
 if (Test-Path "${dir}/private_data")
   {"Copying existing private_data directory"
-  Copy-Item "${dir}/private_data" "${tempdir}/MediaWiki_upgrade/" -Force -Recurse}
+  Copy-Item "${dir}/private_data" "${tempdir}/MediaWiki/" -Force -Recurse}
 "Deleting core cache directory"
-Remove-Item "${tempdir}/MediaWiki_upgrade/cache" -Force -Recurse
+Remove-Item "${tempdir}/MediaWiki/cache" -Force -Recurse
 "Deleting core images directory"
-Remove-Item "${tempdir}/MediaWiki_upgrade/images" -Force -Recurse}
+Remove-Item "${tempdir}/MediaWiki/images" -Force -Recurse}
 elseif (Test-Path "${dir}/images")
 {"Deleting core images directory"
-Remove-Item "${tempdir}/MediaWiki_upgrade/images" -Force -Recurse
+Remove-Item "${tempdir}/MediaWiki/images" -Force -Recurse
 "Copying existing images directory"
-Copy-Item "${dir}/images" "${tempdir}/MediaWiki_upgrade/images" -Force -Recurse}
+Copy-Item "${dir}/images" "${tempdir}/MediaWiki/images" -Force -Recurse}
 if (Test-Path "${dir}/LocalSettings.php")
 {"Copying existing LocalSettings.php file"
-Copy-Item "${dir}/LocalSettings.php" "${tempdir}/MediaWiki_upgrade/LocalSettings.php" -Force}
+Copy-Item "${dir}/LocalSettings.php" "${tempdir}/MediaWiki/LocalSettings.php" -Force}
 
 "Running update.php"
-php "${tempdir}/MediaWiki_upgrade/maintenance/update.php" --doshared --quick
+php "${tempdir}/MediaWiki/maintenance/update.php" --doshared --quick
 "Running runJobs.php"
-php "${tempdir}/MediaWiki_upgrade/maintenance/runJobs.php"
+php "${tempdir}/MediaWiki/maintenance/runJobs.php"
 
 if (Test-Path $dir)
 {"Renaming existing MediaWiki directory"
 Move-Item $dir "${dir}_old" -Force}
 
 "Moving MediaWiki directory"
-Move-Item "${tempdir}/MediaWiki_upgrade" $dir -Force
+Move-Item "${tempdir}/MediaWiki" $dir -Force
 
 if ($IsLinux)
 {"Changing ownership of MediaWiki directory"
