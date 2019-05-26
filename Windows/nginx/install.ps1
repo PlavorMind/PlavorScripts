@@ -39,10 +39,6 @@ exit}
 Copy-Item "${tempdir}/Configurations-Main/nginx/*" "${tempdir}/nginx/conf/" -Force -Recurse
 ."${PSScriptRoot}/../../filter_nginx_conf.ps1" -destpath "${tempdir}/nginx/conf/nginx.conf" -path "${tempdir}/Configurations-Main/nginx/nginx.conf"
 
-if (Test-Path "${PSScriptRoot}/private")
-{"Copying private directory"
-Copy-Item "${PSScriptRoot}/private" "${tempdir}/nginx/conf/" -Force -Recurse}
-
 "Copying web directory"
 Copy-Item "${tempdir}/Configurations-Main/Web" "${tempdir}/nginx/web" -Force -Recurse
 
@@ -51,9 +47,13 @@ New-Item "${tempdir}/nginx/logs/main" -Force -ItemType Directory
 New-Item "${tempdir}/nginx/logs/public" -Force -ItemType Directory
 New-Item "${tempdir}/nginx/logs/wiki" -Force -ItemType Directory
 
-"Copying additional files"
+"Copying install data"
 Copy-Item "${PSScriptRoot}/install_data/start.ps1" "${tempdir}/nginx/" -Force
 Copy-Item "${PSScriptRoot}/install_data/stop.ps1" "${tempdir}/nginx/" -Force
+
+if (Test-Path "${PSScriptRoot}/additional_files")
+{"Copying additional files"
+Copy-Item "${PSScriptRoot}/additional_files/*" "${tempdir}/nginx/" -Force -Recurse}
 
 "Deleting a temporary directory"
 Remove-Item "${tempdir}/Configurations-Main" -Force -Recurse
