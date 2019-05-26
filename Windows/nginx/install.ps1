@@ -2,8 +2,9 @@
 #Installs nginx.
 
 param
-([string]$dir="C:/nginx", #Directory to install nginx
-[string]$version="1.16.0") #Version to install
+([string]$adminer_version="4.7.1", #Adminer version to download
+[string]$dir="C:/nginx", #Directory to install nginx
+[string]$version="1.17.0") #nginx version to install
 
 ."${PSScriptRoot}/../../init_script.ps1"
 
@@ -41,6 +42,9 @@ Copy-Item "${tempdir}/Configurations-Main/nginx/*" "${tempdir}/nginx/conf/" -For
 
 "Copying web directory"
 Copy-Item "${tempdir}/Configurations-Main/Web" "${tempdir}/nginx/web" -Force -Recurse
+
+"Downloading Adminer"
+Invoke-WebRequest "https://github.com/vrana/adminer/releases/download/v${adminer_version}/adminer-${adminer_version}-en.php" -DisableKeepAlive -OutFile "${tempdir}/nginx/web/main/adminer.php"
 
 "Creating log directories"
 New-Item "${tempdir}/nginx/logs/main" -Force -ItemType Directory
