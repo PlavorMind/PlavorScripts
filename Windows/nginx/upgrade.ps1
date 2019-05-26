@@ -3,7 +3,7 @@
 
 param
 ([string]$dir="C:/nginx", #Directory that nginx is installed
-[string]$version="1.16.0") #Version to upgrade
+[string]$version="1.17.0") #Version to upgrade
 
 ."${PSScriptRoot}/../../init_script.ps1"
 
