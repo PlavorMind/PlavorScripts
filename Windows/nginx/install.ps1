@@ -70,6 +70,7 @@ Remove-Item "${tempdir}/Configurations-Main" -Force -Recurse
 "Warning: This will remove documentations and license notices that are unnecessary for running."
 Remove-Item "${tempdir}/nginx/contrib" -Force -Recurse
 Remove-Item "${tempdir}/nginx/docs" -Force -Recurse
+Remove-Item "${tempdir}/nginx/html" -Force -Recurse
 
 if (Get-Process "nginx" -ErrorAction Ignore)
 {"Stopping nginx"
