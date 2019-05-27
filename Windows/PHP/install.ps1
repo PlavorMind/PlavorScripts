@@ -13,6 +13,20 @@ if (!$IsWindows)
 {"Your operating system is not supported."
 exit}
 
+#Check processes to avoid errors
+if (Get-Process "php" -ErrorAction Ignore)
+{"PHP is currently running."
+exit}
+if (Get-Process "php-cgi" -ErrorAction Ignore)
+{"PHP CGI/FastCGI is currently running."
+exit}
+if (Get-Process "php-win" -ErrorAction Ignore)
+{"php-win.exe is currently running."
+exit}
+if (Get-Process "phpdbg" -ErrorAction Ignore)
+{"phpdbg.exe is currently running."
+exit}
+
 $output=FileURLDetector $php_archive
 if ($output)
 {Expand-Archive $output "${tempdir}/PHP" -Force
