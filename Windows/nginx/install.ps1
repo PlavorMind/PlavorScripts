@@ -43,8 +43,6 @@ Copy-Item "${tempdir}/Configurations-Main/nginx/*" "${tempdir}/nginx/conf/" -For
 "Copying web directory"
 Copy-Item "${tempdir}/Configurations-Main/Web" "${tempdir}/nginx/web" -Force -Recurse
 Move-Item "${tempdir}/nginx/html/index.html" "${tempdir}/nginx/web/main/" -Force
-New-Item "${tempdir}/nginx/web/public" -Force -ItemType Directory
-"<!DOCTYPE html>" > "${tempdir}/nginx/web/public/index.html"
 New-Item "${tempdir}/nginx/web/wiki" -Force -ItemType Directory
 
 "Downloading Adminer"
