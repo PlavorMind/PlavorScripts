@@ -75,7 +75,7 @@ Remove-Item "${tempdir}/imagick" -Force -Recurse
 if (!(Test-Path "${tempdir}/PHP/php.ini"))
 {exit}
 
-"Copying additional files"
+"Copying install data"
 Copy-Item "${PSScriptRoot}/install_data/start.ps1" "${tempdir}/PHP/" -Force
 Copy-Item "${PSScriptRoot}/install_data/stop.ps1" "${tempdir}/PHP/" -Force
 
