@@ -25,7 +25,7 @@ if (Get-Process "php-win" -ErrorAction Ignore)
 if (Get-Process "phpdbg" -ErrorAction Ignore)
 {Stop-Process -Force -Name "phpdbg"}
 
-Start-Sleep 1 #Added delay to avoid errors
+Start-Sleep 2 #Added delay to avoid errors
 
 "Deleting PHP directory"
 Remove-Item $dir -Force -Recurse
