@@ -20,6 +20,8 @@ else
   exit}
 }
 
+$wikis=@("exit")
+
 $dir_temp=$dir
 ."${PSScriptRoot}/download.ps1" -core_branch $core_branch -dir "${tempdir}/MediaWiki_upgrade" -extensions_branch $extensions_branch -skins_branch $skins_branch
 $dir=$dir_temp
@@ -31,7 +33,19 @@ if ($plavormind)
   Copy-Item "${dir}/data" "${tempdir}/MediaWiki/" -Force -Recurse}
 if (Test-Path "${dir}/private_data")
   {"Copying existing private_data directory"
-  Copy-Item "${dir}/private_data" "${tempdir}/MediaWiki/" -Force -Recurse}
+  Copy-Item "${dir}/private_data" "${tempdir}/MediaWiki/" -Force -Recurse
+  if (Test-Path "${tempdir}/MediaWiki/private_data/databases/locks")
+    {"Deleting locks directory"
+    Remove-Item "${tempdir}/MediaWiki/private_data/databases/locks" -Force -Recurse}
+  foreach ($wiki in $wikis)
+    {if (Test-Path "${tempdir}/MediaWiki/private_data/${wiki}/cache")
+      {"Emptying cache directory"
+      Remove-Item "${tempdir}/MediaWiki/private_data/${wiki}/cache/*" -Force -Recurse}
+    if (Test-Path "${tempdir}/MediaWiki/private_data/${wiki}/files/thumb")
+      {"Deleting thumb directory"
+      Remove-Item "${tempdir}/MediaWiki/private_data/${wiki}/files/thumb" -Force -Recurse}
+    }
+  }
 "Deleting core cache directory"
 Remove-Item "${tempdir}/MediaWiki/cache" -Force -Recurse
 "Deleting core images directory"
@@ -45,10 +59,18 @@ if (Test-Path "${dir}/LocalSettings.php")
 {"Copying existing LocalSettings.php file"
 Copy-Item "${dir}/LocalSettings.php" "${tempdir}/MediaWiki/LocalSettings.php" -Force}
 
-"Running update.php"
+if ($plavormind)
+{foreach ($wiki in $wikis)
+  {"Running update.php for ${wiki}"
+  php "${tempdir}/MediaWiki/maintenance/update.php" --doshared --quick --wiki $wiki
+  "Running runJobs.php for ${wiki}"
+  php "${tempdir}/MediaWiki/maintenance/runJobs.php" --wiki $wiki}
+}
+else
+{"Running update.php"
 php "${tempdir}/MediaWiki/maintenance/update.php" --doshared --quick
 "Running runJobs.php"
-php "${tempdir}/MediaWiki/maintenance/runJobs.php"
+php "${tempdir}/MediaWiki/maintenance/runJobs.php"}
 
 if (Test-Path $dir)
 {"Renaming existing MediaWiki directory"
