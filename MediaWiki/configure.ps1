@@ -1,11 +1,10 @@
-#MediaWiki installer
-#Installs MediaWiki.
+#Configure MediaWiki
+#Configures MediaWiki directories.
 
 param
-([string]$core_branch="wmf/1.34.0-wmf.6", #Branch for MediaWiki core
+([string]$core_branch="wmf/1.34.0-wmf.7", #Branch for MediaWiki core
 [string]$dir, #Directory to install MediaWiki
 [string]$extensions_branch="master", #Branch for extensions
-[switch]$plavormind, #Configure wiki directories based on PlavorMind configurations if this parameter is set
 [string]$skins_branch="master") #Branch for skins
 
 ."${PSScriptRoot}/../init_script.ps1"
@@ -36,19 +35,16 @@ $dir_temp=$dir
 $dir=$dir_temp
 Move-Item "${tempdir}/MediaWiki_install" "${tempdir}/MediaWiki" -Force
 
-if ($plavormind)
-{"Moving configuration files"
+"Moving configuration files"
 Move-Item "${tempdir}/Configurations-Main/MediaWiki/*" "${tempdir}/MediaWiki/" -Force
-if (Test-Path "${PSScriptRoot}/data")
-  {"Copying files in data directory"
-  Copy-Item "${PSScriptRoot}/data/*" "${tempdir}/MediaWiki/data/" -Force -Recurse}
-if (Test-Path "${PSScriptRoot}/private_data")
-  {"Copying private_data directory"
-  Copy-Item "${PSScriptRoot}/private_data" "${tempdir}/MediaWiki/" -Force -Recurse}
 "Deleting core cache directory"
 Remove-Item "${tempdir}/MediaWiki/cache" -Force -Recurse
 "Deleting core images directory"
-Remove-Item "${tempdir}/MediaWiki/images" -Force -Recurse}
+Remove-Item "${tempdir}/MediaWiki/images" -Force -Recurse
+
+if (Test-Path "${PSScriptRoot}/additional_files")
+{"Copying additional files"
+Copy-Item "${PSScriptRoot}/additional_files/*" "${tempdir}/MediaWiki/" -Force -Recurse}
 
 "Deleting a temporary directory"
 Remove-Item "${tempdir}/Configurations-Main" -Force -Recurse
