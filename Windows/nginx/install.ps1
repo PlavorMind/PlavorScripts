@@ -48,10 +48,11 @@ New-Item "${tempdir}/nginx/web/wiki" -Force -ItemType Directory
 "Downloading Adminer"
 Invoke-WebRequest "https://github.com/vrana/adminer/releases/download/v${adminer_version}/adminer-${adminer_version}-en.php" -DisableKeepAlive -OutFile "${tempdir}/nginx/web/main/adminer.php"
 
+$virtual_hosts=Get-ChildItem "${tempdir}/nginx/web" -Directory -Force -Name
+
 "Creating log directories"
-New-Item "${tempdir}/nginx/logs/main" -Force -ItemType Directory
-New-Item "${tempdir}/nginx/logs/public" -Force -ItemType Directory
-New-Item "${tempdir}/nginx/logs/wiki" -Force -ItemType Directory
+foreach ($virtual_host in $virtual_hosts)
+{New-Item "${tempdir}/nginx/logs/${virtual_host}" -Force -ItemType Directory}
 
 "Copying install data"
 Copy-Item "${PSScriptRoot}/install_data/start.ps1" "${tempdir}/nginx/" -Force
