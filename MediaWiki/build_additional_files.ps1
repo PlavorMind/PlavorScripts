@@ -15,8 +15,6 @@ else
   exit}
 }
 
-$wikis=@("exit")
-
 if (Test-Path "${PSScriptRoot}/additional_files")
 {"Renaming existing directory for additional files"
 Move-Item "${PSScriptRoot}/additional_files" "${PSScriptRoot}/additional_files_old" -Force}
@@ -24,14 +22,16 @@ Move-Item "${PSScriptRoot}/additional_files" "${PSScriptRoot}/additional_files_o
 "Creating a directory for additioanl files"
 New-Item "${PSScriptRoot}/additional_files" -Force -ItemType Directory
 
+$wikis=Get-ChildItem "${dir}/data" -Directory -Force -Name
+
 foreach ($wiki in $wikis)
-{if (Test-Path "${dir}/data/${wiki}/logo.png")
+{if (Test-Path "${dir}/data/${wiki}/logo.*")
   {"Creating data directory"
   New-Item "${PSScriptRoot}/additional_files/data" -Force -ItemType Directory
   "Creating data/${wiki} directory"
   New-Item "${PSScriptRoot}/additional_files/data/${wiki}" -Force -ItemType Directory
-  "Copying data/${wiki}/logo.png file"
-  Copy-Item "${dir}/data/${wiki}/logo.png" "${PSScriptRoot}/additional_files/data/${wiki}/" -Force -Recurse}
+  "Copying data/${wiki}/logo.* file"
+  Copy-Item "${dir}/data/${wiki}/logo.*" "${PSScriptRoot}/additional_files/data/${wiki}/" -Force -Recurse}
 }
 
 if (Test-Path "${dir}/private_data")
