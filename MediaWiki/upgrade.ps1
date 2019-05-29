@@ -20,8 +20,6 @@ else
   exit}
 }
 
-$wikis=@("exit")
-
 $dir_temp=$dir
 ."${PSScriptRoot}/download.ps1" -core_branch $core_branch -dir "${tempdir}/MediaWiki_upgrade" -extensions_branch $extensions_branch -skins_branch $skins_branch
 $dir=$dir_temp
@@ -30,7 +28,8 @@ Move-Item "${tempdir}/MediaWiki_upgrade" "${tempdir}/MediaWiki" -Force
 if ($plavormind)
 {if (Test-Path "${dir}/data")
   {"Copying existing data directory"
-  Copy-Item "${dir}/data" "${tempdir}/MediaWiki/" -Force -Recurse}
+  Copy-Item "${dir}/data" "${tempdir}/MediaWiki/" -Force -Recurse
+  $wikis=Get-ChildItem "${tempdir}/MediaWiki/data" -Directory -Force -Name}
 if (Test-Path "${dir}/private_data")
   {"Copying existing private_data directory"
   Copy-Item "${dir}/private_data" "${tempdir}/MediaWiki/" -Force -Recurse
