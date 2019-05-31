@@ -4,6 +4,7 @@
 param
 ([string]$7zip_version="1900", #7-Zip version to install (must set without dot(.))
 [string]$bleachbit_installer="https://ci.bleachbit.org/dl/2.3.1085/BleachBit-2.3-setup-English.exe", #URL or file path to BleachBit installer
+[string]$obs_installer="https://github.com/obsproject/obs-studio/releases/download/23.2.0-rc1/OBS-Studio-23.2-rc1-Full-Installer-x64.exe", #URL or file path to OBS Studio installer
 [string]$python_installer="https://www.python.org/ftp/python/3.8.0/python-3.8.0a3-amd64.exe", #URL or file path to Python installer
 [string]$turtl_version="0.7.2.5") #Turtl version to install
 
@@ -77,6 +78,17 @@ msiexec /i "${tempdir}/nomacs.msi" /norestart /passive
 Remove-Item "${tempdir}/nomacs.msi" -Force}
 else
 {"Cannot download nomacs."}
+
+$output=FileURLDetector $obs_installer
+if ($output)
+{"Installing OBS Studio"
+Start-Process $output -ArgumentList "/S" -Wait
+if ($output -like "${tempdir}*")
+  {"Deleting a temporary file"
+  Remove-Item $output -Force}
+}
+else
+{"Cannot download or find OBS Studio."}
 
 $output=FileURLDetector $python_installer
 if ($output)
