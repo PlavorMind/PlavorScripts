@@ -2,7 +2,7 @@
 #Configures MediaWiki directories.
 
 param
-([string]$core_branch="wmf/1.34.0-wmf.7", #Branch for MediaWiki core
+([string]$core_branch="wmf/1.34.0-wmf.8", #Branch for MediaWiki core
 [string]$dir, #Directory to install MediaWiki
 [string]$extensions_branch="master", #Branch for extensions
 [string]$skins_branch="master") #Branch for skins
