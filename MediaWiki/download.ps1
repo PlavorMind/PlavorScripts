@@ -23,7 +23,6 @@ $composer_extensions=@("AbuseFilter","AntiSpoof")
 $extensions=
 @("AbuseFilter",
 "AntiSpoof",
-"ApprovedRevs",
 "Babel",
 #"CentralNotice",
 "ChangeAuthor",
