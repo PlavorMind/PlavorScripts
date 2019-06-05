@@ -2,7 +2,7 @@
 #Upgrades MediaWiki.
 
 param
-([string]$core_branch="wmf/1.34.0-wmf.7", #Branch for MediaWiki core
+([string]$core_branch="wmf/1.34.0-wmf.8", #Branch for MediaWiki core
 [string]$dir, #Directory that MediaWiki is installed
 [string]$extensions_branch="master", #Branch for extensions
 [switch]$plavormind, #Configure wiki directories based on PlavorMind configurations if this parameter is set
