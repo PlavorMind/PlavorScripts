@@ -4,6 +4,7 @@
 param
 ([string]$7zip_version="1900", #7-Zip version to install (must set without dot(.))
 [string]$bleachbit_installer="https://ci.bleachbit.org/dl/2.3.1085/BleachBit-2.3-setup-English.exe", #URL or file path to BleachBit installer
+[string]$gimp_installer="https://download.gimp.org/pub/gimp/v2.10/windows/gimp-2.10.10-setup.exe", #URL or file path to GIMP installer
 [string]$mpchc_version="1.7.13.112", #MPC-HC nightly build version to install
 [string]$obs_installer="https://github.com/obsproject/obs-studio/releases/download/23.2.0-rc1/OBS-Studio-23.2-rc1-Full-Installer-x64.exe", #URL or file path to OBS Studio installer
 [string]$python_installer="https://www.python.org/ftp/python/3.8.0/python-3.8.0a3-amd64.exe", #URL or file path to Python installer
@@ -15,6 +16,9 @@ param
 if (!$IsWindows)
 {"Your operating system is not supported."
 exit}
+
+#Do not use single quotes(') in parameters for Inno Setup otherwise text inside of them will be broken.
+$inno_setup_parameters="/closeapplications /nocancel /norestart /restartapplications /silent /sp- /suppressmsgboxes"
 
 "Downloading Microsoft Visual C++ Redistributable for Visual Studio 2019 RC"
 Invoke-WebRequest "https://aka.ms/vs/16/release/VC_redist.x64.exe" -DisableKeepAlive -OutFile "${tempdir}/visualc.exe"
@@ -71,11 +75,22 @@ Remove-Item "${tempdir}/Firefox Nightly.exe" -Force}
 else
 {"Cannot download Firefox Nightly."}
 
+$output=FileURLDetector $gimp_installer
+if ($output)
+{"Installing GIMP"
+Start-Process $output -ArgumentList "${inno_setup_parameters} /mergetasks=`"desktopicon`"" -Wait
+if ($output -like "${tempdir}*")
+  {"Deleting a temporary file"
+  Remove-Item $output -Force}
+}
+else
+{"Cannot download or find GIMP."}
+
 "Downloading MPC-HC"
 Invoke-WebRequest "https://nightly.mpc-hc.org/MPC-HC.${mpchc_version}.x64.exe" -DisableKeepAlive -OutFile "${tempdir}/MPC-HC.exe"
 if (Test-Path "${tempdir}/MPC-HC.exe")
 {"Installing"
-Start-Process "${tempdir}/MPC-HC.exe" -ArgumentList "/closeapplications /mergetasks=`"desktopicon\common`" /nocancel /norestart /restartapplications /silent /sp- /suppressmsgboxes" -Wait #Should use double quotes(") and escape them otherwise tasks inside mergetasks argument will be broken
+Start-Process "${tempdir}/MPC-HC.exe" -ArgumentList "${inno_setup_parameters} /mergetasks=`"desktopicon\common`"" -Wait
 "Deleting a temporary file"
 Remove-Item "${tempdir}/MPC-HC.exe" -Force}
 else
@@ -117,7 +132,7 @@ else
 Invoke-WebRequest "https://github.com/jurplel/qView/releases/download/${qview_version}/qView-${qview_version}-win64.exe" -DisableKeepAlive -OutFile "${tempdir}/qView.exe"
 if (Test-Path "${tempdir}/qView.exe")
 {"Installing"
-Start-Process "${tempdir}/qView.exe" -ArgumentList "/closeapplications /mergetasks=`"desktopicon`" /nocancel /norestart /restartapplications /silent /sp- /suppressmsgboxes" -Wait #Should use double quotes(") and escape them otherwise tasks inside mergetasks argument will be broken
+Start-Process "${tempdir}/qView.exe" -ArgumentList "${inno_setup_parameters} /mergetasks=`"desktopicon`"" -Wait
 "Deleting a temporary file"
 Remove-Item "${tempdir}/qView.exe" -Force}
 else
@@ -137,7 +152,7 @@ else
 Invoke-WebRequest "https://go.microsoft.com/fwlink/?Linkid=852155" -DisableKeepAlive -OutFile "${tempdir}/Visual Studio Code.exe"
 if (Test-Path "${tempdir}/Visual Studio Code.exe")
 {"Installing"
-Start-Process "${tempdir}/Visual Studio Code.exe" -ArgumentList "/closeapplications /mergetasks=`"addcontextmenufiles,addcontextmenufolders,addtopath,associatewithfiles,desktopicon,!runcode`" /nocancel /norestart /restartapplications /silent /sp- /suppressmsgboxes" -Wait #Should use double quotes(") and escape them otherwise tasks inside mergetasks argument will be broken
+Start-Process "${tempdir}/Visual Studio Code.exe" -ArgumentList "${inno_setup_parameters} /mergetasks=`"addcontextmenufiles,addcontextmenufolders,addtopath,associatewithfiles,desktopicon,!runcode`"" -Wait
 "Deleting a temporary file"
 Remove-Item "${tempdir}/Visual Studio Code.exe" -Force}
 else
