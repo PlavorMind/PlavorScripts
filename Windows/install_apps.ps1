@@ -4,6 +4,7 @@
 param
 ([string]$7zip_version="1900", #7-Zip version to install (must set without dot(.))
 [string]$bleachbit_installer="https://ci.bleachbit.org/dl/2.3.1085/BleachBit-2.3-setup-English.exe", #URL or file path to BleachBit installer
+[string]$mpchc_version="1.7.13.112", #MPC-HC nightly build version to install
 [string]$obs_installer="https://github.com/obsproject/obs-studio/releases/download/23.2.0-rc1/OBS-Studio-23.2-rc1-Full-Installer-x64.exe", #URL or file path to OBS Studio installer
 [string]$python_installer="https://www.python.org/ftp/python/3.8.0/python-3.8.0a3-amd64.exe", #URL or file path to Python installer
 [string]$turtl_version="0.7.2.5") #Turtl version to install
@@ -68,6 +69,16 @@ Start-Process "${tempdir}/Firefox Nightly.exe" -Wait
 Remove-Item "${tempdir}/Firefox Nightly.exe" -Force}
 else
 {"Cannot download Firefox Nightly."}
+
+"Downloading MPC-HC"
+Invoke-WebRequest "https://nightly.mpc-hc.org/MPC-HC.${mpchc_version}.x64.exe" -DisableKeepAlive -OutFile "${tempdir}/MPC-HC.exe"
+if (Test-Path "${tempdir}/MPC-HC.exe")
+{"Installing"
+Start-Process "${tempdir}/MPC-HC.exe" -ArgumentList "/closeapplications /mergetasks=`"desktopicon\common`" /nocancel /norestart /restartapplications /silent /sp- /suppressmsgboxes" -Wait #Should use double quotes(") and escape them otherwise backslashes(\) will be broken
+"Deleting a temporary file"
+Remove-Item "${tempdir}/MPC-HC.exe" -Force}
+else
+{"Cannot download MPC-HC."}
 
 "Downloading nomacs"
 Invoke-WebRequest "http://download.nomacs.org/nomacs-setup-x64.msi" -DisableKeepAlive -OutFile "${tempdir}/nomacs.msi"
