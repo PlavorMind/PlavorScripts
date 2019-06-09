@@ -96,16 +96,6 @@ Remove-Item "${tempdir}/MPC-HC.exe" -Force}
 else
 {"Cannot download MPC-HC."}
 
-"Downloading nomacs"
-Invoke-WebRequest "http://download.nomacs.org/nomacs-setup-x64.msi" -DisableKeepAlive -OutFile "${tempdir}/nomacs.msi"
-if (Test-Path "${tempdir}/nomacs.msi")
-{"Installing"
-msiexec /i "${tempdir}/nomacs.msi" /norestart /passive
-"Deleting a temporary file"
-Remove-Item "${tempdir}/nomacs.msi" -Force}
-else
-{"Cannot download nomacs."}
-
 $output=FileURLDetector $obs_installer
 if ($output)
 {"Installing OBS Studio"
