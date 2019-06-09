@@ -5,6 +5,7 @@ param
 ([string]$7zip_version="1900", #7-Zip version to install (must set without dot(.))
 [string]$bleachbit_installer="https://ci.bleachbit.org/dl/2.3.1085/BleachBit-2.3-setup-English.exe", #URL or file path to BleachBit installer
 [string]$gimp_installer="https://download.gimp.org/pub/gimp/v2.10/windows/gimp-2.10.10-setup.exe", #URL or file path to GIMP installer
+[string]$libreoffice_installer="https://dev-builds.libreoffice.org/daily/master/Win-x86_64@42/current/libo-master64~2019-06-09_03.04.32_LibreOfficeDev_6.4.0.0.alpha0_Win_x64.msi", #URL or file path to LibreOffice installer
 [string]$mpchc_version="1.7.13.112", #MPC-HC nightly build version to install
 [string]$obs_installer="https://github.com/obsproject/obs-studio/releases/download/23.2.0-rc1/OBS-Studio-23.2-rc1-Full-Installer-x64.exe", #URL or file path to OBS Studio installer
 [string]$python_installer="https://www.python.org/ftp/python/3.8.0/python-3.8.0a3-amd64.exe", #URL or file path to Python installer
@@ -17,7 +18,8 @@ if (!$IsWindows)
 {"Your operating system is not supported."
 exit}
 
-#Do not use single quotes(') in parameters for Inno Setup otherwise text inside of them will be broken.
+#Do not use single quotes(') in ArgumentList otherwise text inside of them will be broken.
+
 $inno_setup_parameters="/closeapplications /nocancel /norestart /restartapplications /silent /sp- /suppressmsgboxes"
 
 "Downloading Microsoft Visual C++ Redistributable for Visual Studio 2019 RC"
@@ -86,6 +88,18 @@ if ($output -like "${tempdir}*")
 else
 {"Cannot download or find GIMP."}
 
+#Currently doesn't work, needs future review
+$output=FileURLDetector $libreoffice_installer
+if ($output)
+{"Installing LibreOffice"
+Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${output}`" RebootYesNo=No REGISTER_ALL_MSO_TYPES=1 /norestart /passive" -Wait
+if ($output -like "${tempdir}*")
+  {"Deleting a temporary file"
+  Remove-Item $output -Force}
+}
+else
+{"Cannot download or find LibreOffice."}
+
 "Downloading MPC-HC"
 Invoke-WebRequest "https://nightly.mpc-hc.org/MPC-HC.${mpchc_version}.x64.exe" -DisableKeepAlive -OutFile "${tempdir}/MPC-HC.exe"
 if (Test-Path "${tempdir}/MPC-HC.exe")
@@ -132,7 +146,7 @@ else
 Invoke-WebRequest "https://github.com/turtl/desktop/releases/download/v${turtl_version}/turtl-${turtl_version}-windows64.msi" -DisableKeepAlive -OutFile "${tempdir}/Turtl.msi"
 if (Test-Path "${tempdir}/Turtl.msi")
 {"Installing"
-msiexec /i "${tempdir}/Turtl.msi" /norestart /passive
+Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${tempdir}/Turtl.msi`" /norestart /passive" -Wait
 "Deleting a temporary file"
 Remove-Item "${tempdir}/Turtl.msi" -Force}
 else
