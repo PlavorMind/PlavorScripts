@@ -3,13 +3,17 @@
 
 param
 ([string]$core_branch="master", #Branch for MediaWiki core
-[string]$dir, #Directory to download MediaWiki
+[string]$dir="__DEFAULT__", #Directory to download MediaWiki
 [string]$extensions_branch="master", #Branch for extensions
 [string]$skins_branch="master") #Branch for skins
 
-."${PSScriptRoot}/../init_script.ps1"
+if (Test-Path "${PSScriptRoot}/../init_script.ps1")
+{."${PSScriptRoot}/../init_script.ps1"}
+else
+{"Cannot find initialize script."
+exit}
 
-if (!$dir)
+if ($dir -eq "__DEFAULT__")
 {if ($IsLinux)
   {$dir="/web/wiki/mediawiki"}
 elseif ($IsWindows)
