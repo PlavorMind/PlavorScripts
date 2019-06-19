@@ -1,5 +1,5 @@
 #Initialize script
-#Initialize functions, variables, etc. for PlavorScripts.
+#Initializes functions, variables, etc. for PlavorScripts.
 
 function Expand-ArchiveWith7Zip
 {if ($IsWindows -and (Test-Path "C:/Program Files/7-Zip/7z.exe"))
