@@ -4,10 +4,13 @@
 param
 ([string]$apcu_archive="https://windows.php.net/downloads/pecl/releases/apcu/5.1.17/php_apcu-5.1.17-7.3-nts-vc15-x64.zip", #URL or file path to APCu archive
 [string]$dir="C:/PHP", #Directory to install PHP
-[string]$imagick_archive="https://windows.php.net/downloads/pecl/releases/imagick/3.4.4/php_imagick-3.4.4-7.3-nts-vc15-x64.zip", #URL or file path to imagick archive
 [string]$php_archive="https://windows.php.net/downloads/snaps/php-7.3/r209b12e/php-7.3-nts-windows-vc15-x64-r209b12e.zip") #URL or file path to PHP archive
 
-."${PSScriptRoot}/../../init_script.ps1"
+if (Test-Path "${PSScriptRoot}/../../init_script.ps1")
+{."${PSScriptRoot}/../../init_script.ps1"}
+else
+{"Cannot find initialize script."
+exit}
 
 if (!$IsWindows)
 {"Your operating system is not supported."
@@ -49,27 +52,11 @@ else
 {"Cannot download or find APCu archive."
 exit}
 
-$output=FileURLDetector $imagick_archive
-if ($output)
-{Expand-Archive $output "${tempdir}/imagick" -Force
-if ($output -like "${tempdir}*")
-  {"Deleting a temporary file"
-  Remove-Item $output -Force}
-}
-else 
-{"Cannot download or find imagick archive."
-exit}
 
 "Moving APCu"
 Move-Item "${tempdir}/APCu/php_apcu.dll" "${tempdir}/PHP/ext/" -Force
 "Deleting a temporary directory"
 Remove-Item "${tempdir}/APCu" -Force -Recurse
-
-"Moving imagick"
-Move-Item "${tempdir}/imagick/php_imagick.dll" "${tempdir}/PHP/ext/" -Force
-Move-Item "${tempdir}/imagick/*.dll" "${tempdir}/PHP/" -Force
-"Deleting a temporary directory"
-Remove-Item "${tempdir}/imagick" -Force -Recurse
 
 ."${PSScriptRoot}/../../filter_php_ini.ps1" -destpath "${tempdir}/PHP/php.ini"
 if (!(Test-Path "${tempdir}/PHP/php.ini"))
