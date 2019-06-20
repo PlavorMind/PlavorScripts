@@ -1,9 +1,13 @@
 #Create PHP CGI/FastCGI autostart task
 #Creates task to start PHP CGI/FastCGI automatically.
 
-param([string]$path="C:/PHP/start.ps1") #Path to start.ps1 file
+param([string]$path="C:/plavormind/php/start.ps1") #Path to start.ps1 file
 
-."${PSScriptRoot}/../../init_script.ps1"
+if (Test-Path "${PSScriptRoot}/../../init_script.ps1")
+{."${PSScriptRoot}/../../init_script.ps1"}
+else
+{"Cannot find initialize script."
+exit}
 
 if (!$IsWindows)
 {"Your operating system is not supported."
