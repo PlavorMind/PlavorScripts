@@ -25,11 +25,11 @@ $output=FileURLDetector $path
 if ($output)
 {"Filtering php.ini file"
 if ($IsLinux)
-  {Get-Content $output -Encoding utf8 -Force | Select-String ".*;(macos|windows)_only.*" -Encoding utf8 -NotMatch > $destpath}
+  {Select-String ".*;(macos|windows)_only.*" $output -NotMatch | Select-Object -ExpandProperty Line > $destpath}
 elseif ($IsMacOS)
-  {Get-Content $output -Encoding utf8 -Force | Select-String ".*;(linux|windows)_only.*" -Encoding utf8 -NotMatch > $destpath}
+  {Select-String ".*;(linux|windows)_only.*" $output -NotMatch | Select-Object -ExpandProperty Line > $destpath}
 elseif ($IsWindows)
-  {Get-Content $output -Encoding utf8 -Force | Select-String ".*;(linux|macos)_only.*" -Encoding utf8 -NotMatch > $destpath}
+  {Select-String ".*;(linux|macos)_only.*" $output -NotMatch | Select-Object -ExpandProperty Line > $destpath}
 
 if ($output -like "${tempdir}*")
   {"Deleting a temporary file"
