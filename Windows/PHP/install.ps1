@@ -3,7 +3,7 @@
 
 param
 ([string]$apcu_archive="https://windows.php.net/downloads/pecl/releases/apcu/5.1.17/php_apcu-5.1.17-7.3-nts-vc15-x64.zip", #URL or file path to APCu archive
-[string]$dir="C:/PHP", #Directory to install PHP
+[string]$dir="C:/plavormind/php", #Directory to install PHP
 [string]$php_archive="https://windows.php.net/downloads/snaps/php-7.3/r209b12e/php-7.3-nts-windows-vc15-x64-r209b12e.zip") #URL or file path to PHP archive
 
 if (Test-Path "${PSScriptRoot}/../../init_script.ps1")
@@ -52,15 +52,19 @@ else
 {"Cannot download or find APCu archive."
 exit}
 
-
 "Moving APCu"
 Move-Item "${tempdir}/APCu/php_apcu.dll" "${tempdir}/PHP/ext/" -Force
 "Deleting a temporary directory"
 Remove-Item "${tempdir}/APCu" -Force -Recurse
 
-."${PSScriptRoot}/../../filter_php_ini.ps1" -destpath "${tempdir}/PHP/php.ini"
+if (Test-Path "${PSScriptRoot}/../../filter_php_ini.ps1")
+{."${PSScriptRoot}/../../filter_php_ini.ps1" -destpath "${tempdir}/PHP/php.ini"
 if (!(Test-Path "${tempdir}/PHP/php.ini"))
-{exit}
+  {exit}
+}
+else
+{"Cannot find filter php.ini script."
+exit}
 
 "Copying install data"
 Copy-Item "${PSScriptRoot}/install_data/start.ps1" "${tempdir}/PHP/" -Force
