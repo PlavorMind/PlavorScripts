@@ -37,7 +37,7 @@ foreach ($log_directory in $log_directories)
   $log_files=Get-ChildItem "${dir}/${log_directory}" -File -Force -Name
   foreach ($log_file in $log_files)
     {"Filtering ${log_directory}/${log_file} file"
-    Get-Content "${dir}/${log_directory}/${log_file}" -Encoding utf8 -Force | Select-String "(^(127\.0\.0\.[0-9]+|192\.168\.219\.30|::1 ).*|.*GET login\.cgi.*400 150.*)" -Encoding utf8 -NotMatch > "${destdir}/${log_directory}/${log_file}"
+    Select-String "(^(127\.0\.0\.[0-9]+|192\.168\.219\.30|::1 ).*|.*GET login\.cgi.*400 150.*)" "${dir}/${log_directory}/${log_file}" -NotMatch | Select-Object -ExpandProperty Line > "${destdir}/${log_directory}/${log_file}"
 
     "Blanking original log"
     #$null > "${dir}/${log_directory}/${log_file}" should not be used because of a bug on Windows.
