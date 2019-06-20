@@ -86,3 +86,5 @@ Remove-Item "${tempdir}/PHP/snapshot.txt" -Force
 
 "Moving PHP directory"
 Move-Item "${tempdir}/PHP" $dir -Force
+
+."${PSScriptRoot}/create_task.ps1" -path "${dir}/start.ps1"
