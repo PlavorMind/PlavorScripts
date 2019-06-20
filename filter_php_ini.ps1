@@ -2,16 +2,20 @@
 #Filters php.ini file based on operating system.
 
 param
-([string]$destpath, #Destination path to save filtered php.ini file
+([string]$destpath="__DEFAULT__", #Destination path to save filtered php.ini file
 [string]$path="https://raw.githubusercontent.com/PlavorMind/Configurations/Main/php.ini") #File path or URL to filter
 
-."${PSScriptRoot}/init_script.ps1"
+if (Test-Path "${PSScriptRoot}/init_script.ps1")
+{."${PSScriptRoot}/init_script.ps1"}
+else
+{"Cannot find initialize script."
+exit}
 
-if (!$destpath)
+if ($destpath -eq "__DEFAULT__")
 {if ($IsLinux)
   {$destpath="/etc/php/7.2/fpm/php.ini"}
 elseif ($IsWindows)
-  {$destpath="C:/PHP/php.ini"}
+  {$destpath="C:/plavormind/php/php.ini"}
 else
   {"Cannot detect default destination path."
   exit}
@@ -21,11 +25,12 @@ $output=FileURLDetector $path
 if ($output)
 {"Filtering php.ini file"
 if ($IsLinux)
-  {Select-String ".*;(macos|windows)_only.*" $output -Encoding utf8 -NotMatch | ForEach-Object {$_.Line} > $destpath}
+  {Get-Content $output -Encoding utf8 -Force | Select-String ".*;(macos|windows)_only.*" -Encoding utf8 -NotMatch > $destpath}
 elseif ($IsMacOS)
-  {Select-String ".*;(linux|windows)_only.*" $output -Encoding utf8 -NotMatch | ForEach-Object {$_.Line} > $destpath}
+  {Get-Content $output -Encoding utf8 -Force | Select-String ".*;(linux|windows)_only.*" -Encoding utf8 -NotMatch > $destpath}
 elseif ($IsWindows)
-  {Select-String ".*;(linux|macos)_only.*" $output -Encoding utf8 -NotMatch | ForEach-Object {$_.Line} > $destpath}
+  {Get-Content $output -Encoding utf8 -Force | Select-String ".*;(linux|macos)_only.*" -Encoding utf8 -NotMatch > $destpath}
+
 if ($output -like "${tempdir}*")
   {"Deleting a temporary file"
   Remove-Item $output -Force}
