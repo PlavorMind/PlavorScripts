@@ -50,6 +50,10 @@ New-Item "${dir}/main/adminer" -Force -ItemType Directory
 Move-Item "${tempdir}/Adminer" "${dir}/main/adminer/index.php" -Force
 New-Item "${dir}/wiki" -Force -ItemType Directory
 
+if (Test-Path "${PSScriptRoot}/additional_files")
+{"Copying additional files"
+Copy-Item "${PSScriptRoot}/additional_files/*" "${dir}/" -Force -Recurse}
+
 if ($copy_global)
 {$virtual_hosts=Get-ChildItem $dir -Directory -Force -Name
 foreach ($virtual_host in $virtual_hosts)
