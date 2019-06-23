@@ -31,7 +31,5 @@ if (Get-Process "phpdbg" -ErrorAction Ignore)
 
 ."${PSScriptRoot}/delete_task.ps1"
 
-#Start-Sleep 2 #Added delay to avoid errors (Disabled for test)
-
 "Deleting PHP directory"
 Remove-Item $dir -Force -Recurse
