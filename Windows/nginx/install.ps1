@@ -29,7 +29,9 @@ else
 {"Cannot download nginx archive."
 exit}
 
+$dir_temp=$dir
 ."${PSScriptRoot}/../../filter_nginx_config.ps1" -dir "${tempdir}/nginx/conf"
+$dir=$dir_temp
 if (!(Test-Path "${tempdir}/nginx/conf/nginx.conf"))
 {exit}
 
