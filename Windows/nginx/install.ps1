@@ -2,25 +2,18 @@
 #Installs nginx.
 
 param
-([string]$adminer_version="4.7.1", #Adminer version to download
-[string]$dir="C:/nginx", #Directory to install nginx
-[string]$version="1.17.0") #nginx version to install
+([string]$dir="C:/plavormind/nginx", #Directory to install nginx
+[string]$version="1.17.0", #nginx version to install
+[string]$web_dir="C:/plavormind/web") #Web server directory
 
-."${PSScriptRoot}/../../init_script.ps1"
+if (Test-Path "${PSScriptRoot}/../../init_script.ps1")
+{."${PSScriptRoot}/../../init_script.ps1"}
+else
+{"Cannot find initialize script."
+exit}
 
 if (!$IsWindows)
 {"Your operating system is not supported."
-exit}
-
-"Downloading Configurations repository archive"
-Invoke-WebRequest "https://github.com/PlavorMind/Configurations/archive/Main.zip" -DisableKeepAlive -OutFile "${tempdir}/Configurations.zip"
-if (Test-Path "${tempdir}/Configurations.zip")
-{"Extracting"
-Expand-Archive "${tempdir}/Configurations.zip" $tempdir -Force
-"Deleting a temporary file"
-Remove-Item "${tempdir}/Configurations.zip" -Force}
-else
-{"Cannot download Configurations repository archive."
 exit}
 
 "Downloading nginx archive"
@@ -36,23 +29,17 @@ else
 {"Cannot download nginx archive."
 exit}
 
-"Copying configuration files"
-Copy-Item "${tempdir}/Configurations-Main/nginx/*" "${tempdir}/nginx/conf/" -Force -Recurse
-."${PSScriptRoot}/../../filter_nginx_conf.ps1" -destpath "${tempdir}/nginx/conf/nginx.conf" -path "${tempdir}/Configurations-Main/nginx/nginx.conf"
+."${PSScriptRoot}/../../filter_nginx_config.ps1" -dir "${tempdir}/nginx/conf"
+if (!(Test-Path "${tempdir}/nginx/conf/nginx.conf"))
+{exit}
 
-"Copying web directory"
-Copy-Item "${tempdir}/Configurations-Main/Web" "${tempdir}/nginx/web" -Force -Recurse
-Move-Item "${tempdir}/nginx/html/index.html" "${tempdir}/nginx/web/main/" -Force
-New-Item "${tempdir}/nginx/web/wiki" -Force -ItemType Directory
-
-"Downloading Adminer"
-Invoke-WebRequest "https://github.com/vrana/adminer/releases/download/v${adminer_version}/adminer-${adminer_version}-en.php" -DisableKeepAlive -OutFile "${tempdir}/nginx/web/main/adminer.php"
-
-$virtual_hosts=Get-ChildItem "${tempdir}/nginx/web" -Directory -Force -Name
-
+if (Test-Path $web_dir)
+{[System.Collections.ArrayList]$virtual_hosts=Get-ChildItem $web_dir -Directory -Force -Name
+$virtual_hosts.Remove("global")
 "Creating log directories"
 foreach ($virtual_host in $virtual_hosts)
-{New-Item "${tempdir}/nginx/logs/${virtual_host}" -Force -ItemType Directory}
+  {New-Item "${tempdir}/nginx/logs/${virtual_host}" -Force -ItemType Directory}
+}
 
 "Copying install data"
 Copy-Item "${PSScriptRoot}/install_data/start.ps1" "${tempdir}/nginx/" -Force
@@ -61,9 +48,6 @@ Copy-Item "${PSScriptRoot}/install_data/stop.ps1" "${tempdir}/nginx/" -Force
 if (Test-Path "${PSScriptRoot}/additional_files")
 {"Copying additional files"
 Copy-Item "${PSScriptRoot}/additional_files/*" "${tempdir}/nginx/" -Force -Recurse}
-
-"Deleting a temporary directory"
-Remove-Item "${tempdir}/Configurations-Main" -Force -Recurse
 
 "Deleting unnecessary files"
 "Warning: This will remove documentations and license notices that are unnecessary for running."
@@ -81,3 +65,5 @@ Move-Item $dir "${dir}_old" -Force}
 
 "Moving nginx directory"
 Move-Item "${tempdir}/nginx" $dir -Force
+
+."${PSScriptRoot}/create_task.ps1" -path "${dir}/start.ps1"
