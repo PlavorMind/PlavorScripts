@@ -2,7 +2,7 @@
 #Configures MediaWiki directories.
 
 param
-([string]$core_branch="wmf/1.34.0-wmf.10", #Branch for MediaWiki core
+([string]$core_branch="wmf/1.34.0-wmf.8", #Branch for MediaWiki core
 [string]$extra_branch="master", #Branch for extensions and skins
 [string]$mediawiki_dir="__DEFAULT__", #Directory to configure for MediaWiki
 [string]$private_data_dir="__DEFAULT__") #Directory to configure for private data
@@ -25,9 +25,9 @@ else
 
 if ($private_data_dir -eq "__DEFAULT__")
 {if ($IsLinux)
-  {$private_data_dir="/plavormind/web/wiki/mediawiki/private_data"}
+  {$private_data_dir="/plavormind/web_data/mediawiki"}
 elseif ($IsWindows)
-  {$private_data_dir="C:/plavormind/web/wiki/mediawiki/private_data"}
+  {$private_data_dir="C:/plavormind/web_data/mediawiki"}
 else
   {"Cannot detect default directory."
   exit}
@@ -57,13 +57,6 @@ Remove-Item "${tempdir}/MediaWiki/images" -Force -Recurse
 if (Test-Path "${PSScriptRoot}/additional_files/data")
 {"Copying additional files for data directory"
 Copy-Item "${PSScriptRoot}/additional_files/data/*" "${tempdir}/MediaWiki/data/" -Force -Recurse}
-if (Test-Path "${PSScriptRoot}/additional_files/private_data")
-{if (Test-Path $private_data_dir)
-  {"Renaming existing private data directory"
-  Move-Item $private_data_dir "${private_data_dir}_old" -Force}
-
-"Copying additional files for private data directory"
-Copy-Item "${PSScriptRoot}/additional_files/private_data" $private_data_dir -Force -Recurse}
 
 "Deleting a temporary directory"
 Remove-Item "${tempdir}/Configurations-Main" -Force -Recurse
@@ -74,6 +67,14 @@ Move-Item $mediawiki_dir "${mediawiki_dir}_old" -Force}
 
 "Moving MediaWiki directory"
 Move-Item "${tempdir}/MediaWiki" $mediawiki_dir -Force
+
+if (Test-Path "${PSScriptRoot}/additional_files/private_data")
+{if (Test-Path $private_data_dir)
+  {"Renaming existing private data directory"
+  Move-Item $private_data_dir "${private_data_dir}_old" -Force}
+
+"Copying additional files for private data directory"
+Copy-Item "${PSScriptRoot}/additional_files/private_data" $private_data_dir -Force -Recurse}
 
 if ($IsLinux)
 {"Changing ownership of MediaWiki directory"
