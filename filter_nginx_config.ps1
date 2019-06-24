@@ -14,7 +14,7 @@ if ($dir -eq "__DEFAULT__")
 {if ($IsLinux)
   {$dir="/etc/nginx"}
 elseif ($IsWindows)
-  {$dir="C:/nginx/conf"}
+  {$dir="C:/plavormind/nginx/conf"}
 else
   {"Cannot detect default directory."
   exit}
