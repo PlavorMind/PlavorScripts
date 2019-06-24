@@ -38,6 +38,7 @@ $extensions=
 "CommonsMetadata",
 "ConfirmEdit",
 "DeletePagesForGood",
+"Echo",
 #"GlobalUserPage",
 "Highlightjs_Integration",
 "MinimumNameLength",
