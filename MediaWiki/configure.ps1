@@ -2,18 +2,21 @@
 #Configures MediaWiki directories.
 
 param
-([string]$core_branch="wmf/1.34.0-wmf.8", #Branch for MediaWiki core
-[string]$dir, #Directory to install MediaWiki
-[string]$extensions_branch="master", #Branch for extensions
-[string]$skins_branch="master") #Branch for skins
+([string]$core_branch="wmf/1.34.0-wmf.10", #Branch for MediaWiki core
+[string]$dir="__DEFAULT__", #Directory to configure for MediaWiki
+[string]$extra_branch="master") #Branch for extensions and skins
 
-."${PSScriptRoot}/../init_script.ps1"
+if (Test-Path "${PSScriptRoot}/../init_script.ps1")
+{."${PSScriptRoot}/../init_script.ps1"}
+else
+{"Cannot find initialize script."
+exit}
 
-if (!$dir)
+if ($dir -eq "__DEFAULT__")
 {if ($IsLinux)
-  {$dir="/web/wiki/mediawiki"}
+  {$dir="/plavormind/web/wiki/mediawiki"}
 elseif ($IsWindows)
-  {$dir="C:/nginx/web/wiki/mediawiki"}
+  {$dir="C:/plavormind/web/wiki/mediawiki"}
 else
   {"Cannot detect default directory."
   exit}
@@ -31,7 +34,7 @@ else
 exit}
 
 $dir_temp=$dir
-."${PSScriptRoot}/download.ps1" -core_branch $core_branch -dir "${tempdir}/MediaWiki_install" -extensions_branch $extensions_branch -skins_branch $skins_branch
+."${PSScriptRoot}/download.ps1" -core_branch $core_branch -dir "${tempdir}/MediaWiki_install" -extensions_branch $extra_branch -skins_branch $extra_branch
 $dir=$dir_temp
 Move-Item "${tempdir}/MediaWiki_install" "${tempdir}/MediaWiki" -Force
 
