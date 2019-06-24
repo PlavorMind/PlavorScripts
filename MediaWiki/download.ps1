@@ -15,9 +15,9 @@ exit}
 
 if ($dir -eq "__DEFAULT__")
 {if ($IsLinux)
-  {$dir="/web/wiki/mediawiki"}
+  {$dir="/plavormind/web/wiki/mediawiki"}
 elseif ($IsWindows)
-  {$dir="C:/nginx/web/wiki/mediawiki"}
+  {$dir="C:/plavormind/web/wiki/mediawiki"}
 else
   {"Cannot detect default directory."
   exit}
