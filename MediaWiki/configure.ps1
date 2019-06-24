@@ -3,8 +3,9 @@
 
 param
 ([string]$core_branch="wmf/1.34.0-wmf.10", #Branch for MediaWiki core
-[string]$dir="__DEFAULT__", #Directory to configure for MediaWiki
-[string]$extra_branch="master") #Branch for extensions and skins
+[string]$extra_branch="master", #Branch for extensions and skins
+[string]$mediawiki_dir="__DEFAULT__", #Directory to configure for MediaWiki
+[string]$private_data_dir="__DEFAULT__") #Directory to configure for private data
 
 if (Test-Path "${PSScriptRoot}/../init_script.ps1")
 {."${PSScriptRoot}/../init_script.ps1"}
@@ -12,11 +13,21 @@ else
 {"Cannot find initialize script."
 exit}
 
-if ($dir -eq "__DEFAULT__")
+if ($mediawiki_dir -eq "__DEFAULT__")
 {if ($IsLinux)
-  {$dir="/plavormind/web/wiki/mediawiki"}
+  {$mediawiki_dir="/plavormind/web/wiki/mediawiki"}
 elseif ($IsWindows)
-  {$dir="C:/plavormind/web/wiki/mediawiki"}
+  {$mediawiki_dir="C:/plavormind/web/wiki/mediawiki"}
+else
+  {"Cannot detect default directory."
+  exit}
+}
+
+if ($private_data_dir -eq "__DEFAULT__")
+{if ($IsLinux)
+  {$private_data_dir="/plavormind/web/wiki/mediawiki/private_data"}
+elseif ($IsWindows)
+  {$private_data_dir="C:/plavormind/web/wiki/mediawiki/private_data"}
 else
   {"Cannot detect default directory."
   exit}
@@ -33,9 +44,7 @@ else
 {"Cannot download Configurations repository archive."
 exit}
 
-$dir_temp=$dir
 ."${PSScriptRoot}/download.ps1" -core_branch $core_branch -dir "${tempdir}/MediaWiki_install" -extensions_branch $extra_branch -skins_branch $extra_branch
-$dir=$dir_temp
 Move-Item "${tempdir}/MediaWiki_install" "${tempdir}/MediaWiki" -Force
 
 "Moving configuration files"
@@ -45,23 +54,26 @@ Remove-Item "${tempdir}/MediaWiki/cache" -Force -Recurse
 "Deleting core images directory"
 Remove-Item "${tempdir}/MediaWiki/images" -Force -Recurse
 
-if (Test-Path "${PSScriptRoot}/additional_files")
-{"Copying additional files"
-Copy-Item "${PSScriptRoot}/additional_files/*" "${tempdir}/MediaWiki/" -Force -Recurse}
+if (Test-Path "${PSScriptRoot}/additional_files/data")
+{"Copying additional files for data directory"
+Copy-Item "${PSScriptRoot}/additional_files/data/*" "${tempdir}/MediaWiki/data/" -Force -Recurse}
+if (Test-Path "${PSScriptRoot}/additional_files/private_data")
+{"Copying additional files for private data directory"
+Copy-Item "${PSScriptRoot}/additional_files/private_data" $private_data_dir -Force -Recurse}
 
 "Deleting a temporary directory"
 Remove-Item "${tempdir}/Configurations-Main" -Force -Recurse
 
-if (Test-Path $dir)
+if (Test-Path $mediawiki_dir)
 {"Renaming existing MediaWiki directory"
-Move-Item $dir "${dir}_old" -Force}
+Move-Item $mediawiki_dir "${mediawiki_dir}_old" -Force}
 
 "Moving MediaWiki directory"
-Move-Item "${tempdir}/MediaWiki" $dir -Force
+Move-Item "${tempdir}/MediaWiki" $mediawiki_dir -Force
 
 if ($IsLinux)
 {"Changing ownership of MediaWiki directory"
-chown "www-data" $dir -R
+chown "www-data" $mediawiki_dir -R
 "Changing permissions of MediaWiki directory"
-chmod 755 $dir -R
-chmod 700 "${dir}/private_data" -R}
+chmod 755 $mediawiki_dir -R
+chmod 700 "${mediawiki_dir}/private_data" -R}
