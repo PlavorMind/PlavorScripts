@@ -1,5 +1,5 @@
 #Build additional files
-#Builds additional files for MediaWiki installer script.
+#Builds additional files for Configure MediaWiki script.
 
 param
 ([string]$data_dir="__DEFAULT__", #Directory that contains data for PlavorMind wikis
@@ -13,9 +13,9 @@ exit}
 
 if ($data_dir -eq "__DEFAULT__")
 {if ($IsLinux)
-  {$data_dir="/web/wiki/mediawiki/data"}
+  {$data_dir="/plavormind/web/wiki/mediawiki/data"}
 elseif ($IsWindows)
-  {$data_dir="C:/nginx/web/wiki/mediawiki/data"}
+  {$data_dir="C:/plavormind/web/wiki/mediawiki/data"}
 else
   {"Cannot detect default directory."
   exit}
@@ -23,9 +23,9 @@ else
 
 if ($private_data_dir -eq "__DEFAULT__")
 {if ($IsLinux)
-  {$private_data_dir="/web/wiki/mediawiki/private_data"}
+  {$private_data_dir="/plavormind/web/wiki/mediawiki/private_data"}
 elseif ($IsWindows)
-  {$private_data_dir="C:/nginx/web/wiki/mediawiki/private_data"}
+  {$private_data_dir="C:/plavormind/web/wiki/mediawiki/private_data"}
 else
   {"Cannot detect default directory."
   exit}
