@@ -69,12 +69,10 @@ Move-Item $mediawiki_dir "${mediawiki_dir}_old" -Force}
 Move-Item "${tempdir}/MediaWiki" $mediawiki_dir -Force
 
 if (Test-Path "${PSScriptRoot}/additional_files/private_data")
-{if (Test-Path $private_data_dir)
-  {"Renaming existing private data directory"
-  Move-Item $private_data_dir "${private_data_dir}_old" -Force}
-
+{"Creating private data directory"
+New-Item $private_data_dir -Force -ItemType Directory
 "Copying additional files for private data directory"
-Copy-Item "${PSScriptRoot}/additional_files/private_data" $private_data_dir -Force -Recurse}
+Copy-Item "${PSScriptRoot}/additional_files/private_data/*" "${private_data_dir}/" -Force -Recurse}
 
 if ($IsLinux)
 {"Changing ownership of MediaWiki directory"
