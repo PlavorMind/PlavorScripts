@@ -58,7 +58,11 @@ if (Test-Path "${PSScriptRoot}/additional_files/data")
 {"Copying additional files for data directory"
 Copy-Item "${PSScriptRoot}/additional_files/data/*" "${tempdir}/MediaWiki/data/" -Force -Recurse}
 if (Test-Path "${PSScriptRoot}/additional_files/private_data")
-{"Copying additional files for private data directory"
+{if (Test-Path $private_data_dir)
+  {"Renaming existing private data directory"
+  Move-Item $private_data_dir "${private_data_dir}_old" -Force}
+
+"Copying additional files for private data directory"
 Copy-Item "${PSScriptRoot}/additional_files/private_data" $private_data_dir -Force -Recurse}
 
 "Deleting a temporary directory"
