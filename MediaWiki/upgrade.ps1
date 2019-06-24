@@ -3,8 +3,9 @@
 
 param
 ([string]$core_branch="wmf/1.34.0-wmf.8", #Branch for MediaWiki core
-[string]$dir="__DEFAULT__", #Directory that MediaWiki is installed
-[string]$extra_branch="master") #Branch for extensions and skins
+[string]$extra_branch="master", #Branch for extensions and skins
+[string]$mediawiki_dir="__DEFAULT__", #Directory that MediaWiki is installed
+[string]$private_data_dir="__DEFAULT__") #Directory that contains private data for PlavorMind wikis
 
 if (Test-Path "${PSScriptRoot}/../init_script.ps1")
 {."${PSScriptRoot}/../init_script.ps1"}
@@ -12,27 +13,35 @@ else
 {"Cannot find initialize script."
 exit}
 
-if ($dir -eq "__DEFAULT__")
+if ($mediawiki_dir -eq "__DEFAULT__")
 {if ($IsLinux)
-  {$dir="/plavormind/web/wiki/mediawiki"}
+  {$mediawiki_dir="/plavormind/web/wiki/mediawiki"}
 elseif ($IsWindows)
-  {$dir="C:/plavormind/web/wiki/mediawiki"}
+  {$mediawiki_dir="C:/plavormind/web/wiki/mediawiki"}
 else
   {"Cannot detect default directory."
   exit}
 }
 
-$dir_temp=$dir
+if ($private_data_dir -eq "__DEFAULT__")
+{if ($IsLinux)
+  {$private_data_dir="/plavormind/web_data/mediawiki"}
+elseif ($IsWindows)
+  {$private_data_dir="C:/plavormind/web_data/mediawiki"}
+else
+  {"Cannot detect default directory."
+  exit}
+}
+
 ."${PSScriptRoot}/download.ps1" -core_branch $core_branch -dir "${tempdir}/MediaWiki_upgrade" -extensions_branch $extra_branch -skins_branch $extra_branch
-$dir=$dir_temp
 Move-Item "${tempdir}/MediaWiki_upgrade" "${tempdir}/MediaWiki" -Force
 
-if (Test-Path "${dir}/data")
+if (Test-Path "${mediawiki_dir}/data")
 {"Copying existing data directory"
-Copy-Item "${dir}/data" "${tempdir}/MediaWiki/" -Force -Recurse}
-if (Test-Path "${dir}/LocalSettings.php")
+Copy-Item "${mediawiki_dir}/data" "${tempdir}/MediaWiki/" -Force -Recurse}
+if (Test-Path "${mediawiki_dir}/LocalSettings.php")
 {"Copying existing LocalSettings.php file"
-Copy-Item "${dir}/LocalSettings.php" "${tempdir}/MediaWiki/" -Force}
+Copy-Item "${mediawiki_dir}/LocalSettings.php" "${tempdir}/MediaWiki/" -Force}
 "Deleting core cache directory"
 Remove-Item "${tempdir}/MediaWiki/cache" -Force -Recurse
 "Deleting core images directory"
@@ -43,17 +52,20 @@ foreach ($wiki in $wikis)
 {"Running update.php for ${wiki}"
 php "${tempdir}/MediaWiki/maintenance/update.php" --doshared --quick --wiki $wiki}
 
-."${PSScriptRoot}/cleanup.ps1" -mediawiki_dir "${tempdir}/MediaWiki"
+$mediawiki_dir_temp=$mediawiki_dir
+."${PSScriptRoot}/cleanup.ps1" -mediawiki_dir "${tempdir}/MediaWiki" -private_data_dir $private_data_dir
+$mediawiki_dir=$mediawiki_dir_temp
 
-if (Test-Path $dir)
+if (Test-Path $mediawiki_dir)
 {"Renaming existing MediaWiki directory"
-Move-Item $dir "${dir}_old" -Force}
+Move-Item $mediawiki_dir "${mediawiki_dir}_old" -Force}
 
 "Moving MediaWiki directory"
-Move-Item "${tempdir}/MediaWiki" $dir -Force
+Move-Item "${tempdir}/MediaWiki" $mediawiki_dir -Force
 
 if ($IsLinux)
 {"Changing ownership of MediaWiki directory"
-chown "www-data" $dir -R
+chown "www-data" $mediawiki_dir -R
 "Changing permissions of MediaWiki directory"
-chmod 755 $dir -R}
+chmod 755 $mediawiki_dir -R
+chmod 700 $private_data_dir -R}
