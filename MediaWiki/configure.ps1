@@ -79,4 +79,4 @@ if ($IsLinux)
 chown "www-data" $mediawiki_dir -R
 "Changing permissions of MediaWiki directory"
 chmod 755 $mediawiki_dir -R
-chmod 700 "${mediawiki_dir}/private_data" -R}
+chmod 700 $private_data_dir -R}
