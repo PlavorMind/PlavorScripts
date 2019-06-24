@@ -23,9 +23,9 @@ else
 
 if ($private_data_dir -eq "__DEFAULT__")
 {if ($IsLinux)
-  {$private_data_dir="/plavormind/web/wiki/mediawiki/private_data"}
+  {$private_data_dir="/plavormind/web_data/mediawiki"}
 elseif ($IsWindows)
-  {$private_data_dir="C:/plavormind/web/wiki/mediawiki/private_data"}
+  {$private_data_dir="C:/plavormind/web_data/mediawiki"}
 else
   {"Cannot detect default directory."
   exit}
