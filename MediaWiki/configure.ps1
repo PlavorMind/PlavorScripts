@@ -58,6 +58,10 @@ if (Test-Path "${PSScriptRoot}/additional_files/data")
 {"Copying additional files for data directory"
 Copy-Item "${PSScriptRoot}/additional_files/data/*" "${tempdir}/MediaWiki/data/" -Force -Recurse}
 
+$mediawiki_dir_temp=$mediawiki_dir
+."${PSScriptRoot}/cleanup.ps1" -mediawiki_dir "${tempdir}/MediaWiki" -private_data_dir $private_data_dir
+$mediawiki_dir=$mediawiki_dir_temp
+
 "Deleting a temporary directory"
 Remove-Item "${tempdir}/Configurations-Main" -Force -Recurse
 
