@@ -34,7 +34,11 @@ else
 if (Test-Path $mediawiki_dir)
 {$wikis=Get-ChildItem "${mediawiki_dir}/data" -Directory -Force -Name
 foreach ($wiki in $wikis)
-  {"Running runJobs.php for ${wiki}"
+  {"Running emptyUserGroup.php for ${wiki}"
+  php "${mediawiki_dir}/maintenance/emptyUserGroup.php" "interface-admin" --wiki $wiki
+  php "${mediawiki_dir}/maintenance/emptyUserGroup.php" "sysop" --wiki $wiki
+
+  "Running runJobs.php for ${wiki}"
   php "${mediawiki_dir}/maintenance/runJobs.php" --wiki $wiki
 
   if (Test-Path "${private_data_dir}/${wiki}/cache")
