@@ -3,16 +3,20 @@
 
 param
 ([string]$7zip_version="1900", #7-Zip version to install (must set without dot(.))
-[string]$bleachbit_installer="https://ci.bleachbit.org/dl/2.3.1085/BleachBit-2.3-setup-English.exe", #URL or file path to BleachBit installer
-[string]$gimp_installer="https://download.gimp.org/pub/gimp/v2.10/windows/gimp-2.10.10-setup.exe", #URL or file path to GIMP installer
-[string]$libreoffice_installer="https://dev-builds.libreoffice.org/daily/master/Win-x86_64@42/current/libo-master64~2019-06-09_03.04.32_LibreOfficeDev_6.4.0.0.alpha0_Win_x64.msi", #URL or file path to LibreOffice installer
+[string]$bleachbit_installer="https://ci.bleachbit.org/dl/2.3.1122/BleachBit-2.3-setup-English.exe", #URL or file path to BleachBit installer
+[string]$gimp_installer="https://download.gimp.org/mirror/pub/gimp/v2.10/windows/gimp-2.10.12-setup-1.exe", #URL or file path to GIMP installer
+[string]$libreoffice_installer="https://dev-builds.libreoffice.org/daily/master/Win-x86_64@42/current/libo-master64~2019-06-30_23.26.40_LibreOfficeDev_6.4.0.0.alpha0_Win_x64.msi", #URL or file path to LibreOffice installer
 [string]$mpchc_version="1.7.13.112", #MPC-HC nightly build version to install
-[string]$obs_installer="https://github.com/obsproject/obs-studio/releases/download/23.2.0-rc1/OBS-Studio-23.2-rc1-Full-Installer-x64.exe", #URL or file path to OBS Studio installer
-[string]$python_installer="https://www.python.org/ftp/python/3.8.0/python-3.8.0a3-amd64.exe", #URL or file path to Python installer
+[string]$obs_installer="https://cdn-fastly.obsproject.com/downloads/OBS-Studio-23.2.1-Full-Installer-x64.exe", #URL or file path to OBS Studio installer
+[string]$python_installer="https://www.python.org/ftp/python/3.8.0/python-3.8.0b1-amd64.exe", #URL or file path to Python installer
 [string]$qview_version="2.0", #qView version to install
 [string]$turtl_version="0.7.2.5") #Turtl version to install
 
-."${PSScriptRoot}/../init_script.ps1"
+if (Test-Path "${PSScriptRoot}/../init_script.ps1")
+{."${PSScriptRoot}/../init_script.ps1"}
+else
+{"Cannot find initialize script."
+exit}
 
 if (!$IsWindows)
 {"Your operating system is not supported."
