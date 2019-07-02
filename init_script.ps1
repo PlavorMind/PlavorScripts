@@ -17,7 +17,7 @@ function Expand-ArchiveWith7Zip
 
 function FileURLDetector
 {if ($args[0] -match "https?:\/\/.+")
-  {if ($args[0] -match "https?:\/\/.+\/(.+\..+)")
+  {if ($args[0] -match "https?:\/\/.+\/([^\\/:*?`"<>|]+\.[^\\/:*?`"<>|]+)")
     {$filename=$Matches[1]}
   else
     {$filename="fud_output"}
