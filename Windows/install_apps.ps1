@@ -9,8 +9,7 @@ param
 [string]$mpchc_version="1.7.13.112", #MPC-HC nightly build version to install
 [string]$obs_installer="https://cdn-fastly.obsproject.com/downloads/OBS-Studio-23.2.1-Full-Installer-x64.exe", #URL or file path to OBS Studio installer
 [string]$python_installer="https://www.python.org/ftp/python/3.8.0/python-3.8.0b1-amd64.exe", #URL or file path to Python installer
-[string]$qview_version="2.0", #qView version to install
-[string]$turtl_version="0.7.2.5") #Turtl version to install
+[string]$qview_version="2.0") #qView version to install
 
 if (Test-Path "${PSScriptRoot}/../init_script.ps1")
 {."${PSScriptRoot}/../init_script.ps1"}
@@ -145,16 +144,6 @@ Start-Process "${tempdir}/qView.exe" -ArgumentList "${inno_setup_parameters} /me
 Remove-Item "${tempdir}/qView.exe" -Force}
 else
 {"Cannot download qView."}
-
-"Dowloading Turtl"
-Invoke-WebRequest "https://github.com/turtl/desktop/releases/download/v${turtl_version}/turtl-${turtl_version}-windows64.msi" -DisableKeepAlive -OutFile "${tempdir}/Turtl.msi"
-if (Test-Path "${tempdir}/Turtl.msi")
-{"Installing"
-Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${tempdir}/Turtl.msi`" /norestart /passive" -Wait
-"Deleting a temporary file"
-Remove-Item "${tempdir}/Turtl.msi" -Force}
-else
-{"Cannot download Turtl."}
 
 "Downloading Visual Studio Code"
 Invoke-WebRequest "https://go.microsoft.com/fwlink/?Linkid=852155" -DisableKeepAlive -OutFile "${tempdir}/Visual Studio Code.exe"
