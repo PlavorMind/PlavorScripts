@@ -11,6 +11,10 @@ if (!$IsWindows)
 {"Your operating system is not supported."
 exit}
 
+#Added to avoid errors
+"Importing DISM module"
+Import-Module Dism -Force -SkipEditionCheck
+
 "Disabling Media Features (root) feature"
 Disable-WindowsOptionalFeature -FeatureName "MediaPlayback" -NoRestart -Online
 
