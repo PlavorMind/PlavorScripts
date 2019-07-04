@@ -1,5 +1,5 @@
-#Configure MediaWiki
-#Configures MediaWiki directories.
+#Initialize MediaWiki
+#Initializes MediaWiki directories.
 
 param
 ([string]$core_branch="wmf/1.34.0-wmf.11", #Branch for MediaWiki core
@@ -57,10 +57,16 @@ Remove-Item "${tempdir}/MediaWiki/images" -Force -Recurse
 if (Test-Path "${PSScriptRoot}/additional_files/data")
 {"Copying additional files for data directory"
 Copy-Item "${PSScriptRoot}/additional_files/data/*" "${tempdir}/MediaWiki/data/" -Force -Recurse}
+if (Test-Path "${PSScriptRoot}/additional_files/private_data")
+{"Copying additional files for private data directory"
+Copy-Item "${PSScriptRoot}/additional_files/private_data" "${tempdir}/" -Force -Recurse}
 
 $mediawiki_dir_temp=$mediawiki_dir
-."${PSScriptRoot}/cleanup.ps1" -mediawiki_dir "${tempdir}/MediaWiki" -private_data_dir $private_data_dir
+$private_data_dir_temp=$private_data_dir
+."${PSScriptRoot}/run_script_globally.ps1" -dir "${tempdir}/MediaWiki" -script "update.php --doshared --quick"
+."${PSScriptRoot}/maintain.ps1" -mediawiki_dir "${tempdir}/MediaWiki" -private_data_dir "${tempdir}/private_data"
 $mediawiki_dir=$mediawiki_dir_temp
+$private_data_dir=$private_data_dir_temp
 
 "Deleting a temporary directory"
 Remove-Item "${tempdir}/Configurations-Main" -Force -Recurse
@@ -68,15 +74,15 @@ Remove-Item "${tempdir}/Configurations-Main" -Force -Recurse
 if (Test-Path $mediawiki_dir)
 {"Renaming existing MediaWiki directory"
 Move-Item $mediawiki_dir "${mediawiki_dir}_old" -Force}
+if (Test-Path $private_data_dir)
+{"Renaming existing MediaWiki directory"
+Move-Item $private_data_dir "${private_data_dir}_old" -Force}
 
 "Moving MediaWiki directory"
 Move-Item "${tempdir}/MediaWiki" $mediawiki_dir -Force
-
-if (Test-Path "${PSScriptRoot}/additional_files/private_data")
-{"Creating private data directory"
-New-Item $private_data_dir -Force -ItemType Directory
-"Copying additional files for private data directory"
-Copy-Item "${PSScriptRoot}/additional_files/private_data/*" "${private_data_dir}/" -Force -Recurse}
+if (Test-Path "${tempdir}/private_data")
+{"Moving private data directory"
+Move-Item "${tempdir}/private_data" $private_data_dir -Force}
 
 if ($IsLinux)
 {"Changing ownership of MediaWiki directory"
