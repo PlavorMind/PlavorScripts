@@ -75,7 +75,7 @@ if (Test-Path $mediawiki_dir)
 {"Renaming existing MediaWiki directory"
 Move-Item $mediawiki_dir "${mediawiki_dir}_old" -Force}
 if (Test-Path $private_data_dir)
-{"Renaming existing MediaWiki directory"
+{"Renaming existing private data directory"
 Move-Item $private_data_dir "${private_data_dir}_old" -Force}
 
 "Moving MediaWiki directory"
