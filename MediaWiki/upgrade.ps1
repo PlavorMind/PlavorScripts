@@ -47,13 +47,9 @@ Remove-Item "${tempdir}/MediaWiki/cache" -Force -Recurse
 "Deleting core images directory"
 Remove-Item "${tempdir}/MediaWiki/images" -Force -Recurse
 
-$wikis=Get-ChildItem "${tempdir}/MediaWiki/data" -Directory -Force -Name
-foreach ($wiki in $wikis)
-{"Running update.php for ${wiki}"
-php "${tempdir}/MediaWiki/maintenance/update.php" --doshared --quick --wiki $wiki}
-
+."${PSScriptRoot}/run_script_globally.ps1" -dir "${tempdir}/MediaWiki" -script "update.php --doshared --quick"
 $mediawiki_dir_temp=$mediawiki_dir
-."${PSScriptRoot}/cleanup.ps1" -mediawiki_dir "${tempdir}/MediaWiki" -private_data_dir $private_data_dir
+."${PSScriptRoot}/maintain.ps1" -mediawiki_dir "${tempdir}/MediaWiki" -private_data_dir $private_data_dir
 $mediawiki_dir=$mediawiki_dir_temp
 
 if (Test-Path $mediawiki_dir)
