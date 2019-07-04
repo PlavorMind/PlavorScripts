@@ -2,8 +2,7 @@
 #Runs a MediaWiki maintenance script for all PlavorMind wikis.
 
 param
-([string]$arguments="", #Arguments to append when running script
-[string]$dir="__DEFAULT__", #Directory that MediaWiki is installed
+([string]$dir="__DEFAULT__", #Directory that MediaWiki is installed
 [string]$script) #Script to run
 
 if (Test-Path "${PSScriptRoot}/../init_script.ps1")
@@ -22,11 +21,12 @@ else
   exit}
 }
 
-if (Test-Path "${dir}/maintenance/${script}.php")
+if (Test-Path $dir)
 {$wikis=Get-ChildItem "${dir}/data" -Directory -Force -Name
 foreach ($wiki in $wikis)
-  {"Running ${script}.php for ${wiki}"
-  php "${dir}/maintenance/${script}.php" $arguments --wiki $wiki}
+  {"Running ${script} for ${wiki}"
+  #Workaround to fix argument bug
+  Start-Process "php" -ArgumentList "${dir}/maintenance/${script} --wiki ${wiki}" -Wait}
 }
 else
-{"Cannot find maintenance script."}
+{"Cannot find MediaWiki directory."}
