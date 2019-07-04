@@ -32,7 +32,10 @@ else
 }
 
 if (Test-Path $mediawiki_dir)
-{."${PSScriptRoot}/run_script_globally.ps1" -dir $mediawiki_dir -script "runJobs"
+{."${PSScriptRoot}/run_script_globally.ps1" -dir $mediawiki_dir -script "purgeExpiredUserrights.php"
+."${PSScriptRoot}/run_script_globally.ps1" -dir $mediawiki_dir -script "pruneFileCache.php --agedays 0"
+."${PSScriptRoot}/run_script_globally.ps1" -dir $mediawiki_dir -script "purgeOldText.php --purge"
+."${PSScriptRoot}/run_script_globally.ps1" -dir $mediawiki_dir -script "runJobs.php"
 
 if (Test-Path "${private_data_dir}/databases/locks")
   {"Deleting locks directory"
