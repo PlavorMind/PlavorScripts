@@ -148,6 +148,7 @@ else
 "Deleting unnecessary files"
 "Warning: This will remove documentations and license notices that are unnecessary for running."
 Remove-Item "${tempdir}/MediaWiki/docs" -Force -Recurse
+Remove-Item "${tempdir}/MediaWiki/maintenance/README" -Force
 Remove-Item "${tempdir}/MediaWiki/resources/assets/file-type-icons/COPYING" -Force
 Remove-Item "${tempdir}/MediaWiki/resources/assets/licenses/public-domain.png" -Force
 Remove-Item "${tempdir}/MediaWiki/resources/assets/licenses/README" -Force
