@@ -61,9 +61,9 @@ if (Test-Path "${PSScriptRoot}/additional_files/private_data")
 {"Copying additional files for private data directory"
 Copy-Item "${PSScriptRoot}/additional_files/private_data" "${tempdir}/" -Force -Recurse}
 
+."${PSScriptRoot}/run_script_globally.ps1" -dir "${tempdir}/MediaWiki" -script "update.php --doshared --quick"
 $mediawiki_dir_temp=$mediawiki_dir
 $private_data_dir_temp=$private_data_dir
-."${PSScriptRoot}/run_script_globally.ps1" -dir "${tempdir}/MediaWiki" -script "update.php --doshared --quick"
 ."${PSScriptRoot}/maintain.ps1" -mediawiki_dir "${tempdir}/MediaWiki" -private_data_dir "${tempdir}/private_data"
 $mediawiki_dir=$mediawiki_dir_temp
 $private_data_dir=$private_data_dir_temp
