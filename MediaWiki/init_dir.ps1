@@ -1,11 +1,12 @@
-#Initialize MediaWiki
-#Initializes MediaWiki directories.
+#Initialize MediaWiki directory
+#Initializes directories for MediaWiki.
 
 param
 ([string]$core_branch="wmf/1.34.0-wmf.11", #Branch for MediaWiki core
 [string]$extra_branch="master", #Branch for extensions and skins
 [string]$mediawiki_dir="__DEFAULT__", #Directory to configure for MediaWiki
-[string]$private_data_dir="__DEFAULT__") #Directory to configure for private data
+[string]$private_data_dir="__DEFAULT__", #Directory to configure for private data
+[string]$steward="PlavorSeol") #User to add to the steward group
 
 if (Test-Path "${PSScriptRoot}/../init_script.ps1")
 {."${PSScriptRoot}/../init_script.ps1"}
@@ -61,7 +62,7 @@ if (Test-Path "${PSScriptRoot}/additional_files/private_data")
 {"Copying additional files for private data directory"
 Copy-Item "${PSScriptRoot}/additional_files/private_data" "${tempdir}/" -Force -Recurse}
 
-."${PSScriptRoot}/run_script_globally.ps1" -dir "${tempdir}/MediaWiki" -script "update.php --doshared --quick"
+."${PSScriptRoot}/init_maintenance.ps1" -dir "${tempdir}/MediaWiki" -steward $steward
 $mediawiki_dir_temp=$mediawiki_dir
 $private_data_dir_temp=$private_data_dir
 ."${PSScriptRoot}/maintain.ps1" -mediawiki_dir "${tempdir}/MediaWiki" -private_data_dir "${tempdir}/private_data"
