@@ -3,7 +3,7 @@
 
 param
 ([string]$dir="__DEFAULT__", #Directory that MediaWiki is installed
-[string]$steward="PlavorSeol", #User to add to the steward group
+[string]$steward, #User to add to the steward group
 [string]$wiki) #Specify wiki to run scripts otherwise will run globally
 
 if (Test-Path "${PSScriptRoot}/../init_script.ps1")
@@ -23,10 +23,11 @@ else
 }
 
 if (Test-Path $dir)
-{$scripts=
-@("update.php --doshared --quick",
-"createAndPromote.php `"PlavorSeol`" --custom-groups=steward --force",
-"emptyUserGroup.php interface-admin"
+{$scripts=@("update.php --doshared --quick")
+if ($steward)
+  {$scripts+=@("createAndPromote.php `"${steward}`" --custom-groups=steward --force")}
+$scripts+=
+@("emptyUserGroup.php interface-admin",
 "emptyUserGroup.php sysop")
 if (Test-Path "${dir}/extensions/AntiSpoof/maintenance/batchAntiSpoof.php")
   {$scripts+=@("runScripts.php ${dir}/extensions/AntiSpoof/maintenance/batchAntiSpoof.php")}
