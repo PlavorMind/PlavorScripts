@@ -38,6 +38,7 @@ $extensions=
 "CommonsMetadata",
 "ConfirmEdit",
 "DeletePagesForGood",
+"DiscordNotifications",
 "Echo",
 #"GlobalUserPage",
 "Highlightjs_Integration",
@@ -84,7 +85,9 @@ Remove-Item "${tempdir}/MediaWiki/skins/*" -Force -Recurse
 foreach ($extension in $extensions)
 {"Downloading ${extension} extension archive"
 switch ($extension)
-  {"Highlightjs_Integration"
+  {"DiscordNotifications"
+    {Invoke-WebRequest "https://github.com/kulttuuri/DiscordNotifications/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension}.zip"}
+  "Highlightjs_Integration"
     {Invoke-WebRequest "https://github.com/Nicolas01/Highlightjs_Integration/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension}.zip"}
   "PlavorMindTools"
     {Invoke-WebRequest "https://github.com/PlavorMind/PlavorMindTools/archive/Main.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension}.zip"}
@@ -100,7 +103,9 @@ if (Test-Path "${tempdir}/${extension}.zip")
   Remove-Item "${tempdir}/${extension}.zip" -Force
   "Renaming ${extension} extension directory"
   switch ($extension)
-    {"Highlightjs_Integration"
+    {"DiscordNotifications"
+      {Move-Item "${tempdir}/MediaWiki/extensions/DiscordNotifications-master" "${tempdir}/MediaWiki/extensions/${extension}" -Force}
+    "Highlightjs_Integration"
       {Move-Item "${tempdir}/MediaWiki/extensions/Highlightjs_Integration-master" "${tempdir}/MediaWiki/extensions/${extension}" -Force}
     "PlavorMindTools"
       {Move-Item "${tempdir}/MediaWiki/extensions/PlavorMindTools-Main" "${tempdir}/MediaWiki/extensions/${extension}" -Force}
