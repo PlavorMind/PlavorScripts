@@ -23,7 +23,7 @@ else
   exit}
 }
 
-$composer_extensions=@("AbuseFilter","AntiSpoof")
+$composer_extensions=@("AbuseFilter","AntiSpoof","Flow")
 $extensions=
 @("AbuseFilter",
 "AntiSpoof",
@@ -40,6 +40,7 @@ $extensions=
 "DeletePagesForGood",
 "DiscordNotifications",
 "Echo",
+"Flow",
 #"GlobalUserPage",
 "Highlightjs_Integration",
 "MinimumNameLength",
