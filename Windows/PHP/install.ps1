@@ -4,7 +4,7 @@
 param
 ([string]$apcu_archive="https://windows.php.net/downloads/pecl/releases/apcu/5.1.17/php_apcu-5.1.17-7.3-nts-vc15-x64.zip", #URL or file path to APCu archive
 [string]$dir="C:/plavormind/php", #Directory to install PHP
-[string]$php_archive="https://windows.php.net/downloads/snaps/php-7.3/r35acda8/php-7.3-nts-windows-vc15-x64-r35acda8.zip") #URL or file path to PHP archive
+[string]$php_archive="https://windows.php.net/downloads/snaps/php-7.3/re3c701e/php-7.3-nts-windows-vc15-x64-re3c701e.zip") #URL or file path to PHP archive
 
 if (Test-Path "${PSScriptRoot}/../../init_script.ps1")
 {."${PSScriptRoot}/../../init_script.ps1"}
@@ -56,6 +56,15 @@ exit}
 Move-Item "${tempdir}/APCu/php_apcu.dll" "${tempdir}/PHP/ext/" -Force
 "Deleting a temporary directory"
 Remove-Item "${tempdir}/APCu" -Force -Recurse
+
+"Creating data directory"
+New-Item "${tempdir}/PHP/data" -Force -ItemType Directory
+
+"Downloading CA certificate"
+Invoke-WebRequest "https://curl.haxx.se/ca/cacert.pem" -DisableKeepAlive -OutFile "${tempdir}/PHP/data/cacert.pem"
+if (!(Test-Path "${tempdir}/PHP/data/cacert.pem"))
+{"Cannot download CA certificate."
+exit}
 
 if (Test-Path "${PSScriptRoot}/../../filter_php_ini.ps1")
 {."${PSScriptRoot}/../../filter_php_ini.ps1" -destpath "${tempdir}/PHP/php.ini"
