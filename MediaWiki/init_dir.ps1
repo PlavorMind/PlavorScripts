@@ -5,8 +5,7 @@ param
 ([string]$core_branch="wmf/1.34.0-wmf.11", #Branch for MediaWiki core
 [string]$extra_branch="master", #Branch for extensions and skins
 [string]$mediawiki_dir="__DEFAULT__", #Directory to configure for MediaWiki
-[string]$private_data_dir="__DEFAULT__", #Directory to configure for private data
-[string]$steward="PlavorSeol") #User to add to the steward group
+[string]$private_data_dir="__DEFAULT__") #Directory to configure for private data
 
 if (Test-Path "${PSScriptRoot}/../init_script.ps1")
 {."${PSScriptRoot}/../init_script.ps1"}
@@ -61,13 +60,6 @@ Copy-Item "${PSScriptRoot}/additional_files/data/*" "${tempdir}/MediaWiki/data/"
 if (Test-Path "${PSScriptRoot}/additional_files/private_data")
 {"Copying additional files for private data directory"
 Copy-Item "${PSScriptRoot}/additional_files/private_data" "${tempdir}/" -Force -Recurse}
-
-."${PSScriptRoot}/init_maintenance.ps1" -dir "${tempdir}/MediaWiki" -steward $steward
-$mediawiki_dir_temp=$mediawiki_dir
-$private_data_dir_temp=$private_data_dir
-."${PSScriptRoot}/maintain.ps1" -mediawiki_dir "${tempdir}/MediaWiki" -private_data_dir "${tempdir}/private_data"
-$mediawiki_dir=$mediawiki_dir_temp
-$private_data_dir=$private_data_dir_temp
 
 "Deleting a temporary directory"
 Remove-Item "${tempdir}/Configurations-Main" -Force -Recurse
