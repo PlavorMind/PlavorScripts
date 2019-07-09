@@ -6,7 +6,7 @@ param
 ([string]$db_pw_file="${PSScriptRoot}/additional_files/db_password.txt", #File containing database password
 [string]$mediawiki_dir="__DEFAULT__", #Directory to configure for MediaWiki
 [string]$private_data_dir="__DEFAULT__", #Directory to configure for private data
-[string]$user="PlavorSeol", #User to create during installation and add to the steward group
+[string]$user, #User to create during installation and add to the steward group
 [string]$user_pw_file="${PSScriptRoot}/additional_files/user_password.txt", #File containing password for user to create during installation
 [string]$wiki) #Wiki ID
 
@@ -35,6 +35,10 @@ else
   {"Cannot detect default directory."
   exit}
 }
+
+if (!($user -and $wiki))
+{"`$user and/or `$wiki parameters are not specified."
+exit}
 
 if ((Test-Path $db_pw_file) -and (Test-Path $user_pw_file))
 {$db_pw=Get-Content $db_pw_file -Force}
