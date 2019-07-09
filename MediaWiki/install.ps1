@@ -1,12 +1,14 @@
 #Install MediaWiki
-#Wrapper for install.php with some predefined parameters.
+#Installs MediaWiki.
 
+#Parameter names should not contain "password" to avoid warnings
 param
-([string]$mediawiki_dir="__DEFAULT__", #Directory to configure for MediaWiki
+([string]$db_pw_file="${PSScriptRoot}/additional_files/db_password.txt", #File containing database password
+[string]$mediawiki_dir="__DEFAULT__", #Directory to configure for MediaWiki
 [string]$private_data_dir="__DEFAULT__", #Directory to configure for private data
 [string]$user="PlavorSeol", #User to create during installation and add to the steward group
-[string]$wiki, #Wiki ID
-[string]$wiki_name="") #Wiki name
+[string]$user_pw_file="${PSScriptRoot}/additional_files/user_password.txt", #File containing password for user to create during installation
+[string]$wiki) #Wiki ID
 
 if (Test-Path "${PSScriptRoot}/../init_script.ps1")
 {."${PSScriptRoot}/../init_script.ps1"}
@@ -34,6 +36,12 @@ else
   exit}
 }
 
+if ((Test-Path $db_pw_file) -and (Test-Path $user_pw_file))
+{$db_pw=Get-Content $db_pw_file -Force}
+else
+{"Cannot find password files."
+exit}
+
 if (Test-Path $mediawiki_dir)
 {"Creating data directory"
 New-Item "${mediawiki_dir}/data" -Force -ItemType Directory
@@ -53,7 +61,7 @@ if (Test-Path "${mediawiki_dir}/LocalSettings.php")
   Move-Item "${mediawiki_dir}/LocalSettings.php" "${mediawiki_dir}/LocalSettings_temp.php" -Force}
 
 "Running installation script"
-php "${mediawiki_dir}/maintenance/install.php" --confpath "${private_data_dir}/${wiki}" --dbname "${wiki}_wiki" --dbpath "${private_data_dir}/databases" --installdbpass "" --passfile "" $user
+php "${mediawiki_dir}/maintenance/install.php" --confpath "${private_data_dir}/${wiki}" --dbname "${wiki}_wiki" --dbpath "${private_data_dir}/databases" --installdbpass $db_pw --passfile $user_pw_file $user
 
 if (Test-Path "${mediawiki_dir}/LocalSettings.php")
   {"Restoring LocalSettings.php file"
