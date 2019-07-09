@@ -43,6 +43,7 @@ $extensions=
 "Flow",
 #"GlobalUserPage",
 "Highlightjs_Integration",
+"Interwiki",
 "MinimumNameLength",
 "MultimediaViewer",
 "Nuke",
