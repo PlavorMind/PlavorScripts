@@ -3,7 +3,7 @@
 
 param
 ([string]$dir="__DEFAULT__", #Directory that MediaWiki is installed
-[string]$steward, #User to add to the steward group
+[string]$steward, #User to add to the steward group, skip if this is not set
 [string]$wiki) #Specify wiki to run scripts otherwise will run globally
 
 if (Test-Path "${PSScriptRoot}/../init_script.ps1")
@@ -23,24 +23,25 @@ else
 }
 
 if (Test-Path $dir)
-{$scripts=@("update.php --doshared --quick")
-if ($steward)
-  {$scripts+=@("createAndPromote.php `"${steward}`" --custom-groups=steward --force")}
-$scripts+=
-@("emptyUserGroup.php interface-admin",
+{$scripts=
+@("update.php --doshared --quick",
+"emptyUserGroup.php interface-admin",
 "emptyUserGroup.php sysop")
+if ($steward)
+  {$scripts+="createAndPromote.php `"${steward}`" --custom-groups=steward --force"}
 if (Test-Path "${dir}/extensions/AntiSpoof/maintenance/batchAntiSpoof.php")
-  {$scripts+=@("runScripts.php ${dir}/extensions/AntiSpoof/maintenance/batchAntiSpoof.php")}
+  {$scripts+="runScripts.php ${dir}/extensions/AntiSpoof/maintenance/batchAntiSpoof.php"}
 if (Test-Path "${dir}/extensions/Flow")
   {$scripts+=
-  @("populateContentModel.php --ns=all --table=archive",
+  @("emptyUserGroup.php flow-bot",
+  "populateContentModel.php --ns=all --table=archive",
   "populateContentModel.php --ns=all --table=page",
   "populateContentModel.php --ns=all --table=revision")}
-$scripts+=@("runJobs.php")
+$scripts+="runJobs.php"
 
 foreach ($script in $scripts)
   {if ($wiki)
-    {"Running ${script} for ${wiki}"
+    {"Running ${script}"
     #Workaround to fix argument bug
     Start-Process "php" -ArgumentList "${dir}/maintenance/${script} --wiki ${wiki}" -Wait}
   else
