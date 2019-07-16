@@ -5,6 +5,7 @@ param
 ([string]$7zip_version="1900", #7-Zip version to install (must set without dot(.))
 [string]$bleachbit_installer="https://ci.bleachbit.org/dl/2.3.1122/BleachBit-2.3-setup-English.exe", #URL or file path to BleachBit installer
 [string]$gimp_installer="https://download.gimp.org/mirror/pub/gimp/v2.10/windows/gimp-2.10.12-setup-1.exe", #URL or file path to GIMP installer
+[string]$inkscape_installer="https://inkscape.org/gallery/item/14202/inkscape-1.0alpha2_2019-06-24_4ce689b25c_64.msi", #URL or file path to Inkscape installer
 [string]$libreoffice_installer="https://dev-builds.libreoffice.org/daily/master/Win-x86_64@42/current/libo-master64~2019-06-30_23.26.40_LibreOfficeDev_6.4.0.0.alpha0_Win_x64.msi", #URL or file path to LibreOffice installer
 [string]$mpchc_version="1.7.13.112", #MPC-HC nightly build version to install
 [string]$obs_installer="https://cdn-fastly.obsproject.com/downloads/OBS-Studio-23.2.1-Full-Installer-x64.exe", #URL or file path to OBS Studio installer
@@ -91,10 +92,22 @@ if ($output -like "${tempdir}*")
 else
 {"Cannot download or find GIMP."}
 
-#Currently doesn't work, needs future review
+$output=FileURLDetector $inkscape_installer
+if ($output)
+{$output=$output -replace "/","\" #Added to avoid bug
+"Installing Inkscape"
+Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${output}`" /norestart /passive" -Wait
+if ($output -like "${tempdir}*")
+  {"Deleting a temporary file"
+  Remove-Item $output -Force}
+}
+else
+{"Cannot download or find Inkscape."}
+
 $output=FileURLDetector $libreoffice_installer
 if ($output)
-{"Installing LibreOffice"
+{$output=$output -replace "/","\" #Added to avoid bug
+"Installing LibreOffice"
 Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${output}`" RebootYesNo=No REGISTER_ALL_MSO_TYPES=1 /norestart /passive" -Wait
 if ($output -like "${tempdir}*")
   {"Deleting a temporary file"
