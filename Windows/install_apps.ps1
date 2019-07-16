@@ -6,7 +6,7 @@ param
 [string]$bleachbit_installer="https://ci.bleachbit.org/dl/2.3.1122/BleachBit-2.3-setup-English.exe", #URL or file path to BleachBit installer
 [string]$gimp_installer="https://download.gimp.org/mirror/pub/gimp/v2.10/windows/gimp-2.10.12-setup-1.exe", #URL or file path to GIMP installer
 [string]$inkscape_installer="https://inkscape.org/gallery/item/14202/inkscape-1.0alpha2_2019-06-24_4ce689b25c_64.msi", #URL or file path to Inkscape installer
-[string]$libreoffice_installer="https://dev-builds.libreoffice.org/daily/master/Win-x86_64@42/current/libo-master64~2019-06-30_23.26.40_LibreOfficeDev_6.4.0.0.alpha0_Win_x64.msi", #URL or file path to LibreOffice installer
+[string]$libreoffice_installer="https://dev-builds.libreoffice.org/daily/master/Win-x86_64@42/current/libo-master64~2019-07-10_02.13.57_LibreOfficeDev_6.4.0.0.alpha0_Win_x64.msi", #URL or file path to LibreOffice installer
 [string]$mpchc_version="1.7.13.112", #MPC-HC nightly build version to install
 [string]$obs_installer="https://cdn-fastly.obsproject.com/downloads/OBS-Studio-23.2.1-Full-Installer-x64.exe", #URL or file path to OBS Studio installer
 [string]$python_installer="https://www.python.org/ftp/python/3.8.0/python-3.8.0b1-amd64.exe", #URL or file path to Python installer
