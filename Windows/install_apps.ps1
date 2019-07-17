@@ -9,6 +9,7 @@ param
 [string]$kdevelop_version="5", #Major version of KDevelop to install
 [string]$libreoffice_installer="https://dev-builds.libreoffice.org/daily/master/Win-x86_64@42/current/libo-master64~2019-07-10_02.13.57_LibreOfficeDev_6.4.0.0.alpha0_Win_x64.msi", #URL or file path to LibreOffice installer
 [string]$mpchc_version="1.7.13.112", #MPC-HC nightly build version to install
+[string]$musicbrainz_picard_version="2.1.3", #MusicBrainz Picard version to install
 [string]$obs_installer="https://cdn-fastly.obsproject.com/downloads/OBS-Studio-23.2.1-Full-Installer-x64.exe", #URL or file path to OBS Studio installer
 [string]$python_installer="https://www.python.org/ftp/python/3.8.0/python-3.8.0b1-amd64.exe", #URL or file path to Python installer
 [string]$qview_version="2.0") #qView version to install
@@ -136,6 +137,16 @@ Start-Process "${tempdir}/MPC-HC.exe" -ArgumentList "${inno_setup_parameters} /m
 Remove-Item "${tempdir}/MPC-HC.exe" -Force}
 else
 {"Cannot download MPC-HC."}
+
+"Downloading MusicBrainz Picard"
+Invoke-WebRequest "https://musicbrainz.osuosl.org/pub/musicbrainz/picard/picard-setup-${musicbrainz_picard_version}.exe" -DisableKeepAlive -OutFile "${tempdir}/MusicBrainz Picard.exe"
+if (Test-Path "${tempdir}/MusicBrainz Picard.exe")
+{"Installing"
+Start-Process "${tempdir}/MusicBrainz Picard.exe" -ArgumentList "/S" -Wait
+"Deleting a temporary file"
+Remove-Item "${tempdir}/MusicBrainz Picard.exe" -Force}
+else
+{"Cannot download MusicBrainz Picard."}
 
 $output=FileURLDetector $obs_installer
 if ($output)
