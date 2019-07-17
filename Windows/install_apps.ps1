@@ -94,7 +94,7 @@ else
 
 $output=FileURLDetector $inkscape_installer
 if ($output)
-{$output=$output -replace "/","\" #Added to avoid bug
+{$output=$output -replace "\/","\" #Added to avoid bug
 "Installing Inkscape"
 Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${output}`" /norestart /passive" -Wait
 if ($output -like "${tempdir}*")
@@ -106,7 +106,7 @@ else
 
 $output=FileURLDetector $libreoffice_installer
 if ($output)
-{$output=$output -replace "/","\" #Added to avoid bug
+{$output=$output -replace "\/","\" #Added to avoid bug
 "Installing LibreOffice"
 Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${output}`" RebootYesNo=No REGISTER_ALL_MSO_TYPES=1 /norestart /passive" -Wait
 if ($output -like "${tempdir}*")
