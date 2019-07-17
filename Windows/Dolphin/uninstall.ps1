@@ -5,7 +5,11 @@ param
 ([switch]$delete_userdata, #Delete Dolphin user data if this parameter is set
 [string]$dir="C:/Program Files/Dolphin") #Directory that Dolphin is installed
 
-."${PSScriptRoot}/../../init_script.ps1"
+if (Test-Path "${PSScriptRoot}/../../init_script.ps1")
+{."${PSScriptRoot}/../../init_script.ps1"}
+else
+{"Cannot find initialize script."
+exit}
 
 if (!$IsWindows)
 {"Your operating system is not supported."
