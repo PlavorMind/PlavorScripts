@@ -2,7 +2,7 @@
 #Upgrades MediaWiki.
 
 param
-([string]$core_branch="wmf/1.34.0-wmf.13", #Branch for MediaWiki core
+([string]$core_branch="wmf/1.34.0-wmf.14", #Branch for MediaWiki core
 [string]$extra_branch="master", #Branch for extensions and skins
 [string]$mediawiki_dir="__DEFAULT__", #Directory that MediaWiki is installed
 [string]$private_data_dir="__DEFAULT__") #Directory that contains private data for PlavorMind wikis
