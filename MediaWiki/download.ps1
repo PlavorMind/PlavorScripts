@@ -56,6 +56,7 @@ $extensions=
 "StaffPowers",
 "SyntaxHighlight_GeSHi",
 "TemplateData",
+"TemplateWizard",
 "TextExtracts",
 "TitleBlacklist",
 "TwoColConflict",
