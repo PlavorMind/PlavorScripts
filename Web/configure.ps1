@@ -2,7 +2,7 @@
 #Configures web server directories.
 
 param
-([string]$adminer_version="4.7.1", #Adminer version to download
+([string]$adminer_version="4.7.2", #Adminer version to download
 [switch]$copy_global, #Copy files from global directory to each one if this is set
 [string]$dir="__DEFAULT__") #Directory to configure for web server
 
