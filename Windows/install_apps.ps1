@@ -12,7 +12,8 @@ param
 [string]$musicbrainz_picard_version="2.1.3", #MusicBrainz Picard version to install
 [string]$obs_installer="https://cdn-fastly.obsproject.com/downloads/OBS-Studio-23.2.1-Full-Installer-x64.exe", #URL or file path to OBS Studio installer
 [string]$python_installer="https://www.python.org/ftp/python/3.8.0/python-3.8.0b2-amd64.exe", #URL or file path to Python installer
-[string]$qview_version="2.0") #qView version to install
+[string]$qview_version="2.0", #qView version to install
+[string]$vscodium_version="1.36.1") #VSCodium version to install
 
 if (Test-Path "${PSScriptRoot}/../init_script.ps1")
 {."${PSScriptRoot}/../init_script.ps1"}
@@ -189,3 +190,13 @@ Start-Process "${tempdir}/Visual Studio Code.exe" -ArgumentList "${inno_setup_pa
 Remove-Item "${tempdir}/Visual Studio Code.exe" -Force}
 else
 {"Cannot download Visual Studio Code."}
+
+"Downloading VSCodium"
+Invoke-WebRequest "https://github.com/VSCodium/vscodium/releases/download/${vscodium_version}/VSCodiumSetup-x64-${vscodium_version}.exe" -DisableKeepAlive -OutFile "${tempdir}/VSCodium.exe"
+if (Test-Path "${tempdir}/VSCodium.exe")
+{"Installing"
+Start-Process "${tempdir}/VSCodium.exe" -ArgumentList "${inno_setup_parameters} /mergetasks=`"addcontextmenufiles,addcontextmenufolders,addtopath,associatewithfiles,desktopicon,!runcode`"" -Wait
+"Deleting a temporary file"
+Remove-Item "${tempdir}/VSCodium.exe" -Force}
+else
+{"Cannot download VSCodium."}
