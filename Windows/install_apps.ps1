@@ -5,7 +5,6 @@ param
 ([string]$7zip_version="1900", #7-Zip version to install (must set without dot(.))
 [string]$bleachbit_installer="https://ci.bleachbit.org/dl/2.3.1143/BleachBit-2.3-setup-English.exe", #URL or file path to BleachBit installer
 [string]$gimp_installer="https://download.gimp.org/mirror/pub/gimp/v2.10/windows/gimp-2.10.12-setup-2.exe", #URL or file path to GIMP installer
-[string]$inkscape_installer="https://inkscape.org/gallery/item/14202/inkscape-1.0alpha2_2019-06-24_4ce689b25c_64.msi", #URL or file path to Inkscape installer
 [string]$kdevelop_version="5", #Major version of KDevelop to install
 [string]$libreoffice_installer="https://dev-builds.libreoffice.org/daily/master/Win-x86_64@42/current/libo-master64~2019-07-10_02.13.57_LibreOfficeDev_6.4.0.0.alpha0_Win_x64.msi", #URL or file path to LibreOffice installer
 [string]$mpchc_version="1.7.13.112", #MPC-HC nightly build version to install
@@ -95,18 +94,6 @@ if ($output -like "${tempdir}*")
 else
 {"Cannot download or find GIMP."}
 
-$output=FileURLDetector $inkscape_installer
-if ($output)
-{$output=$output.Replace("/","\")
-"Installing Inkscape"
-Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${output}`" /norestart /passive" -Wait
-if ($output -like "${tempdir}*")
-  {"Deleting a temporary file"
-  Remove-Item $output -Force}
-}
-else
-{"Cannot download or find Inkscape."}
-
 "Downloading KDevelop"
 Invoke-WebRequest "https://binary-factory.kde.org/view/Management/job/KDevelop_Nightly_win64/lastSuccessfulBuild/artifact/kdevelop-${kdevelop_version}.exe" -DisableKeepAlive -OutFile "${tempdir}/KDevelop.exe"
 if (Test-Path "${tempdir}/KDevelop.exe")
@@ -180,16 +167,6 @@ Start-Process "${tempdir}/qView.exe" -ArgumentList "${inno_setup_parameters} /me
 Remove-Item "${tempdir}/qView.exe" -Force}
 else
 {"Cannot download qView."}
-
-"Downloading Visual Studio Code"
-Invoke-WebRequest "https://go.microsoft.com/fwlink/?Linkid=852155" -DisableKeepAlive -OutFile "${tempdir}/Visual Studio Code.exe"
-if (Test-Path "${tempdir}/Visual Studio Code.exe")
-{"Installing"
-Start-Process "${tempdir}/Visual Studio Code.exe" -ArgumentList "${inno_setup_parameters} /mergetasks=`"addcontextmenufiles,addcontextmenufolders,addtopath,associatewithfiles,desktopicon,!runcode`"" -Wait
-"Deleting a temporary file"
-Remove-Item "${tempdir}/Visual Studio Code.exe" -Force}
-else
-{"Cannot download Visual Studio Code."}
 
 "Downloading VSCodium"
 Invoke-WebRequest "https://github.com/VSCodium/vscodium/releases/download/${vscodium_version}/VSCodiumSetup-x64-${vscodium_version}.exe" -DisableKeepAlive -OutFile "${tempdir}/VSCodium.exe"
