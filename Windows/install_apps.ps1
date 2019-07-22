@@ -65,7 +65,7 @@ if (Test-Path "${tempdir}/Discord Canary.exe")
 {"Installing"
 Start-Process "${tempdir}/Discord Canary.exe" -Wait
 "Discord Canary.exe is terminated at first." #Added for test
-Start-Sleep 5
+Start-Sleep 3
 while (Get-Process "Discord Canary" -ErrorAction Ignore)
   {}
 "Deleting a temporary file"
