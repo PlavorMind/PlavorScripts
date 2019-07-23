@@ -168,6 +168,16 @@ Remove-Item "${tempdir}/qView.exe" -Force}
 else
 {"Cannot download qView."}
 
+"Downloading TeamViewer"
+Invoke-WebRequest "https://download.teamviewer.com/download/TeamViewer_Setup.exe" -DisableKeepAlive -OutFile "${tempdir}/TeamViewer.exe"
+if (Test-Path "${tempdir}/TeamViewer.exe")
+{"Installing"
+Start-Process "${tempdir}/TeamViewer.exe" -ArgumentList "/S" -Wait
+"Deleting a temporary file"
+Remove-Item "${tempdir}/TeamViewer.exe" -Force}
+else
+{"Cannot download TeamViewer."}
+
 "Downloading VSCodium"
 Invoke-WebRequest "https://github.com/VSCodium/vscodium/releases/download/${vscodium_version}/VSCodiumSetup-x64-${vscodium_version}.exe" -DisableKeepAlive -OutFile "${tempdir}/VSCodium.exe"
 if (Test-Path "${tempdir}/VSCodium.exe")
