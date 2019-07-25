@@ -36,14 +36,18 @@ if (Test-Path "${dir}/global/error")
 
   if (Test-Path "${dir}/global/error/2dr3drn_mark.png")
     {"Copying global/error/2dr3drn_mark.png file"
-    Copy-Item "${dir}/global/error/2dr3drn_mark.png" "${PSScriptRoot}/additional_files/global/error/2dr3drn_mark.png" -Force}
+    Copy-Item "${dir}/global/error/2dr3drn_mark.png" "${PSScriptRoot}/additional_files/global/error/" -Force}
 
   if (Test-Path "${dir}/global/error/shinil_yghmrd.jpg")
     {"Copying global/error/shinil_yghmrd.jpg file"
-    Copy-Item "${dir}/global/error/shinil_yghmrd.jpg" "${PSScriptRoot}/additional_files/global/error/shinil_yghmrd.jpg" -Force}
+    Copy-Item "${dir}/global/error/shinil_yghmrd.jpg" "${PSScriptRoot}/additional_files/global/error/" -Force}
+
+  if (Test-Path "${dir}/global/error/x1_namdohyun_letter.jpg")
+    {"Copying global/error/x1_namdohyun_letter.jpg file"
+    Copy-Item "${dir}/global/error/x1_namdohyun_letter.jpg" "${PSScriptRoot}/additional_files/global/error/" -Force}
   }
 
 if (Test-Path "${dir}/global/favicon.ico")
   {"Copying global/favicon.ico file"
-  Copy-Item "${dir}/global/favicon.ico" "${PSScriptRoot}/additional_files/global/favicon.ico"}
+  Copy-Item "${dir}/global/favicon.ico" "${PSScriptRoot}/additional_files/global/"}
 }
