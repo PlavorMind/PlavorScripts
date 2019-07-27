@@ -45,6 +45,12 @@ if ($IsWindows -and (Test-Path $TargetPath))
   }
 }
 
+function Test-AdminPermission
+{if ($IsWindows)
+  {$permissions=New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
+  return $permissions.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)}
+}
+
 if (!$IsLinux -and !$IsMacOS -and !$IsWindows)
 {$IsLinux=$false
 $IsMacOS=$false
