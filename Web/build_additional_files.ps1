@@ -41,10 +41,6 @@ if (Test-Path "${dir}/global/error")
   if (Test-Path "${dir}/global/error/shinil_yghmrd.jpg")
     {"Copying global/error/shinil_yghmrd.jpg file"
     Copy-Item "${dir}/global/error/shinil_yghmrd.jpg" "${PSScriptRoot}/additional_files/global/error/" -Force}
-
-  if (Test-Path "${dir}/global/error/x1_namdohyun_letter.jpg")
-    {"Copying global/error/x1_namdohyun_letter.jpg file"
-    Copy-Item "${dir}/global/error/x1_namdohyun_letter.jpg" "${PSScriptRoot}/additional_files/global/error/" -Force}
   }
 
 if (Test-Path "${dir}/global/favicon.ico")
