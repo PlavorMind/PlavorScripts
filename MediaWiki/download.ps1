@@ -52,6 +52,7 @@ $extensions=
 "PlavorMindTools",
 "Popups",
 "Renameuser",
+"SecurePoll",
 "SimpleMathJax",
 "StaffPowers",
 "SyntaxHighlight_GeSHi",
