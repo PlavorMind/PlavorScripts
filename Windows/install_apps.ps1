@@ -20,8 +20,8 @@ else
 {"Cannot find initialize script."
 exit}
 
-if (!$IsWindows)
-{"Your operating system is not supported."
+if (!(Test-AdminPermission))
+{"This script must be run as administrator on Windows."
 exit}
 
 #Do not use single quotes(') in ArgumentList otherwise text inside of them will be broken.
