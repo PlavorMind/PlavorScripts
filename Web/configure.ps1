@@ -2,8 +2,7 @@
 #Configures web server directories.
 
 param
-([string]$adminer_version="4.7.2", #Adminer version to download
-[switch]$copy_global, #Copy files from global directory to each one if this is set
+([switch]$copy_global, #Copy files from global directory to each one if this is set
 [string]$dir="__DEFAULT__") #Directory to configure for web server
 
 if (Test-Path "${PSScriptRoot}/../init_script.ps1")
@@ -34,7 +33,7 @@ else
 exit}
 
 "Downloading Adminer"
-Invoke-WebRequest "https://github.com/vrana/adminer/releases/download/v${adminer_version}/adminer-${adminer_version}-en.php" -DisableKeepAlive -OutFile "${tempdir}/Adminer"
+Invoke-WebRequest "https://www.adminer.org/latest-en.php" -DisableKeepAlive -OutFile "${tempdir}/Adminer"
 if (!(Test-Path "${tempdir}/Adminer"))
 {"Cannot download Adminer."
 exit}
