@@ -34,9 +34,9 @@ if (Test-Path "${dir}/global/error")
   {"Creating global/error directory"
   New-Item "${PSScriptRoot}/additional_files/global/error" -Force -ItemType Directory
 
-  if (Test-Path "${dir}/global/error/2dr3drn_mark.png")
-    {"Copying global/error/2dr3drn_mark.png file"
-    Copy-Item "${dir}/global/error/2dr3drn_mark.png" "${PSScriptRoot}/additional_files/global/error/" -Force}
+  if (Test-Path "${dir}/global/error/2dr3drn_na_jaemin.png")
+    {"Copying global/error/2dr3drn_na_jaemin.png file"
+    Copy-Item "${dir}/global/error/2dr3drn_na_jaemin.png" "${PSScriptRoot}/additional_files/global/error/" -Force}
 
   if (Test-Path "${dir}/global/error/shinil_yghmrd.jpg")
     {"Copying global/error/shinil_yghmrd.jpg file"
