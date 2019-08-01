@@ -64,7 +64,7 @@ $extensions=
 "UserMerge",
 "UserPageEditProtection",
 "WikiEditor")
-$skins=@("Liberty","Timeless","Vector")
+$skins=@("Liberty","Timeless","PlavorBuma","Vector")
 
 "Downloading MediaWiki archive"
 Invoke-WebRequest "https://github.com/wikimedia/mediawiki/archive/${core_branch}.zip" -DisableKeepAlive -OutFile "${tempdir}/MediaWiki.zip"
@@ -139,6 +139,8 @@ foreach ($skin in $skins)
 switch ($skin)
   {"Liberty"
     {Invoke-WebRequest "https://gitlab.com/librewiki/Liberty-MW-Skin/-/archive/master/Liberty-MW-Skin-master.zip" -DisableKeepAlive -OutFile "${tempdir}/${skin}.zip"}
+  "PlavorBuma"
+    {Invoke-WebRequest "https://github.com/PlavorMind/PlavorBuma/archive/Main.zip" -DisableKeepAlive -OutFile "${tempdir}/${skin}.zip"}
   default
     {Invoke-WebRequest "https://github.com/wikimedia/mediawiki-skins-${skin}/archive/${skins_branch}.zip" -DisableKeepAlive -OutFile "${tempdir}/${skin}.zip"}
   }
@@ -151,6 +153,8 @@ if (Test-Path "${tempdir}/${skin}.zip")
   switch ($skin)
     {"Liberty"
       {Move-Item "${tempdir}/MediaWiki/skins/Liberty-MW-Skin-master" "${tempdir}/MediaWiki/skins/${skin}" -Force}
+    "PlavorBuma"
+      {Move-Item "${tempdir}/MediaWiki/skins/PlavorBuma-Main" "${tempdir}/MediaWiki/skins/${skin}" -Force}
     default
       {Move-Item "${tempdir}/MediaWiki/skins/mediawiki-skins-${skin}-*" "${tempdir}/MediaWiki/skins/${skin}" -Force}
     }
