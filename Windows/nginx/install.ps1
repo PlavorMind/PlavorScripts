@@ -3,7 +3,7 @@
 
 param
 ([string]$dir="C:/plavormind/nginx", #Directory to install nginx
-[string]$version="1.17.1", #nginx version to install
+[string]$version="1.17.2", #nginx version to install
 [string]$web_dir="C:/plavormind/web") #Web server directory
 
 if (Test-Path "${PSScriptRoot}/../../init_script.ps1")
@@ -68,4 +68,5 @@ Move-Item $dir "${dir}_old" -Force}
 "Moving nginx directory"
 Move-Item "${tempdir}/nginx" $dir -Force
 
-."${PSScriptRoot}/create_task.ps1" -path "${dir}/start.ps1"
+if (Test-AdminPermission)
+{."${PSScriptRoot}/create_task.ps1" -path "${dir}/start.ps1"}
