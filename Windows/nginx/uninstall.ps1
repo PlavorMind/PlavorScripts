@@ -21,7 +21,8 @@ if (Get-Process "nginx" -ErrorAction Ignore)
 {"Stopping nginx"
 Stop-Process -Force -Name "nginx"}
 
-."${PSScriptRoot}/delete_task.ps1"
+if (Test-AdminPermission)
+{."${PSScriptRoot}/delete_task.ps1"}
 
 "Deleting nginx directory"
 Remove-Item $dir -Force -Recurse
