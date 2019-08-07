@@ -65,9 +65,9 @@ if (Test-Path "${mediawiki_dir}/LocalSettings.php")
   Move-Item "${mediawiki_dir}/LocalSettings.php" "${mediawiki_dir}/LocalSettings_temp.php" -Force}
 
 "Running installation script"
-php "${mediawiki_dir}/maintenance/install.php" --confpath "${private_data_dir}/${wiki}" --dbname "${wiki}_wiki" --dbpath "${private_data_dir}/databases" --installdbpass $db_pw --passfile $user_pw_file $user
+php "${mediawiki_dir}/maintenance/install.php" --confpath "${private_data_dir}/${wiki}" --dbname "${wiki}_wiki" --dbpath "${private_data_dir}/databases" --installdbpass $db_pw --installdbuser "root" --passfile $user_pw_file "Nameless" $user
 
-if (Test-Path "${mediawiki_dir}/LocalSettings.php")
+if (Test-Path "${mediawiki_dir}/LocalSettings_temp.php")
   {"Restoring LocalSettings.php file"
   Move-Item "${mediawiki_dir}/LocalSettings_temp.php" "${mediawiki_dir}/LocalSettings.php" -Force}
 
