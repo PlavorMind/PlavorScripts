@@ -29,7 +29,8 @@ if (Get-Process "php-win" -ErrorAction Ignore)
 if (Get-Process "phpdbg" -ErrorAction Ignore)
 {Stop-Process -Force -Name "phpdbg"}
 
-."${PSScriptRoot}/delete_task.ps1"
+if (Test-AdminPermission)
+{."${PSScriptRoot}/delete_task.ps1"}
 
 "Deleting PHP directory"
 Remove-Item $dir -Force -Recurse
