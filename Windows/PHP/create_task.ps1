@@ -9,8 +9,8 @@ else
 {"Cannot find initialize script."
 exit}
 
-if (!$IsWindows)
-{"Your operating system is not supported."
+if (!(Test-AdminPermission))
+{"This script must be run as administrator on Windows."
 exit}
 
 "Creating a task"
