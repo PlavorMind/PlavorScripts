@@ -42,6 +42,7 @@ $extensions=
 "DiscordNotifications",
 "Echo",
 "Flow",
+#"GlobalBlocking",
 "GlobalUserPage",
 "Highlightjs_Integration",
 "Interwiki",
