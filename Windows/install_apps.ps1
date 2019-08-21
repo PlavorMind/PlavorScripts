@@ -12,7 +12,7 @@ param
 [string]$obs_installer="https://cdn-fastly.obsproject.com/downloads/OBS-Studio-23.2.1-Full-Installer-x64.exe", #URL or file path to OBS Studio installer
 [string]$python_installer="https://www.python.org/ftp/python/3.8.0/python-3.8.0b2-amd64.exe", #URL or file path to Python installer
 [string]$qview_version="2.0", #qView version to install
-[string]$vscodium_version="1.36.1") #VSCodium version to install
+[string]$vscodium_version="1.37.1") #VSCodium version to install
 
 if (Test-Path "${PSScriptRoot}/../init_script.ps1")
 {."${PSScriptRoot}/../init_script.ps1"}
