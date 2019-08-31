@@ -2,8 +2,7 @@
 #Installs some apps.
 
 param
-([string]$7zip_version="1900", #7-Zip version to install (must set without dot(.))
-[string]$bleachbit_installer="https://ci.bleachbit.org/dl/2.3.1143/BleachBit-2.3-setup-English.exe", #URL or file path to BleachBit installer
+([string]$bleachbit_installer="https://ci.bleachbit.org/dl/2.3.1143/BleachBit-2.3-setup-English.exe", #URL or file path to BleachBit installer
 [string]$gimp_installer="https://download.gimp.org/mirror/pub/gimp/v2.10/windows/gimp-2.10.12-setup-2.exe", #URL or file path to GIMP installer
 [string]$kdevelop_version="5", #Major version of KDevelop to install
 [string]$libreoffice_installer="https://dev-builds.libreoffice.org/daily/master/Win-x86_64@42/current/libo-master64~2019-07-10_02.13.57_LibreOfficeDev_6.4.0.0.alpha0_Win_x64.msi", #URL or file path to LibreOffice installer
@@ -38,16 +37,6 @@ Start-Process "${tempdir}/visualc.exe" -ArgumentList "/norestart /passive" -Wait
 Remove-Item "${tempdir}/visualc.exe" -Force}
 else
 {"Cannot download Microsoft Visual C++ Redistributable for Visual Studio 2019 RC."}
-
-"Downloading 7-Zip"
-Invoke-WebRequest "https://www.7-zip.org/a/7z${7zip_version}-x64.exe" -DisableKeepAlive -OutFile "${tempdir}/7-Zip.exe"
-if (Test-Path "${tempdir}/7-Zip.exe")
-{"Installing"
-Start-Process "${tempdir}/7-Zip.exe" -ArgumentList "/S" -Wait
-"Deleting a temporary file"
-Remove-Item "${tempdir}/7-Zip.exe" -Force}
-else
-{"Cannot download 7-Zip."}
 
 $output=FileURLDetector $bleachbit_installer
 if ($output)
