@@ -10,6 +10,7 @@ param
 [string]$mpchc_version="1.7.13.112", #MPC-HC nightly build version to install
 [string]$musicbrainz_picard_version="2.1.3", #MusicBrainz Picard version to install
 [string]$obs_installer="https://cdn-fastly.obsproject.com/downloads/OBS-Studio-23.2.1-Full-Installer-x64.exe", #URL or file path to OBS Studio installer
+[string]$peazip_version="6.9.1", #PeaZip version to install
 [string]$python_installer="https://www.python.org/ftp/python/3.8.0/python-3.8.0b2-amd64.exe", #URL or file path to Python installer
 [string]$qview_version="2.0", #qView version to install
 [string]$vscodium_version="1.37.1") #VSCodium version to install
@@ -146,6 +147,23 @@ if ($output -like "${tempdir}*")
 }
 else
 {"Cannot download or find OBS Studio."}
+
+"Downloading PeaZip"
+Invoke-WebRequest "http://www.peazip.org/downloads/peazip-${peazip_version}.WIN64.exe" -DisableKeepAlive -OutFile "${tempdir}/PeaZip.exe"
+if (Test-Path "${tempdir}/PeaZip.exe")
+{"Installing"
+Start-Process "${tempdir}/PeaZip.exe" -ArgumentList $inno_setup_parameters -Wait
+"Deleting a temporary file"
+Remove-Item "${tempdir}/PeaZip.exe" -Force
+
+"Moving a shortcut"
+if (Test-Path "${Env:USERPROFILE}/Desktop/PeaZip.lnk")
+  {Move-Item "${Env:USERPROFILE}/Desktop/PeaZip.lnk" "C:/Users/Public/Desktop/" -Force}
+if (Test-Path "${Env:USERPROFILE}/OneDrive/Desktop/PeaZip.lnk")
+  {Move-Item "${Env:USERPROFILE}/OneDrive/Desktop/PeaZip.lnk" "C:/Users/Public/Desktop/" -Force}
+}
+else
+{"Cannot download PeaZip."}
 
 $output=FileURLDetector $python_installer
 if ($output)
