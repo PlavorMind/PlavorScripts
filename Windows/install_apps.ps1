@@ -2,15 +2,15 @@
 #Installs some apps.
 
 param
-([string]$bleachbit_installer="https://ci.bleachbit.org/dl/2.3.1143/BleachBit-2.3-setup-English.exe", #URL or file path to BleachBit installer
+([string]$bleachbit_installer="https://ci.bleachbit.org/dl/2.3.1244/BleachBit-2.3-setup-English.exe", #URL or file path to BleachBit installer
 [string]$gimp_installer="https://download.gimp.org/mirror/pub/gimp/v2.10/windows/gimp-2.10.12-setup-2.exe", #URL or file path to GIMP installer
 [string]$kdevelop_version="5", #Major version of KDevelop to install
-[string]$libreoffice_installer="https://dev-builds.libreoffice.org/daily/master/Win-x86_64@42/current/libo-master64~2019-07-10_02.13.57_LibreOfficeDev_6.4.0.0.alpha0_Win_x64.msi", #URL or file path to LibreOffice installer
+[string]$libreoffice_installer="https://dev-builds.libreoffice.org/daily/master/Win-x86_64@62-TDF/current/master~2019-09-01_22.04.10_LibreOfficeDev_6.4.0.0.alpha0_Win_x64_en-US_de_ar_ja_ru_vec_qtz.msi", #URL or file path to LibreOffice installer
 [string]$mpchc_version="1.7.13.112", #MPC-HC nightly build version to install
 [string]$musicbrainz_picard_version="2.1.3", #MusicBrainz Picard version to install
-[string]$obs_installer="https://cdn-fastly.obsproject.com/downloads/OBS-Studio-23.2.1-Full-Installer-x64.exe", #URL or file path to OBS Studio installer
-[string]$peazip_version="6.9.1", #PeaZip version to install
-[string]$python_installer="https://www.python.org/ftp/python/3.8.0/python-3.8.0b2-amd64.exe", #URL or file path to Python installer
+[string]$obs_installer="https://github.com/obsproject/obs-studio/releases/download/24.0.0-rc2/OBS-Studio-24.0-rc2-Full-Installer-x64.exe", #URL or file path to OBS Studio installer
+[string]$peazip_version="6.9.2", #PeaZip version to install
+[string]$python_installer="https://www.python.org/ftp/python/3.8.0/python-3.8.0b4-amd64.exe", #URL or file path to Python installer
 [string]$qview_version="2.0", #qView version to install
 [string]$vscodium_version="1.37.1") #VSCodium version to install
 
