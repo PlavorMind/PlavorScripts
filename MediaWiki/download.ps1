@@ -50,6 +50,7 @@ $extensions=
 "MultimediaViewer",
 "Nuke",
 "PageImages",
+"ParserFunctions",
 "PerformanceInspector",
 "PlavorMindTools",
 "Popups",
