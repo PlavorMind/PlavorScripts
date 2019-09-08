@@ -10,7 +10,8 @@ param
 [string]$musicbrainz_picard_version="2.1.3", #MusicBrainz Picard version to install
 [string]$obs_installer="https://github.com/obsproject/obs-studio/releases/download/24.0.0-rc2/OBS-Studio-24.0-rc2-Full-Installer-x64.exe", #URL or file path to OBS Studio installer
 [string]$peazip_version="6.9.2", #PeaZip version to install
-[string]$python_installer="https://www.python.org/ftp/python/3.8.0/python-3.8.0b4-amd64.exe", #URL or file path to Python installer
+[string]$python2_installer="https://www.python.org/ftp/python/2.7.16/python-2.7.16rc1.amd64.msi", #URL or file path to Python 2 installer
+[string]$python3_installer="https://www.python.org/ftp/python/3.8.0/python-3.8.0b4-amd64.exe", #URL or file path to Python 3 installer
 [string]$qview_version="2.0", #qView version to install
 [string]$vscodium_version="1.37.1") #VSCodium version to install
 
@@ -154,16 +155,28 @@ if (Test-Path "${Env:USERPROFILE}/OneDrive/Desktop/PeaZip.lnk")
 else
 {"Cannot download PeaZip."}
 
-$output=FileURLDetector $python_installer
+$output=FileURLDetector $python2_installer
 if ($output)
-{"Installing Python"
+{$output=$output.Replace("/","\")
+"Installing Python 2"
+Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${output}`" /norestart /passive" -Wait
+if ($output -like "${tempdir}*")
+  {"Deleting a temporary file"
+  Remove-Item $output -Force}
+}
+else
+{"Cannot download or find Python 2."}
+
+$output=FileURLDetector $python3_installer
+if ($output)
+{"Installing Python 3"
 Start-Process $output -ArgumentList "InstallAllUsers=1 PrependPath=1 /passive" -Wait
 if ($output -like "${tempdir}*")
   {"Deleting a temporary file"
   Remove-Item $output -Force}
 }
 else
-{"Cannot download or find Python."}
+{"Cannot download or find Python 3."}
 
 "Downloading qView"
 Invoke-WebRequest "https://github.com/jurplel/qView/releases/download/${qview_version}/qView-${qview_version}-win64.exe" -DisableKeepAlive -OutFile "${tempdir}/qView.exe"
