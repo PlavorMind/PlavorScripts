@@ -2,7 +2,7 @@
 #Initializes directories for MediaWiki.
 
 param
-([string]$core_branch="wmf/1.34.0-wmf.21", #Branch for MediaWiki core
+([string]$core_branch="wmf/1.34.0-wmf.22", #Branch for MediaWiki core
 [string]$extra_branch="master", #Branch for extensions and skins
 [string]$mediawiki_dir="__DEFAULT__", #Directory to configure for MediaWiki
 [string]$private_data_dir="__DEFAULT__") #Directory to configure for private data
