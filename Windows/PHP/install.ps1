@@ -1,10 +1,10 @@
 #PHP installer
-#Installs PHP with APCu and imagick extension.
+#Installs PHP with APCu extension.
 
 param
 ([string]$apcu_archive="https://windows.php.net/downloads/pecl/releases/apcu/5.1.17/php_apcu-5.1.17-7.3-nts-vc15-x64.zip", #URL or file path to APCu archive
 [string]$dir="C:/plavormind/php", #Directory to install PHP
-[string]$php_archive="https://windows.php.net/downloads/snaps/master/r66f3fc9/php-master-nts-windows-vs16-x64-r66f3fc9.zip") #URL or file path to PHP archive
+[string]$php_archive="https://windows.php.net/downloads/snaps/php-7.4/r89227fb/php-7.4-nts-windows-vc15-x64-r89227fb.zip") #URL or file path to PHP archive
 
 if (Test-Path "${PSScriptRoot}/../../init_script.ps1")
 {."${PSScriptRoot}/../../init_script.ps1"}
