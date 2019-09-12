@@ -4,16 +4,17 @@
 param
 ([string]$bleachbit_installer="https://ci.bleachbit.org/dl/2.3.1244/BleachBit-2.3-setup-English.exe", #URL or file path to BleachBit installer
 [string]$gimp_installer="https://download.gimp.org/mirror/pub/gimp/v2.10/windows/gimp-2.10.12-setup-2.exe", #URL or file path to GIMP installer
-[string]$kdevelop_version="5", #Major version of KDevelop to install
+[string]$go_version="1.13", #Go version
+[string]$kdevelop_version="5", #Major version of KDevelop
 [string]$libreoffice_installer="https://dev-builds.libreoffice.org/daily/master/Win-x86_64@62-TDF/current/master~2019-09-01_22.04.10_LibreOfficeDev_6.4.0.0.alpha0_Win_x64_en-US_de_ar_ja_ru_vec_qtz.msi", #URL or file path to LibreOffice installer
-[string]$mpchc_version="1.7.13.112", #MPC-HC nightly build version to install
-[string]$musicbrainz_picard_version="2.1.3", #MusicBrainz Picard version to install
+[string]$mpchc_version="1.7.13.112", #MPC-HC nightly build version
+[string]$musicbrainz_picard_version="2.1.3", #MusicBrainz Picard version
 [string]$obs_installer="https://github.com/obsproject/obs-studio/releases/download/24.0.0-rc2/OBS-Studio-24.0-rc2-Full-Installer-x64.exe", #URL or file path to OBS Studio installer
-[string]$peazip_version="6.9.2", #PeaZip version to install
+[string]$peazip_version="6.9.2", #PeaZip version
 [string]$python2_installer="https://www.python.org/ftp/python/2.7.16/python-2.7.16rc1.amd64.msi", #URL or file path to Python 2 installer
 [string]$python3_installer="https://www.python.org/ftp/python/3.8.0/python-3.8.0b4-amd64.exe", #URL or file path to Python 3 installer
-[string]$qview_version="2.0", #qView version to install
-[string]$vscodium_version="1.37.1") #VSCodium version to install
+[string]$qview_version="2.0", #qView version
+[string]$vscodium_version="1.37.1") #VSCodium version
 
 if (Test-Path "${PSScriptRoot}/../init_script.ps1")
 {."${PSScriptRoot}/../init_script.ps1"}
@@ -30,12 +31,12 @@ exit}
 $inno_setup_parameters="/closeapplications /nocancel /norestart /restartapplications /silent /sp- /suppressmsgboxes"
 
 "Downloading Microsoft Visual C++ Redistributable for Visual Studio 2019 RC"
-Invoke-WebRequest "https://aka.ms/vs/16/release/VC_redist.x64.exe" -DisableKeepAlive -OutFile "${tempdir}/visualc.exe"
-if (Test-Path "${tempdir}/visualc.exe")
+Invoke-WebRequest "https://aka.ms/vs/16/release/VC_redist.x64.exe" -DisableKeepAlive -OutFile "${tempdir}/vc_redist.exe"
+if (Test-Path "${tempdir}/vc_redist.exe")
 {"Installing"
-Start-Process "${tempdir}/visualc.exe" -ArgumentList "/norestart /passive" -Wait
+Start-Process "${tempdir}/vc_redist.exe" -ArgumentList "/norestart /passive" -Wait
 "Deleting a temporary file"
-Remove-Item "${tempdir}/visualc.exe" -Force}
+Remove-Item "${tempdir}/vc_redist.exe" -Force}
 else
 {"Cannot download Microsoft Visual C++ Redistributable for Visual Studio 2019 RC."}
 
@@ -84,6 +85,17 @@ if ($output -like "${tempdir}*")
 }
 else
 {"Cannot download or find GIMP."}
+
+"Downloading Go"
+Invoke-WebRequest "https://dl.google.com/go/go${go_version}.windows-amd64.msi" -DisableKeepAlive -OutFile "${tempdir}/golang.msi"
+if (Test-Path "${tempdir}/golang.msi")
+{$installer="${tempdir}/golang.msi".Replace("/","\")
+"Installing"
+Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${installer}`" /norestart /passive" -Wait
+"Deleting a temporary file"
+Remove-Item "${tempdir}/golang.msi" -Force}
+else
+{"Cannot download Go."}
 
 "Downloading KDevelop"
 Invoke-WebRequest "https://binary-factory.kde.org/view/Management/job/KDevelop_Nightly_win64/lastSuccessfulBuild/artifact/kdevelop-${kdevelop_version}.exe" -DisableKeepAlive -OutFile "${tempdir}/KDevelop.exe"
