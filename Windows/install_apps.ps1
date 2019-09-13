@@ -9,6 +9,7 @@ param
 [string]$libreoffice_installer="https://dev-builds.libreoffice.org/daily/master/Win-x86_64@62-TDF/current/master~2019-09-01_22.04.10_LibreOfficeDev_6.4.0.0.alpha0_Win_x64_en-US_de_ar_ja_ru_vec_qtz.msi", #URL or file path to LibreOffice installer
 [string]$mpchc_version="1.7.13.112", #MPC-HC nightly build version
 [string]$musicbrainz_picard_version="2.1.3", #MusicBrainz Picard version
+[string]$nodejs_installer="https://nodejs.org/download/nightly/v13.0.0-nightly20190912902c9fac19/node-v13.0.0-nightly20190912902c9fac19-x64.msi", #URL or file path to Node.js installer
 [string]$obs_installer="https://github.com/obsproject/obs-studio/releases/download/24.0.0-rc2/OBS-Studio-24.0-rc2-Full-Installer-x64.exe", #URL or file path to OBS Studio installer
 [string]$peazip_version="6.9.2", #PeaZip version
 [string]$python2_installer="https://www.python.org/ftp/python/2.7.16/python-2.7.16rc1.amd64.msi", #URL or file path to Python 2 installer
@@ -30,7 +31,8 @@ exit}
 
 $inno_setup_parameters="/closeapplications /nocancel /norestart /restartapplications /silent /sp- /suppressmsgboxes"
 
-"Downloading Microsoft Visual C++ Redistributable for Visual Studio 2019 RC"
+#Must be before any other apps
+"Downloading Microsoft Visual C++ Redistributable for Visual Studio 2019"
 Invoke-WebRequest "https://aka.ms/vs/16/release/VC_redist.x64.exe" -DisableKeepAlive -OutFile "${tempdir}/vc_redist.exe"
 if (Test-Path "${tempdir}/vc_redist.exe")
 {"Installing"
@@ -38,7 +40,7 @@ Start-Process "${tempdir}/vc_redist.exe" -ArgumentList "/norestart /passive" -Wa
 "Deleting a temporary file"
 Remove-Item "${tempdir}/vc_redist.exe" -Force}
 else
-{"Cannot download Microsoft Visual C++ Redistributable for Visual Studio 2019 RC."}
+{"Cannot download Microsoft Visual C++ Redistributable for Visual Studio 2019."}
 
 $output=FileURLDetector $bleachbit_installer
 if ($output)
@@ -138,6 +140,18 @@ Start-Process "${tempdir}/MusicBrainz Picard.exe" -ArgumentList "/S" -Wait
 Remove-Item "${tempdir}/MusicBrainz Picard.exe" -Force}
 else
 {"Cannot download MusicBrainz Picard."}
+
+$output=FileURLDetector $nodejs_installer
+if ($output)
+{$installer=$output.Replace("/","\")
+"Installing Node.js"
+Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${installer}`" /norestart /passive" -Wait
+if ($output -like "${tempdir}*")
+  {"Deleting a temporary file"
+  Remove-Item $output -Force}
+}
+else
+{"Cannot download or find Node.js."}
 
 $output=FileURLDetector $obs_installer
 if ($output)
