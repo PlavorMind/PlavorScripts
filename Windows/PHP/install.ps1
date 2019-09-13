@@ -4,7 +4,7 @@
 param
 ([string]$apcu_archive="https://windows.php.net/downloads/pecl/releases/apcu/5.1.17/php_apcu-5.1.17-7.3-nts-vc15-x64.zip", #URL or file path to APCu archive
 [string]$dir="C:/plavormind/php", #Directory to install PHP
-[string]$php_archive="https://windows.php.net/downloads/qa/php-7.4.0RC1-nts-Win32-vc15-x64.zip") #URL or file path to PHP archive
+[string]$php_archive="https://windows.php.net/downloads/snaps/php-7.3/r31f617d/php-7.3-nts-windows-vc15-x64-r31f617d.zip") #URL or file path to PHP archive
 
 if (Test-Path "${PSScriptRoot}/../../init_script.ps1")
 {."${PSScriptRoot}/../../init_script.ps1"}
@@ -41,7 +41,6 @@ else
 {"Cannot download or find PHP archive."
 exit}
 
-<#
 $output=FileURLDetector $apcu_archive
 if ($output)
 {Expand-Archive $output "${tempdir}/APCu" -Force
@@ -57,7 +56,6 @@ exit}
 Move-Item "${tempdir}/APCu/php_apcu.dll" "${tempdir}/PHP/ext/" -Force
 "Deleting a temporary directory"
 Remove-Item "${tempdir}/APCu" -Force -Recurse
-#>
 
 "Creating data directory"
 New-Item "${tempdir}/PHP/data" -Force -ItemType Directory
