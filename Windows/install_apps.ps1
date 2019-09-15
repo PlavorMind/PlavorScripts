@@ -2,8 +2,8 @@
 #Installs some apps.
 
 param
-([string]$bleachbit_installer="https://ci.bleachbit.org/dl/2.3.1244/BleachBit-2.3-setup-English.exe", #URL or file path to BleachBit installer
-[string]$gimp_installer="https://download.gimp.org/mirror/pub/gimp/v2.10/windows/gimp-2.10.12-setup-2.exe", #URL or file path to GIMP installer
+([string]$bleachbit_installer="https://ci.bleachbit.org/dl/2.3.1272/BleachBit-2.3-setup-English.exe", #URL or file path to BleachBit installer
+[string]$gimp_installer="https://download.gimp.org/mirror/pub/gimp/v2.10/windows/gimp-2.10.12-setup-3.exe", #URL or file path to GIMP installer
 [string]$go_version="1.13", #Go version
 [string]$kdevelop_version="5", #Major version of KDevelop
 [string]$libreoffice_installer="https://dev-builds.libreoffice.org/daily/master/Win-x86_64@62-TDF/current/master~2019-09-01_22.04.10_LibreOfficeDev_6.4.0.0.alpha0_Win_x64_en-US_de_ar_ja_ru_vec_qtz.msi", #URL or file path to LibreOffice installer
