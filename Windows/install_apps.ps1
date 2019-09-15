@@ -5,17 +5,17 @@ param
 ([string]$bleachbit_installer="https://ci.bleachbit.org/dl/2.3.1272/BleachBit-2.3-setup-English.exe", #URL or file path to BleachBit installer
 [string]$gimp_installer="https://download.gimp.org/mirror/pub/gimp/v2.10/windows/gimp-2.10.12-setup-3.exe", #URL or file path to GIMP installer
 [string]$go_version="1.13", #Go version
-[string]$kdevelop_version="5", #Major version of KDevelop
-[string]$libreoffice_installer="https://dev-builds.libreoffice.org/daily/master/Win-x86_64@62-TDF/current/master~2019-09-01_22.04.10_LibreOfficeDev_6.4.0.0.alpha0_Win_x64_en-US_de_ar_ja_ru_vec_qtz.msi", #URL or file path to LibreOffice installer
+[string]$kdevelop_version="5.4-396", #KDevelop nightly build version
+[string]$libreoffice_installer="https://dev-builds.libreoffice.org/daily/master/Win-x86_64@42/current/libo-master64~2019-09-15_04.18.20_LibreOfficeDev_6.4.0.0.alpha0_Win_x64.msi", #URL or file path to LibreOffice installer
 [string]$mpchc_version="1.7.13.112", #MPC-HC nightly build version
-[string]$musicbrainz_picard_version="2.1.3", #MusicBrainz Picard version
+[string]$musicbrainz_picard_version="2.2", #MusicBrainz Picard version
 [string]$nodejs_installer="https://nodejs.org/download/nightly/v13.0.0-nightly20190912902c9fac19/node-v13.0.0-nightly20190912902c9fac19-x64.msi", #URL or file path to Node.js installer
-[string]$obs_installer="https://github.com/obsproject/obs-studio/releases/download/24.0.0-rc2/OBS-Studio-24.0-rc2-Full-Installer-x64.exe", #URL or file path to OBS Studio installer
+[string]$obs_installer="https://github.com/obsproject/obs-studio/releases/download/24.0.0-rc5/OBS-Studio-24.0-rc5-Full-Installer-x64.exe", #URL or file path to OBS Studio installer
 [string]$peazip_version="6.9.2", #PeaZip version
 [string]$python2_installer="https://www.python.org/ftp/python/2.7.16/python-2.7.16rc1.amd64.msi", #URL or file path to Python 2 installer
-[string]$python3_installer="https://www.python.org/ftp/python/3.8.0/python-3.8.0b4-amd64.exe", #URL or file path to Python 3 installer
+[string]$python3_installer="https://www.python.org/ftp/python/3.7.4/python-3.7.4rc1-amd64.exe", #URL or file path to Python 3 installer
 [string]$qview_version="2.0", #qView version
-[string]$vscodium_version="1.37.1") #VSCodium version
+[string]$vscodium_version="1.38.1") #VSCodium version
 
 if (Test-Path "${PSScriptRoot}/../init_script.ps1")
 {."${PSScriptRoot}/../init_script.ps1"}
@@ -100,7 +100,7 @@ else
 {"Cannot download Go."}
 
 "Downloading KDevelop"
-Invoke-WebRequest "https://binary-factory.kde.org/view/Management/job/KDevelop_Nightly_win64/lastSuccessfulBuild/artifact/kdevelop-${kdevelop_version}.exe" -DisableKeepAlive -OutFile "${tempdir}/KDevelop.exe"
+Invoke-WebRequest "https://binary-factory.kde.org/view/Management/job/KDevelop_Nightly_win64/lastSuccessfulBuild/artifact/kdevelop-${kdevelop_version}-windows-msvc2017_64-cl.exe" -DisableKeepAlive -OutFile "${tempdir}/KDevelop.exe"
 if (Test-Path "${tempdir}/KDevelop.exe")
 {"Installing"
 Start-Process "${tempdir}/KDevelop.exe" -ArgumentList "/S" -Wait
