@@ -2,9 +2,9 @@
 #Installs some apps.
 
 param
-([string]$bleachbit_installer="https://ci.bleachbit.org/dl/2.3.1272/BleachBit-2.3-setup-English.exe", #URL or file path to BleachBit installer
-[string]$gimp_installer="https://download.gimp.org/mirror/pub/gimp/v2.10/windows/gimp-2.10.12-setup-3.exe", #URL or file path to GIMP installer
-[string]$go_version="1.13", #Go version
+([string]$bleachbit_version="2.3.1272", #BleachBit unstable build version
+[string]$gimp_version="2.10.12", #GIMP version
+[string]$golang_version="1.13", #Go version
 [string]$kdevelop_version="5.4-396", #KDevelop nightly build version
 [string]$libreoffice_installer="https://dev-builds.libreoffice.org/daily/master/Win-x86_64@42/current/libo-master64~2019-09-15_04.18.20_LibreOfficeDev_6.4.0.0.alpha0_Win_x64.msi", #URL or file path to LibreOffice installer
 [string]$mpchc_version="1.7.13.112", #MPC-HC nightly build version
@@ -15,6 +15,7 @@ param
 [string]$python2_installer="https://www.python.org/ftp/python/2.7.16/python-2.7.16rc1.amd64.msi", #URL or file path to Python 2 installer
 [string]$python3_installer="https://www.python.org/ftp/python/3.7.4/python-3.7.4rc1-amd64.exe", #URL or file path to Python 3 installer
 [string]$qview_version="2.0", #qView version
+[boolean]$vc_redist=$true, #Whether to install Microsoft Visual C++ Redistributable for Visual Studio 2019
 [string]$vscodium_version="1.38.1") #VSCodium version
 
 if (Test-Path "${PSScriptRoot}/../init_script.ps1")
@@ -32,27 +33,32 @@ exit}
 $inno_setup_parameters="/closeapplications /nocancel /norestart /restartapplications /silent /sp- /suppressmsgboxes"
 
 #Must be before any other apps
-"Downloading Microsoft Visual C++ Redistributable for Visual Studio 2019"
+if ($vc_redist)
+{"Downloading Microsoft Visual C++ Redistributable for Visual Studio 2019"
 Invoke-WebRequest "https://aka.ms/vs/16/release/VC_redist.x64.exe" -DisableKeepAlive -OutFile "${tempdir}/vc_redist.exe"
 if (Test-Path "${tempdir}/vc_redist.exe")
-{"Installing"
-Start-Process "${tempdir}/vc_redist.exe" -ArgumentList "/norestart /passive" -Wait
-"Deleting a temporary file"
-Remove-Item "${tempdir}/vc_redist.exe" -Force}
+  {"Installing"
+  Start-Process "${tempdir}/vc_redist.exe" -ArgumentList "/norestart /passive" -Wait
+  "Deleting a temporary file"
+  Remove-Item "${tempdir}/vc_redist.exe" -Force}
 else
-{"Cannot download Microsoft Visual C++ Redistributable for Visual Studio 2019."}
-
-$output=FileURLDetector $bleachbit_installer
-if ($output)
-{"Installing BleachBit"
-Start-Process $output -ArgumentList "/allusers /S" -Wait
-if ($output -like "${tempdir}*")
-  {"Deleting a temporary file"
-  Remove-Item $output -Force}
+  {"Cannot download Microsoft Visual C++ Redistributable for Visual Studio 2019."}
 }
-else
-{"Cannot download or find BleachBit."}
 
+if ($bleachbit_version -match "(\d+\.\d+)\.\d+")
+{$bleachbit_majorversion=$Matches[1]
+"Downloading BleachBit"
+Invoke-WebRequest "https://ci.bleachbit.org/dl/${bleachbit_version}/BleachBit-${bleachbit_majorversion}-setup-English.exe" -DisableKeepAlive -OutFile "${tempdir}/bleachbit.exe"
+if (Test-Path "${tempdir}/bleachbit.exe")
+  {"Installing"
+  Start-Process "${tempdir}/bleachbit.exe" -ArgumentList "/S" -Wait
+  "Deleting a temporary file"
+  Remove-Item "${tempdir}/bleachbit.exe" -Force}
+else
+  {"Cannot download BleachBit."}
+}
+
+<#
 "Downloading Discord Canary"
 Invoke-WebRequest "https://discordapp.com/api/download/canary?platform=win" -DisableKeepAlive -OutFile "${tempdir}/Discord Canary.exe"
 if (Test-Path "${tempdir}/Discord Canary.exe")
@@ -76,38 +82,45 @@ Start-Process "${tempdir}/Firefox Nightly.exe" -Wait
 Remove-Item "${tempdir}/Firefox Nightly.exe" -Force}
 else
 {"Cannot download Firefox Nightly."}
+#>
 
-$output=FileURLDetector $gimp_installer
-if ($output)
-{"Installing GIMP"
-Start-Process $output -ArgumentList "${inno_setup_parameters} /mergetasks=`"desktopicon`"" -Wait
-if ($output -like "${tempdir}*")
-  {"Deleting a temporary file"
-  Remove-Item $output -Force}
+if ($gimp_version -match "(\d+\.\d+)\.\d+")
+{$gimp_majorversion=$Matches[1]
+"Downloading GIMP"
+Invoke-WebRequest "https://download.gimp.org/mirror/pub/gimp/v${gimp_majorversion}/windows/gimp-${gimp_version}-setup-3.exe" -DisableKeepAlive -OutFile "${tempdir}/gimp.exe"
+if (Test-Path "${tempdir}/gimp.exe")
+  {"Installing"
+  Start-Process "${tempdir}/gimp.exe" -ArgumentList "/S" -Wait
+  "Deleting a temporary file"
+  Remove-Item "${tempdir}/gimp.exe" -Force}
+else
+  {"Cannot download GIMP."}
 }
-else
-{"Cannot download or find GIMP."}
 
-"Downloading Go"
-Invoke-WebRequest "https://dl.google.com/go/go${go_version}.windows-amd64.msi" -DisableKeepAlive -OutFile "${tempdir}/golang.msi"
+if (!$golang_version)
+{"Downloading Go"
+Invoke-WebRequest "https://dl.google.com/go/go${golang_version}.windows-amd64.msi" -DisableKeepAlive -OutFile "${tempdir}/golang.msi"
 if (Test-Path "${tempdir}/golang.msi")
-{$installer="${tempdir}/golang.msi".Replace("/","\")
-"Installing"
-Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${installer}`" /norestart /passive" -Wait
-"Deleting a temporary file"
-Remove-Item "${tempdir}/golang.msi" -Force}
+  {$installer="${tempdir}/golang.msi".Replace("/","\")
+  "Installing"
+  Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${installer}`" /norestart /passive" -Wait
+  "Deleting a temporary file"
+  Remove-Item "${tempdir}/golang.msi" -Force}
 else
-{"Cannot download Go."}
+  {"Cannot download Go."}
+}
 
-"Downloading KDevelop"
-Invoke-WebRequest "https://binary-factory.kde.org/view/Management/job/KDevelop_Nightly_win64/lastSuccessfulBuild/artifact/kdevelop-${kdevelop_version}-windows-msvc2017_64-cl.exe" -DisableKeepAlive -OutFile "${tempdir}/KDevelop.exe"
-if (Test-Path "${tempdir}/KDevelop.exe")
-{"Installing"
-Start-Process "${tempdir}/KDevelop.exe" -ArgumentList "/S" -Wait
-"Deleting a temporary file"
-Remove-Item "${tempdir}/KDevelop.exe" -Force}
+if (!$kdevelop_version)
+{"Downloading KDevelop"
+Invoke-WebRequest "https://binary-factory.kde.org/view/Management/job/KDevelop_Nightly_win64/lastSuccessfulBuild/artifact/kdevelop-${kdevelop_version}-windows-msvc2017_64-cl.exe" -DisableKeepAlive -OutFile "${tempdir}/kdevelop.exe"
+if (Test-Path "${tempdir}/kdevelop.exe")
+  {"Installing"
+  Start-Process "${tempdir}/kdevelop.exe" -ArgumentList "/S" -Wait
+  "Deleting a temporary file"
+  Remove-Item "${tempdir}/kdevelop.exe" -Force}
 else
-{"Cannot download KDevelop."}
+  {"Cannot download KDevelop."}
+}
 
 $output=FileURLDetector $libreoffice_installer
 if ($output)
