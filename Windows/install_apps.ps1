@@ -146,16 +146,17 @@ else
   {"Cannot download MPC-HC."}
 }
 
-
-"Downloading MusicBrainz Picard"
-Invoke-WebRequest "https://musicbrainz.osuosl.org/pub/musicbrainz/picard/picard-setup-${musicbrainz_picard_version}.exe" -DisableKeepAlive -OutFile "${tempdir}/MusicBrainz Picard.exe"
-if (Test-Path "${tempdir}/MusicBrainz Picard.exe")
-{"Installing"
-Start-Process "${tempdir}/MusicBrainz Picard.exe" -ArgumentList "/S" -Wait
-"Deleting a temporary file"
-Remove-Item "${tempdir}/MusicBrainz Picard.exe" -Force}
+if ($musicbrainz_picard_version)
+{"Downloading MusicBrainz Picard"
+Invoke-WebRequest "https://musicbrainz.osuosl.org/pub/musicbrainz/picard/picard-setup-${musicbrainz_picard_version}.exe" -DisableKeepAlive -OutFile "${tempdir}/musicbrainz_picard.exe"
+if (Test-Path "${tempdir}/musicbrainz_picard.exe")
+  {"Installing"
+  Start-Process "${tempdir}/musicbrainz_picard.exe" -ArgumentList "/S" -Wait
+  "Deleting a temporary file"
+  Remove-Item "${tempdir}/musicbrainz_picard.exe" -Force}
 else
-{"Cannot download MusicBrainz Picard."}
+  {"Cannot download MusicBrainz Picard."}
+}
 
 $output=FileURLDetector $nodejs_installer
 if ($output)
