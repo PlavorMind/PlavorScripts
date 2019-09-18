@@ -6,7 +6,7 @@ param
 [string]$gimp_version="2.10.12", #GIMP version
 [string]$golang_version="1.13", #Go version
 [string]$kdevelop_version="5.4-396", #KDevelop nightly build version
-[string]$libreoffice_installer="https://dev-builds.libreoffice.org/daily/master/Win-x86_64@42/current/libo-master64~2019-09-15_04.18.20_LibreOfficeDev_6.4.0.0.alpha0_Win_x64.msi", #URL or file path to LibreOffice installer
+[string]$libreoffice_installer="https://dev-builds.libreoffice.org/daily/master/Win-x86_64@42/current/libo-master64~2019-09-17_00.45.28_LibreOfficeDev_6.4.0.0.alpha0_Win_x64.msi", #URL or file path to LibreOffice installer
 [string]$mpchc_version="1.7.13.112", #MPC-HC nightly build version
 [string]$musicbrainz_picard_version="2.2", #MusicBrainz Picard version
 [string]$nodejs_installer="https://nodejs.org/download/nightly/v13.0.0-nightly20190912902c9fac19/node-v13.0.0-nightly20190912902c9fac19-x64.msi", #URL or file path to Node.js installer
@@ -97,7 +97,7 @@ else
   {"Cannot download GIMP."}
 }
 
-if (!$golang_version)
+if ($golang_version)
 {"Downloading Go"
 Invoke-WebRequest "https://dl.google.com/go/go${golang_version}.windows-amd64.msi" -DisableKeepAlive -OutFile "${tempdir}/golang.msi"
 if (Test-Path "${tempdir}/golang.msi")
@@ -110,7 +110,7 @@ else
   {"Cannot download Go."}
 }
 
-if (!$kdevelop_version)
+if ($kdevelop_version)
 {"Downloading KDevelop"
 Invoke-WebRequest "https://binary-factory.kde.org/view/Management/job/KDevelop_Nightly_win64/lastSuccessfulBuild/artifact/kdevelop-${kdevelop_version}-windows-msvc2017_64-cl.exe" -DisableKeepAlive -OutFile "${tempdir}/kdevelop.exe"
 if (Test-Path "${tempdir}/kdevelop.exe")
@@ -124,9 +124,9 @@ else
 
 $output=FileURLDetector $libreoffice_installer
 if ($output)
-{$output=$output.Replace("/","\")
+{$installer=$output.Replace("/","\")
 "Installing LibreOffice"
-Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${output}`" RebootYesNo=No REGISTER_ALL_MSO_TYPES=1 /norestart /passive" -Wait
+Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${installer}`" RebootYesNo=No REGISTER_ALL_MSO_TYPES=1 /norestart /passive" -Wait
 if ($output -like "${tempdir}*")
   {"Deleting a temporary file"
   Remove-Item $output -Force}
@@ -134,15 +134,18 @@ if ($output -like "${tempdir}*")
 else
 {"Cannot download or find LibreOffice."}
 
-"Downloading MPC-HC"
-Invoke-WebRequest "https://nightly.mpc-hc.org/MPC-HC.${mpchc_version}.x64.exe" -DisableKeepAlive -OutFile "${tempdir}/MPC-HC.exe"
-if (Test-Path "${tempdir}/MPC-HC.exe")
-{"Installing"
-Start-Process "${tempdir}/MPC-HC.exe" -ArgumentList "${inno_setup_parameters} /mergetasks=`"desktopicon\common`"" -Wait
-"Deleting a temporary file"
-Remove-Item "${tempdir}/MPC-HC.exe" -Force}
+if ($mpchc_version)
+{"Downloading MPC-HC"
+Invoke-WebRequest "https://nightly.mpc-hc.org/MPC-HC.${mpchc_version}.x64.exe" -DisableKeepAlive -OutFile "${tempdir}/mpchc.exe"
+if (Test-Path "${tempdir}/mpchc.exe")
+  {"Installing"
+  Start-Process "${tempdir}/mpchc.exe" -ArgumentList "${inno_setup_parameters} /mergetasks=`"desktopicon\common`"" -Wait
+  "Deleting a temporary file"
+  Remove-Item "${tempdir}/mpchc.exe" -Force}
 else
-{"Cannot download MPC-HC."}
+  {"Cannot download MPC-HC."}
+}
+
 
 "Downloading MusicBrainz Picard"
 Invoke-WebRequest "https://musicbrainz.osuosl.org/pub/musicbrainz/picard/picard-setup-${musicbrainz_picard_version}.exe" -DisableKeepAlive -OutFile "${tempdir}/MusicBrainz Picard.exe"
