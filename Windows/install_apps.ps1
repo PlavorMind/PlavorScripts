@@ -5,6 +5,7 @@ param
 ([string]$bleachbit_version="2.3.1272", #BleachBit unstable build version
 [string]$gimp_version="2.10.12", #GIMP version
 [string]$golang_version="1.13", #Go version
+[string]$inkscape_installer="https://inkscape.org/gallery/item/13318/inkscape-0.92.4-x64.exe", #URL or file path to Inkscape installer
 [string]$kdevelop_version="5.4-396", #KDevelop nightly build version
 [string]$libreoffice_installer="https://dev-builds.libreoffice.org/daily/master/Win-x86_64@42/current/libo-master64~2019-09-17_00.45.28_LibreOfficeDev_6.4.0.0.alpha0_Win_x64.msi", #URL or file path to LibreOffice installer
 [string]$mpchc_version="1.7.13.112", #MPC-HC nightly build version
@@ -110,6 +111,19 @@ else
   {"Cannot download Go."}
 }
 
+if ($inkscape_installer)
+{$output=FileURLDetector $inkscape_installer
+if ($output)
+  {"Installing Inkscape"
+  Start-Process $output -ArgumentList "/S" -Wait
+  if ($output -like "${tempdir}*")
+    {"Deleting a temporary file"
+    Remove-Item $output -Force}
+  }
+else
+  {"Cannot download or find Inkscape."}
+}
+
 if ($kdevelop_version)
 {"Downloading KDevelop"
 Invoke-WebRequest "https://binary-factory.kde.org/view/Management/job/KDevelop_Nightly_win64/lastSuccessfulBuild/artifact/kdevelop-${kdevelop_version}-windows-msvc2017_64-cl.exe" -DisableKeepAlive -OutFile "${tempdir}/kdevelop.exe"
@@ -122,17 +136,19 @@ else
   {"Cannot download KDevelop."}
 }
 
-$output=FileURLDetector $libreoffice_installer
+if ($libreoffice_installer)
+{$output=FileURLDetector $libreoffice_installer
 if ($output)
-{$installer=$output.Replace("/","\")
-"Installing LibreOffice"
-Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${installer}`" RebootYesNo=No REGISTER_ALL_MSO_TYPES=1 /norestart /passive" -Wait
-if ($output -like "${tempdir}*")
-  {"Deleting a temporary file"
-  Remove-Item $output -Force}
-}
+  {$installer=$output.Replace("/","\")
+  "Installing LibreOffice"
+  Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${installer}`" RebootYesNo=No REGISTER_ALL_MSO_TYPES=1 /norestart /passive" -Wait
+  if ($output -like "${tempdir}*")
+    {"Deleting a temporary file"
+    Remove-Item $output -Force}
+  }
 else
-{"Cannot download or find LibreOffice."}
+  {"Cannot download or find LibreOffice."}
+}
 
 if ($mpchc_version)
 {"Downloading MPC-HC"
