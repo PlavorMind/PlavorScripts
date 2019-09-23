@@ -7,7 +7,7 @@ param
 [string]$golang_version="1.13", #Go version
 [string]$inkscape_installer="https://inkscape.org/gallery/item/13318/inkscape-0.92.4-x64.exe", #URL or file path to Inkscape installer
 [string]$kdevelop_version="5.4-396", #KDevelop nightly build version
-[string]$libreoffice_installer="https://dev-builds.libreoffice.org/daily/master/Win-x86_64@42/current/libo-master64~2019-09-17_00.45.28_LibreOfficeDev_6.4.0.0.alpha0_Win_x64.msi", #URL or file path to LibreOffice installer
+[string]$libreoffice_installer="https://dev-builds.libreoffice.org/pre-releases/win/x86_64/LibreOffice_6.3.2.2_Win_x64.msi", #URL or file path to LibreOffice installer
 [string]$mpchc_version="1.7.13.112", #MPC-HC nightly build version
 [string]$musicbrainz_picard_version="2.2", #MusicBrainz Picard version
 [string]$nodejs_installer="https://nodejs.org/download/nightly/v13.0.0-nightly20190912902c9fac19/node-v13.0.0-nightly20190912902c9fac19-x64.msi", #URL or file path to Node.js installer
