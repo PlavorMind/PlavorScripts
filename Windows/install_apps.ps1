@@ -60,20 +60,6 @@ else
 }
 
 <#
-"Downloading Discord Canary"
-Invoke-WebRequest "https://discordapp.com/api/download/canary?platform=win" -DisableKeepAlive -OutFile "${tempdir}/Discord Canary.exe"
-if (Test-Path "${tempdir}/Discord Canary.exe")
-{"Installing"
-Start-Process "${tempdir}/Discord Canary.exe" -Wait
-"Discord Canary.exe is terminated at first." #Added for test
-Start-Sleep 3
-while (Get-Process "Discord Canary" -ErrorAction Ignore)
-  {}
-"Deleting a temporary file"
-Remove-Item "${tempdir}/Discord Canary.exe" -Force}
-else
-{"Cannot download Discord Canary."}
-
 "Downloading Firefox Nightly"
 Invoke-WebRequest "https://download.mozilla.org/?product=firefox-nightly-stub" -DisableKeepAlive -OutFile "${tempdir}/Firefox Nightly.exe"
 if (Test-Path "${tempdir}/Firefox Nightly.exe")
@@ -174,17 +160,19 @@ else
   {"Cannot download MusicBrainz Picard."}
 }
 
-$output=FileURLDetector $nodejs_installer
+if ($nodejs_installer)
+{$output=FileURLDetector $nodejs_installer
 if ($output)
-{$installer=$output.Replace("/","\")
-"Installing Node.js"
-Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${installer}`" /norestart /passive" -Wait
-if ($output -like "${tempdir}*")
-  {"Deleting a temporary file"
-  Remove-Item $output -Force}
-}
+  {$installer=$output.Replace("/","\")
+  "Installing Node.js"
+  Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${installer}`" /norestart /passive" -Wait
+  if ($output -like "${tempdir}*")
+    {"Deleting a temporary file"
+    Remove-Item $output -Force}
+  }
 else
-{"Cannot download or find Node.js."}
+  {"Cannot download or find Node.js."}
+}
 
 $output=FileURLDetector $obs_installer
 if ($output)
