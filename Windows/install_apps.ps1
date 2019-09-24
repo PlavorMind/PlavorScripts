@@ -185,22 +185,24 @@ if ($output -like "${tempdir}*")
 else
 {"Cannot download or find OBS Studio."}
 
-"Downloading PeaZip"
-Invoke-WebRequest "http://www.peazip.org/downloads/peazip-${peazip_version}.WIN64.exe" -DisableKeepAlive -OutFile "${tempdir}/PeaZip.exe"
-if (Test-Path "${tempdir}/PeaZip.exe")
-{"Installing"
-Start-Process "${tempdir}/PeaZip.exe" -ArgumentList $inno_setup_parameters -Wait
-"Deleting a temporary file"
-Remove-Item "${tempdir}/PeaZip.exe" -Force
+if ($peazip_version)
+{"Downloading PeaZip"
+Invoke-WebRequest "http://www.peazip.org/downloads/peazip-${peazip_version}.WIN64.exe" -DisableKeepAlive -OutFile "${tempdir}/peazip.exe"
+if (Test-Path "${tempdir}/peazip.exe")
+  {"Installing"
+  Start-Process "${tempdir}/peazip.exe" -ArgumentList $inno_setup_parameters -Wait
+  "Deleting a temporary file"
+  Remove-Item "${tempdir}/peazip.exe" -Force
 
-"Moving a shortcut"
-if (Test-Path "${Env:USERPROFILE}/Desktop/PeaZip.lnk")
-  {Move-Item "${Env:USERPROFILE}/Desktop/PeaZip.lnk" "C:/Users/Public/Desktop/" -Force}
-if (Test-Path "${Env:USERPROFILE}/OneDrive/Desktop/PeaZip.lnk")
-  {Move-Item "${Env:USERPROFILE}/OneDrive/Desktop/PeaZip.lnk" "C:/Users/Public/Desktop/" -Force}
-}
+  "Moving a shortcut"
+  if (Test-Path "${Env:USERPROFILE}/Desktop/PeaZip.lnk")
+    {Move-Item "${Env:USERPROFILE}/Desktop/PeaZip.lnk" "C:/Users/Public/Desktop/" -Force}
+  if (Test-Path "${Env:USERPROFILE}/OneDrive/Desktop/PeaZip.lnk")
+    {Move-Item "${Env:USERPROFILE}/OneDrive/Desktop/PeaZip.lnk" "C:/Users/Public/Desktop/" -Force}
+  }
 else
-{"Cannot download PeaZip."}
+  {"Cannot download PeaZip."}
+}
 
 $output=FileURLDetector $python2_installer
 if ($output)
