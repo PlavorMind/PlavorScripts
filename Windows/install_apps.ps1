@@ -2,15 +2,15 @@
 #Installs some apps.
 
 param
-([string]$bleachbit_version="2.3.1272", #BleachBit unstable build version
+([string]$bleachbit_version="2.3.1294", #BleachBit unstable build version
 [string]$gimp_version="2.10.12", #GIMP version
-[string]$golang_version="1.13", #Go version
+[string]$golang_version="1.13.1", #Go version
 [string]$inkscape_installer="https://inkscape.org/gallery/item/13318/inkscape-0.92.4-x64.exe", #URL or file path to Inkscape installer
-[string]$kdevelop_version="5.4-396", #KDevelop nightly build version
+[string]$kdevelop_version="5.4-416", #KDevelop nightly build version
 [string]$libreoffice_installer="https://dev-builds.libreoffice.org/pre-releases/win/x86_64/LibreOffice_6.3.2.2_Win_x64.msi", #URL or file path to LibreOffice installer
 [string]$mpchc_version="1.7.13.112", #MPC-HC nightly build version
-[string]$musicbrainz_picard_version="2.2", #MusicBrainz Picard version
-[string]$nodejs_installer="https://nodejs.org/download/nightly/v13.0.0-nightly20190912902c9fac19/node-v13.0.0-nightly20190912902c9fac19-x64.msi", #URL or file path to Node.js installer
+[string]$musicbrainz_picard_version="2.2.1", #MusicBrainz Picard version
+[string]$nodejs_installer="https://nodejs.org/download/nightly/v13.0.0-nightly2019100424011de907/node-v13.0.0-nightly2019100424011de907-x64.msi", #URL or file path to Node.js installer
 [string]$obs_version="24.0.1", #OBS Studio version
 [string]$peazip_version="6.9.2", #PeaZip version
 [string]$python2_version="2.7.16rc1", #Python 2 version
