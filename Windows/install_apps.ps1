@@ -14,7 +14,7 @@ param
 [string]$obs_version="24.0.1", #OBS Studio version
 [string]$peazip_version="6.9.2", #PeaZip version
 [string]$python2_version="2.7.16rc1", #Python 2 version
-[string]$python3_installer="https://www.python.org/ftp/python/3.7.4/python-3.7.4rc1-amd64.exe", #URL or file path to Python 3 installer
+[string]$python3_version="3.7.5rc1", #Python 3 version
 [string]$qview_version="2.0", #qView version
 [boolean]$vc_redist=$true, #Whether to install Microsoft Visual C++ Redistributable for Visual Studio 2019
 [string]$vscodium_version="1.38.1") #VSCodium version
@@ -227,16 +227,18 @@ else
   {"Cannot download Python 2."}
 }
 
-$output=FileURLDetector $python3_installer
-if ($output)
-{"Installing Python 3"
-Start-Process $output -ArgumentList "InstallAllUsers=1 PrependPath=1 /passive" -Wait
-if ($output -like "${tempdir}*")
-  {"Deleting a temporary file"
-  Remove-Item $output -Force}
-}
+if ($python3_version -match "^(\d+\.\d+\.\d+)(([ab]|rc)\d+)?$")
+{$python3_majorversion=$Matches[1]
+"Downloading Python 3"
+Invoke-WebRequest "https://www.python.org/ftp/python/${python3_majorversion}/python-${python3_version}-amd64.exe" -DisableKeepAlive -OutFile "${tempdir}/python3.exe"
+if (Test-Path "${tempdir}/python3.exe")
+  {"Installing"
+  Start-Process "${tempdir}/python3.exe" -ArgumentList "InstallAllUsers=1 PrependPath=1 /passive" -Wait
+  "Deleting a temporary file"
+  Remove-Item "${tempdir}/python3.exe" -Force}
 else
-{"Cannot download or find Python 3."}
+  {"Cannot download Python 3."}
+}
 
 "Downloading qView"
 Invoke-WebRequest "https://github.com/jurplel/qView/releases/download/${qview_version}/qView-${qview_version}-win64.exe" -DisableKeepAlive -OutFile "${tempdir}/qView.exe"
