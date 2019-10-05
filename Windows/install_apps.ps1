@@ -11,7 +11,7 @@ param
 [string]$mpchc_version="1.7.13.112", #MPC-HC nightly build version
 [string]$musicbrainz_picard_version="2.2", #MusicBrainz Picard version
 [string]$nodejs_installer="https://nodejs.org/download/nightly/v13.0.0-nightly20190912902c9fac19/node-v13.0.0-nightly20190912902c9fac19-x64.msi", #URL or file path to Node.js installer
-[string]$obs_installer="https://github.com/obsproject/obs-studio/releases/download/24.0.0-rc5/OBS-Studio-24.0-rc5-Full-Installer-x64.exe", #URL or file path to OBS Studio installer
+[string]$obs_version="24.0.1", #OBS Studio version
 [string]$peazip_version="6.9.2", #PeaZip version
 [string]$python2_installer="https://www.python.org/ftp/python/2.7.16/python-2.7.16rc1.amd64.msi", #URL or file path to Python 2 installer
 [string]$python3_installer="https://www.python.org/ftp/python/3.7.4/python-3.7.4rc1-amd64.exe", #URL or file path to Python 3 installer
@@ -46,7 +46,7 @@ else
   {"Cannot download Microsoft Visual C++ Redistributable for Visual Studio 2019."}
 }
 
-if ($bleachbit_version -match "(\d+\.\d+)\.\d+")
+if ($bleachbit_version -match "^(\d+\.\d+)\.\d+$")
 {$bleachbit_majorversion=$Matches[1]
 "Downloading BleachBit"
 Invoke-WebRequest "https://ci.bleachbit.org/dl/${bleachbit_version}/BleachBit-${bleachbit_majorversion}-setup-English.exe" -DisableKeepAlive -OutFile "${tempdir}/bleachbit.exe"
@@ -71,7 +71,7 @@ else
 {"Cannot download Firefox Nightly."}
 #>
 
-if ($gimp_version -match "(\d+\.\d+)\.\d+")
+if ($gimp_version -match "^(\d+\.\d+)\.\d+$")
 {$gimp_majorversion=$Matches[1]
 "Downloading GIMP"
 Invoke-WebRequest "https://download.gimp.org/mirror/pub/gimp/v${gimp_majorversion}/windows/gimp-${gimp_version}-setup-3.exe" -DisableKeepAlive -OutFile "${tempdir}/gimp.exe"
@@ -174,16 +174,25 @@ else
   {"Cannot download or find Node.js."}
 }
 
-$output=FileURLDetector $obs_installer
-if ($output)
-{"Installing OBS Studio"
-Start-Process $output -ArgumentList "/S" -Wait
-if ($output -like "${tempdir}*")
-  {"Deleting a temporary file"
-  Remove-Item $output -Force}
-}
+if ($obs_version -match "^(\d+\.\d+)(-rc\d+|\.\d+)?$")
+{if ($Matches[2])
+  {if ($Matches[2] -like "-rc*")
+    {$obs_tagversion=$Matches[1]+".0"+$Matches[2]}
+  else
+    {$obs_tagversion=$obs_version}
+  }
 else
-{"Cannot download or find OBS Studio."}
+  {$obs_tagversion=$Matches[1]+".0"}
+"Downloading OBS Studio"
+Invoke-WebRequest "https://github.com/obsproject/obs-studio/releases/download/${obs_tagversion}/OBS-Studio-${obs_version}-Full-Installer-x64.exe" -DisableKeepAlive -OutFile "${tempdir}/obs.exe"
+if (Test-Path "${tempdir}/obs.exe")
+  {"Installing"
+  Start-Process "${tempdir}/obs.exe" -ArgumentList "/S" -Wait
+  "Deleting a temporary file"
+  Remove-Item "${tempdir}/obs.exe" -Force}
+else
+  {"Cannot download OBS Studio."}
+}
 
 if ($peazip_version)
 {"Downloading PeaZip"
