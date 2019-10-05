@@ -13,7 +13,7 @@ param
 [string]$nodejs_installer="https://nodejs.org/download/nightly/v13.0.0-nightly20190912902c9fac19/node-v13.0.0-nightly20190912902c9fac19-x64.msi", #URL or file path to Node.js installer
 [string]$obs_version="24.0.1", #OBS Studio version
 [string]$peazip_version="6.9.2", #PeaZip version
-[string]$python2_installer="https://www.python.org/ftp/python/2.7.16/python-2.7.16rc1.amd64.msi", #URL or file path to Python 2 installer
+[string]$python2_version="2.7.16rc1", #Python 2 version
 [string]$python3_installer="https://www.python.org/ftp/python/3.7.4/python-3.7.4rc1-amd64.exe", #URL or file path to Python 3 installer
 [string]$qview_version="2.0", #qView version
 [boolean]$vc_redist=$true, #Whether to install Microsoft Visual C++ Redistributable for Visual Studio 2019
@@ -213,17 +213,19 @@ else
   {"Cannot download PeaZip."}
 }
 
-$output=FileURLDetector $python2_installer
-if ($output)
-{$output=$output.Replace("/","\")
-"Installing Python 2"
-Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${output}`" /norestart /passive" -Wait
-if ($output -like "${tempdir}*")
-  {"Deleting a temporary file"
-  Remove-Item $output -Force}
-}
+if ($python2_version -match "^(\d+\.\d+\.\d+)(([ab]|rc)\d+)?$")
+{$python2_majorversion=$Matches[1]
+"Downloading Python 2"
+Invoke-WebRequest "https://www.python.org/ftp/python/${python2_majorversion}/python-${python2_version}.amd64.msi" -DisableKeepAlive -OutFile "${tempdir}/python2.msi"
+if (Test-Path "${tempdir}/python2.msi")
+  {$installer="${tempdir}/python2.msi".Replace("/","\")
+  "Installing"
+  Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${installer}`" /norestart /passive" -Wait
+  "Deleting a temporary file"
+  Remove-Item "${tempdir}/python2.msi" -Force}
 else
-{"Cannot download or find Python 2."}
+  {"Cannot download Python 2."}
+}
 
 $output=FileURLDetector $python3_installer
 if ($output)
