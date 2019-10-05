@@ -240,16 +240,19 @@ else
   {"Cannot download Python 3."}
 }
 
-"Downloading qView"
-Invoke-WebRequest "https://github.com/jurplel/qView/releases/download/${qview_version}/qView-${qview_version}-win64.exe" -DisableKeepAlive -OutFile "${tempdir}/qView.exe"
-if (Test-Path "${tempdir}/qView.exe")
-{"Installing"
-Start-Process "${tempdir}/qView.exe" -ArgumentList "${inno_setup_parameters} /mergetasks=`"desktopicon`"" -Wait
-"Deleting a temporary file"
-Remove-Item "${tempdir}/qView.exe" -Force}
+if ($qview_version)
+{"Downloading qView"
+Invoke-WebRequest "https://github.com/jurplel/qView/releases/download/${qview_version}/qView-${qview_version}-win64.exe" -DisableKeepAlive -OutFile "${tempdir}/qview.exe"
+if (Test-Path "${tempdir}/qview.exe")
+  {"Installing"
+  Start-Process "${tempdir}/qview.exe" -ArgumentList "${inno_setup_parameters} /mergetasks=`"desktopicon`"" -Wait
+  "Deleting a temporary file"
+  Remove-Item "${tempdir}/qview.exe" -Force}
 else
-{"Cannot download qView."}
+  {"Cannot download qView."}
+}
 
+<#
 "Downloading TeamViewer"
 Invoke-WebRequest "https://download.teamviewer.com/download/TeamViewer_Setup.exe" -DisableKeepAlive -OutFile "${tempdir}/TeamViewer.exe"
 if (Test-Path "${tempdir}/TeamViewer.exe")
@@ -259,13 +262,16 @@ Start-Process "${tempdir}/TeamViewer.exe" -ArgumentList "/S" -Wait
 Remove-Item "${tempdir}/TeamViewer.exe" -Force}
 else
 {"Cannot download TeamViewer."}
+#>
 
-"Downloading VSCodium"
-Invoke-WebRequest "https://github.com/VSCodium/vscodium/releases/download/${vscodium_version}/VSCodiumSetup-x64-${vscodium_version}.exe" -DisableKeepAlive -OutFile "${tempdir}/VSCodium.exe"
-if (Test-Path "${tempdir}/VSCodium.exe")
-{"Installing"
-Start-Process "${tempdir}/VSCodium.exe" -ArgumentList "${inno_setup_parameters} /mergetasks=`"addcontextmenufiles,addcontextmenufolders,addtopath,associatewithfiles,desktopicon,!runcode`"" -Wait
-"Deleting a temporary file"
-Remove-Item "${tempdir}/VSCodium.exe" -Force}
+if ($vscodium_version)
+{"Downloading VSCodium"
+Invoke-WebRequest "https://github.com/VSCodium/vscodium/releases/download/${vscodium_version}/VSCodiumSetup-x64-${vscodium_version}.exe" -DisableKeepAlive -OutFile "${tempdir}/vscodium.exe"
+if (Test-Path "${tempdir}/vscodium.exe")
+  {"Installing"
+  Start-Process "${tempdir}/vscodium.exe" -ArgumentList "${inno_setup_parameters} /mergetasks=`"addcontextmenufiles,addcontextmenufolders,addtopath,associatewithfiles,desktopicon,!runcode`"" -Wait
+  "Deleting a temporary file"
+  Remove-Item "${tempdir}/vscodium.exe" -Force}
 else
-{"Cannot download VSCodium."}
+  {"Cannot download VSCodium."}
+}
