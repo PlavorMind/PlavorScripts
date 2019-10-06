@@ -30,14 +30,15 @@ elseif (Test-Path $args[0])
 }
 
 function New-Shortcut
-{param
-([string]$Arguments="", #Arguments of a shortcut
-[string]$Path, #Path of a shortcut
-[string]$TargetPath) #Target of a shortcut
+{Param
+([Parameter(Position=2)][string]$Arguments, #Arguments of a shortcut
+[Parameter(Mandatory=$true,Position=0)][string]$Path, #Path of a shortcut
+[Parameter(Mandatory=$true,Position=1)][string]$TargetPath) #Target of a shortcut
 
 if ($IsWindows -and (Test-Path $TargetPath))
   {$shortcut=(New-Object -ComObject WScript.Shell).CreateShortcut($Path)
-  $shortcut.Arguments=$Arguments
+  if ($Arguments)
+    {$shortcut.Arguments=$Arguments}
   $shortcut.TargetPath=$TargetPath
   $shortcut.Save()
   if (Test-Path $Path)
