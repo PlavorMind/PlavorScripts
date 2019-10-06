@@ -1,9 +1,9 @@
 #Configure web directory
 #Configures web server directories.
 
-param
+Param
 ([switch]$copy_global, #Copy files from global directory to each one if this is set
-[string]$dir="__DEFAULT__") #Directory to configure for web server
+[Parameter(Position=0)][string]$dir="__DEFAULT__") #Directory to configure for web server
 
 if (Test-Path "${PSScriptRoot}/../init_script.ps1")
 {."${PSScriptRoot}/../init_script.ps1"}
