@@ -59,18 +59,6 @@ else
   {"Cannot download BleachBit."}
 }
 
-<#
-"Downloading Firefox Nightly"
-Invoke-WebRequest "https://download.mozilla.org/?product=firefox-nightly-stub" -DisableKeepAlive -OutFile "${tempdir}/Firefox Nightly.exe"
-if (Test-Path "${tempdir}/Firefox Nightly.exe")
-{"Installing"
-Start-Process "${tempdir}/Firefox Nightly.exe" -Wait
-"Deleting a temporary file"
-Remove-Item "${tempdir}/Firefox Nightly.exe" -Force}
-else
-{"Cannot download Firefox Nightly."}
-#>
-
 if ($gimp_version -match "^(\d+\.\d+)\.\d+$")
 {$gimp_majorversion=$Matches[1]
 "Downloading GIMP"
