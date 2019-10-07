@@ -1,7 +1,7 @@
 #Install apps
 #Installs some apps.
 
-param
+Param
 ([string]$bleachbit_version="2.3.1294", #BleachBit unstable build version
 [string]$gimp_version="2.10.12", #GIMP version
 [string]$golang_version="1.13.1", #Go version
@@ -86,7 +86,7 @@ else
 }
 
 if ($inkscape_installer)
-{$output=FileURLDetector $inkscape_installer
+{$output=Get-FilePathFromUri $inkscape_installer
 if ($output)
   {"Installing Inkscape"
   Start-Process $output -ArgumentList "/S" -Wait
@@ -111,7 +111,7 @@ else
 }
 
 if ($libreoffice_installer)
-{$output=FileURLDetector $libreoffice_installer
+{$output=Get-FilePathFromUri $libreoffice_installer
 if ($output)
   {$installer=$output.Replace("/","\")
   "Installing LibreOffice"
@@ -149,7 +149,7 @@ else
 }
 
 if ($nodejs_installer)
-{$output=FileURLDetector $nodejs_installer
+{$output=Get-FilePathFromUri $nodejs_installer
 if ($output)
   {$installer=$output.Replace("/","\")
   "Installing Node.js"
