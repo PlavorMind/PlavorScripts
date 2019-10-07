@@ -29,6 +29,24 @@ elseif (Test-Path $args[0])
   {return $args[0]}
 }
 
+function Get-FilePathFromUri
+{Param
+([Parameter(Mandatory=$true,Position=0)][string]$Uri)
+
+$output=$false
+if ($Uri -match "^https?:\/\/")
+  {if ($Uri -match "[^\\/:*?`"<>|]+\.[^\\/:*?`"<>|]+$")
+    {$filename=$Matches[0]}
+  else
+    {$filename="test_fileurl_output"}
+  Invoke-WebRequest $Uri -DisableKeepAlive -OutFile "${tempdir}/${filename}"
+  if (Test-Path "${tempdir}/${filename}")
+    {$output="${tempdir}/${filename}"}
+  }
+elseif (Test-Path $Uri)
+  {$output=$Uri}
+return $output}
+
 function New-Shortcut
 {Param
 ([Parameter(Position=2)][string]$Arguments, #Arguments of a shortcut
@@ -50,6 +68,8 @@ function Test-AdminPermission
 {if ($IsWindows)
   {$permissions=New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
   return $permissions.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)}
+else
+  {return $false}
 }
 
 if (!$IsLinux -and !$IsMacOS -and !$IsWindows)
