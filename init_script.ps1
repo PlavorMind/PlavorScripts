@@ -2,32 +2,13 @@
 #Initializes functions, variables, etc. for PlavorScripts.
 
 function Expand-ArchiveWith7Zip
-{if ($IsWindows -and (Test-Path "C:/Program Files/7-Zip/7z.exe"))
-  {$output=FileURLDetector $args[0]
-  if ($output)
-    {$destination=$args[1] #Added to avoid a bug when running 7z.exe
-    New-Item $destination -Force -ItemType Directory
-    ."C:/Program Files/7-Zip/7z.exe" x $output -aoa -bt -o"${destination}" -spe -y
-    return $true
-    if ($output -like "${tempdir}*")
-      {Remove-Item $output -Force}
-    }
-  }
-}
+{return $false}
 
 function FileURLDetector
-{if ($args[0] -match "https?:\/\/.+")
-  {if ($args[0] -match "https?:\/\/.+\/([^\\/:*?`"<>|]+\.[^\\/:*?`"<>|]+)")
-    {$filename=$Matches[1]}
-  else
-    {$filename="fud_output"}
-  Invoke-WebRequest $args[0] -DisableKeepAlive -OutFile "${tempdir}/${filename}"
-  if (Test-Path "${tempdir}/${filename}")
-    {return "${tempdir}/${filename}"}
-  }
-elseif (Test-Path $args[0])
-  {return $args[0]}
-}
+{Param
+([Parameter(Mandatory=$true,Position=0)][string]$Uri)
+
+return Get-FilePathFromUri $Uri}
 
 function Get-FilePathFromUri
 {Param
