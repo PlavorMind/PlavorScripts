@@ -8,7 +8,6 @@ Param
 [string]$inkscape_installer="https://inkscape.org/gallery/item/13318/inkscape-0.92.4-x64.exe", #URL or file path to Inkscape installer
 [string]$kdevelop_version="5.4-416", #KDevelop nightly build version
 [string]$libreoffice_installer="https://dev-builds.libreoffice.org/pre-releases/win/x86_64/LibreOffice_6.3.2.2_Win_x64.msi", #URL or file path to LibreOffice installer
-[string]$mpchc_version="1.7.13.112", #MPC-HC nightly build version
 [string]$musicbrainz_picard_version="2.2.1", #MusicBrainz Picard version
 [string]$nodejs_installer="https://nodejs.org/download/nightly/v13.0.0-nightly2019100424011de907/node-v13.0.0-nightly2019100424011de907-x64.msi", #URL or file path to Node.js installer
 [string]$obs_version="24.0.1", #OBS Studio version
@@ -124,18 +123,6 @@ else
   {"Cannot download or find LibreOffice."}
 }
 
-if ($mpchc_version)
-{"Downloading MPC-HC"
-Invoke-WebRequest "https://nightly.mpc-hc.org/MPC-HC.${mpchc_version}.x64.exe" -DisableKeepAlive -OutFile "${tempdir}/mpchc.exe"
-if (Test-Path "${tempdir}/mpchc.exe")
-  {"Installing"
-  Start-Process "${tempdir}/mpchc.exe" -ArgumentList "${inno_setup_parameters} /mergetasks=`"desktopicon\common`"" -Wait
-  "Deleting a temporary file"
-  Remove-Item "${tempdir}/mpchc.exe" -Force}
-else
-  {"Cannot download MPC-HC."}
-}
-
 if ($musicbrainz_picard_version)
 {"Downloading MusicBrainz Picard"
 Invoke-WebRequest "https://musicbrainz.osuosl.org/pub/musicbrainz/picard/picard-setup-${musicbrainz_picard_version}.exe" -DisableKeepAlive -OutFile "${tempdir}/musicbrainz_picard.exe"
@@ -239,18 +226,6 @@ if (Test-Path "${tempdir}/qview.exe")
 else
   {"Cannot download qView."}
 }
-
-<#
-"Downloading TeamViewer"
-Invoke-WebRequest "https://download.teamviewer.com/download/TeamViewer_Setup.exe" -DisableKeepAlive -OutFile "${tempdir}/TeamViewer.exe"
-if (Test-Path "${tempdir}/TeamViewer.exe")
-{"Installing"
-Start-Process "${tempdir}/TeamViewer.exe" -ArgumentList "/S" -Wait
-"Deleting a temporary file"
-Remove-Item "${tempdir}/TeamViewer.exe" -Force}
-else
-{"Cannot download TeamViewer."}
-#>
 
 if ($vscodium_version)
 {"Downloading VSCodium"
