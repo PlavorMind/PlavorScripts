@@ -1,7 +1,7 @@
 #Create PHP CGI/FastCGI autostart task
 #Creates task to start PHP CGI/FastCGI automatically.
 
-param([string]$path="C:/plavormind/php/start.ps1") #Path to start.ps1 file
+Param([Parameter(Position=0)][string]$path="C:/plavormind/php/start.ps1") #Path to start.ps1 file
 
 if (Test-Path "${PSScriptRoot}/../../init_script.ps1")
 {."${PSScriptRoot}/../../init_script.ps1"}
