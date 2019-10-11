@@ -30,7 +30,7 @@ if (Get-Process "phpdbg" -ErrorAction Ignore)
 {"phpdbg.exe is currently running."
 exit}
 
-$output=FileURLDetector $php_archive
+$output=Get-FilePathFromUri $php_archive
 if ($output)
 {Expand-Archive $output "${tempdir}/PHP" -Force
 if ($output -like "${tempdir}*")
@@ -41,7 +41,7 @@ else
 {"Cannot download or find PHP archive."
 exit}
 
-$output=FileURLDetector $apcu_archive
+$output=Get-FilePathFromUri $apcu_archive
 if ($output)
 {Expand-Archive $output "${tempdir}/APCu" -Force
 if ($output -like "${tempdir}*")
