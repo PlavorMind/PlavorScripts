@@ -1,7 +1,7 @@
 #Build additional files
 #Builds additional files for Configure web directory script.
 
-param([string]$dir="__DEFAULT__") #Web server directory
+Param([Parameter(Position=0)][string]$dir="__DEFAULT__") #Web server directory
 
 if (Test-Path "${PSScriptRoot}/../init_script.ps1")
 {."${PSScriptRoot}/../init_script.ps1"}
@@ -29,15 +29,6 @@ New-Item "${PSScriptRoot}/additional_files" -Force -ItemType Directory
 if (Test-Path "${dir}/global")
 {"Creating global directory"
 New-Item "${PSScriptRoot}/additional_files/global" -Force -ItemType Directory
-
-if (Test-Path "${dir}/global/error")
-  {"Creating global/error directory"
-  New-Item "${PSScriptRoot}/additional_files/global/error" -Force -ItemType Directory
-
-  if (Test-Path "${dir}/global/error/shinil_yghmrd.jpg")
-    {"Copying global/error/shinil_yghmrd.jpg file"
-    Copy-Item "${dir}/global/error/shinil_yghmrd.jpg" "${PSScriptRoot}/additional_files/global/error/" -Force}
-  }
 
 if (Test-Path "${dir}/global/favicon.ico")
   {"Copying global/favicon.ico file"
