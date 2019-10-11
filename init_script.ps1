@@ -19,7 +19,7 @@ if ($Uri -match "^https?:\/\/")
   {if ($Uri -match "[^\\/:*?`"<>|]+\.[^\\/:*?`"<>|]+$")
     {$filename=$Matches[0]}
   else
-    {$filename="test_fileurl_output"}
+    {$filename="get_filepathfromuri_output"}
   Invoke-WebRequest $Uri -DisableKeepAlive -OutFile "${tempdir}/${filename}"
   if (Test-Path "${tempdir}/${filename}")
     {$output="${tempdir}/${filename}"}
@@ -39,10 +39,7 @@ if ($IsWindows -and (Test-Path $TargetPath))
   if ($Arguments)
     {$shortcut.Arguments=$Arguments}
   $shortcut.TargetPath=$TargetPath
-  $shortcut.Save()
-  if (Test-Path $Path)
-    {return $true}
-  }
+  $shortcut.Save()}
 }
 
 function Test-AdminPermission
