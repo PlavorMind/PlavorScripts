@@ -1,7 +1,7 @@
 #PHP uninstaller
 #Uninstalls PHP.
 
-param([string]$dir="C:/plavormind/php") #Directory that PHP is installed
+Param([Parameter(Position=0)][string]$dir="C:/plavormind/php") #Directory that PHP is installed
 
 if (Test-Path "${PSScriptRoot}/../../init_script.ps1")
 {."${PSScriptRoot}/../../init_script.ps1"}
