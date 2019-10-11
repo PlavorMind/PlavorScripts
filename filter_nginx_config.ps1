@@ -1,8 +1,7 @@
 #Filter nginx configurations
 #Filters nginx configuration files based on operating system.
 
-param
-([string]$dir="__DEFAULT__") #Directory to save filtered nginx configuration files
+Param([Parameter(Position=0)][string]$dir="__DEFAULT__") #Directory to save filtered nginx configuration files
 
 if (Test-Path "${PSScriptRoot}/init_script.ps1")
 {."${PSScriptRoot}/init_script.ps1"}
