@@ -1,9 +1,9 @@
 #Filter php.ini
 #Filters php.ini file based on operating system.
 
-param
-([string]$destpath="__DEFAULT__", #Destination path to save filtered php.ini file
-[string]$path="https://raw.githubusercontent.com/PlavorMind/Configurations/Main/php.ini") #File path or URL to filter
+Param
+([Parameter(Position=1)][string]$destpath="__DEFAULT__", #Destination path to save filtered php.ini file
+[Parameter(Position=0)][string]$path="https://raw.githubusercontent.com/PlavorMind/Configurations/Main/php.ini") #File path or URL to filter
 
 if (Test-Path "${PSScriptRoot}/init_script.ps1")
 {."${PSScriptRoot}/init_script.ps1"}
@@ -21,7 +21,7 @@ else
   exit}
 }
 
-$output=FileURLDetector $path
+$output=Get-FilePathFromUri $path
 if ($output)
 {"Filtering php.ini file"
 if ($IsLinux)
