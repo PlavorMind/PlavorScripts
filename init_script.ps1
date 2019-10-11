@@ -4,12 +4,6 @@
 function Expand-ArchiveWith7Zip
 {return $false}
 
-function FileURLDetector
-{Param
-([Parameter(Mandatory=$true,Position=0)][string]$Uri)
-
-return Get-FilePathFromUri $Uri}
-
 function Get-FilePathFromUri
 {Param
 ([Parameter(Mandatory=$true,Position=0)][string]$Uri)
