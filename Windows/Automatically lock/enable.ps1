@@ -22,5 +22,8 @@ $path="C:/ProgramData/Microsoft/Windows/Start Menu/Programs/Startup/Lock.lnk"}
 else
 {$path="${Env:APPDATA}/Microsoft/Windows/Start Menu/Programs/Startup/Lock.lnk"}
 
-"Enabling automatically lock"
-New-Shortcut $path "C:/Windows/System32/rundll32.exe" -Arguments "user32.dll,LockWorkStation"
+if (Test-Path $path)
+{"Automatically lock is already enabled."}
+else
+{"Enabling automatically lock"
+New-Shortcut $path "C:/Windows/System32/rundll32.exe" -Arguments "user32.dll,LockWorkStation"}
