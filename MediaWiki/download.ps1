@@ -43,6 +43,7 @@ $extensions=
 #"Echo",
 #"Flow",
 "GlobalBlocking",
+"GlobalPreferences",
 "GlobalUserPage",
 "Highlightjs_Integration",
 "Interwiki",
