@@ -16,6 +16,7 @@ Param
 [string]$python2_version="2.7.16rc1", #Python 2 version
 [string]$python3_version="3.7.5rc1", #Python 3 version
 [string]$qview_version="2.0", #qView version
+[string]$smplayer_version="19.5.0.9228", #SMPlayer development build version
 [boolean]$vc_redist=$true, #Whether to install Microsoft Visual C++ Redistributable for Visual Studio 2019
 [string]$vscodium_version="1.38.1") #VSCodium version
 
@@ -245,6 +246,18 @@ if (Test-Path "${tempdir}/qview.exe")
   Remove-Item "${tempdir}/qview.exe" -Force}
 else
   {"Cannot download qView."}
+}
+
+if ($smplayer_version)
+{"Downloading SMPlayer"
+Invoke-WebRequest "https://sourceforge.net/projects/smplayer/files/SMPlayer/Development-builds/smplayer-${smplayer_version}-x64.exe/download" -DisableKeepAlive -OutFile "${tempdir}/smplayer.exe" -UserAgent "Wget"
+if (Test-Path "${tempdir}/smplayer.exe")
+  {"Installing"
+  Start-Process "${tempdir}/smplayer.exe" -ArgumentList "/S" -Wait
+  "Deleting a temporary file"
+  Remove-Item "${tempdir}/smplayer.exe" -Force}
+else
+  {"Cannot download SMPlayer."}
 }
 
 if ($vscodium_version)
