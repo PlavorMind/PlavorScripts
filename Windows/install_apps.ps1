@@ -5,6 +5,7 @@ Param
 ([string]$bleachbit_version="2.3.1294", #BleachBit unstable build version
 [string]$gimp_version="2.10.12", #GIMP version
 [string]$golang_version="1.13.1", #Go version
+[string]$imagemagick_version="7.0.8-68", #ImageMagick version
 [string]$inkscape_installer="https://inkscape.org/gallery/item/13318/inkscape-0.92.4-x64.exe", #URL or file path to Inkscape installer
 [string]$kdevelop_version="5.4-416", #KDevelop nightly build version
 [string]$libreoffice_installer="https://dev-builds.libreoffice.org/pre-releases/win/x86_64/LibreOffice_6.3.2.2_Win_x64.msi", #URL or file path to LibreOffice installer
@@ -82,6 +83,25 @@ if (Test-Path "${tempdir}/golang.msi")
   Remove-Item "${tempdir}/golang.msi" -Force}
 else
   {"Cannot download Go."}
+}
+
+if ($imagemagick_version)
+{"Downloading ImageMagick"
+Invoke-WebRequest "https://imagemagick.org/download/binaries/ImageMagick-${imagemagick_version}-Q16-HDRI-x64-dll.exe" -DisableKeepAlive -OutFile "${tempdir}/imagemagick.exe"
+if (Test-Path "${tempdir}/imagemagick.exe")
+  {"Installing"
+  Start-Process "${tempdir}/imagemagick.exe" -ArgumentList "${inno_setup_parameters} /mergetasks=`"legacy_support`"" -Wait
+  "Deleting a temporary file"
+  Remove-Item "${tempdir}/imagemagick.exe" -Force
+
+  "Moving a shortcut"
+  if (Test-Path "${Env:USERPROFILE}/Desktop/ImageMagick Display.lnk")
+    {Move-Item "${Env:USERPROFILE}/Desktop/ImageMagick Display.lnk" "C:/Users/Public/Desktop/" -Force}
+  if (Test-Path "${Env:USERPROFILE}/OneDrive/Desktop/ImageMagick Display.lnk")
+    {Move-Item "${Env:USERPROFILE}/OneDrive/Desktop/ImageMagick Display.lnk" "C:/Users/Public/Desktop/" -Force}
+  }
+else
+  {"Cannot download ImageMagick."}
 }
 
 if ($inkscape_installer)
