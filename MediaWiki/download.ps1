@@ -26,7 +26,6 @@ else
 $composer_extensions=@("AbuseFilter","AntiSpoof","Flow")
 $extensions=
 @(#"AbuseFilter",
-"AlwaysBlueCategory",
 "AntiSpoof",
 "Babel",
 "CentralAuth",
@@ -95,9 +94,7 @@ Remove-Item "${tempdir}/MediaWiki/skins/*" -Force -Recurse
 foreach ($extension in $extensions)
 {"Downloading ${extension} extension archive"
 switch ($extension)
-  {"AlwaysBlueCategory"
-    {Invoke-WebRequest "https://github.com/PlavorMind/AlwaysBlueCategory/archive/Main.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension}.zip"}
-  "DiscordNotifications"
+  {"DiscordNotifications"
     {Invoke-WebRequest "https://github.com/kulttuuri/DiscordNotifications/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension}.zip"}
   "Highlightjs_Integration"
     {Invoke-WebRequest "https://github.com/Nicolas01/Highlightjs_Integration/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension}.zip"}
@@ -115,9 +112,7 @@ if (Test-Path "${tempdir}/${extension}.zip")
   Remove-Item "${tempdir}/${extension}.zip" -Force
   "Renaming ${extension} extension directory"
   switch ($extension)
-    {"AlwaysBlueCategory"
-      {Move-Item "${tempdir}/MediaWiki/extensions/AlwaysBlueCategory-Main" "${tempdir}/MediaWiki/extensions/${extension}" -Force}
-    "DiscordNotifications"
+    {"DiscordNotifications"
       {Move-Item "${tempdir}/MediaWiki/extensions/DiscordNotifications-master" "${tempdir}/MediaWiki/extensions/${extension}" -Force}
     "Highlightjs_Integration"
       {Move-Item "${tempdir}/MediaWiki/extensions/Highlightjs_Integration-master" "${tempdir}/MediaWiki/extensions/${extension}" -Force}
