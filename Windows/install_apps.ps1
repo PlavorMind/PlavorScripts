@@ -17,6 +17,7 @@ Param
 [string]$python3_version="3.7.5rc1", #Python 3 version
 [string]$qview_version="2.0", #qView version
 [string]$smplayer_version="19.5.0.9228", #SMPlayer development build version
+[string]$thunderbird_version="70.0b4", #Thunderbird version
 [boolean]$vc_redist=$true, #Whether to install Microsoft Visual C++ Redistributable for Visual Studio 2019
 [string]$vscodium_version="1.38.1") #VSCodium version
 
@@ -258,6 +259,18 @@ if (Test-Path "${tempdir}/smplayer.exe")
   Remove-Item "${tempdir}/smplayer.exe" -Force}
 else
   {"Cannot download SMPlayer."}
+}
+
+if ($thunderbird_version)
+{"Downloading Thunderbird"
+Invoke-WebRequest "https://download.mozilla.org/?product=thunderbird-${thunderbird_version}-SSL&os=win64&lang=en-US" -DisableKeepAlive -OutFile "${tempdir}/thunderbird.exe"
+if (Test-Path "${tempdir}/thunderbird.exe")
+  {"Installing"
+  Start-Process "${tempdir}/thunderbird.exe" -ArgumentList "/S" -Wait
+  "Deleting a temporary file"
+  Remove-Item "${tempdir}/thunderbird.exe" -Force}
+else
+  {"Cannot download Thunderbird."}
 }
 
 if ($vscodium_version)
