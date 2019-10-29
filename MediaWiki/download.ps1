@@ -23,7 +23,7 @@ else
   exit}
 }
 
-$composer_extensions=@("AbuseFilter","AntiSpoof","Flow")
+$composer_extensions=@("AbuseFilter","AntiSpoof","Flow","TemplateStyles")
 $extensions=
 @(#"AbuseFilter",
 "AntiSpoof",
