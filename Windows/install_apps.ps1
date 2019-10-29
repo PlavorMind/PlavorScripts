@@ -14,7 +14,7 @@ Param
 [string]$obs_version="24.0.1", #OBS Studio version
 [string]$peazip_version="6.9.2", #PeaZip version
 [string]$python2_version="2.7.16rc1", #Python 2 version
-[string]$python3_version="3.7.5rc1", #Python 3 version
+[string]$python3_version="3.8.0", #Python 3 version
 [string]$qview_version="2.0", #qView version
 [string]$smplayer_version="19.5.0.9228", #SMPlayer development build version
 [string]$thunderbird_version="70.0b4", #Thunderbird version
