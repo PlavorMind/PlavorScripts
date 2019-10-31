@@ -130,11 +130,6 @@ else
   {"Cannot download ${extension} extension archive."}
 }
 
-#Patch for StructuredDiscussions
-if (Test-Path "${tempdir}/MediaWiki/extensions/Flow")
-{"Applying patch for StructuredDiscussions"
-Invoke-WebRequest "https://raw.githubusercontent.com/PlavorMind/StructuredDiscussions-patch/Main/TalkpageManager.php" -DisableKeepAlive -OutFile "${tempdir}/MediaWiki/extensions/Flow/includes/TalkpageManager.php"}
-
 foreach ($extension in $composer_extensions)
 {if (Test-Path "${tempdir}/MediaWiki/extensions/${extension}")
   {"Updating dependencies for ${extension} extension"
