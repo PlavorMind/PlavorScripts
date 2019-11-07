@@ -81,10 +81,8 @@ Copy-Item "${PSScriptRoot}/install_data/stop.ps1" "${tempdir}/PHP/" -Force
 
 "Deleting unnecessary files"
 "Warning: This will remove documentations and license notices that are unnecessary for running."
-Remove-Item "${tempdir}/PHP/install.txt" -Force
 Remove-Item "${tempdir}/PHP/license.txt" -Force
 Remove-Item "${tempdir}/PHP/news.txt" -Force
-Remove-Item "${tempdir}/PHP/php.gif" -Force
 Remove-Item "${tempdir}/PHP/php.ini-development" -Force
 Remove-Item "${tempdir}/PHP/php.ini-production" -Force
 Remove-Item "${tempdir}/PHP/readme-redist-bins.txt" -Force
