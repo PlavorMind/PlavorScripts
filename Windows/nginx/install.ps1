@@ -3,7 +3,7 @@
 
 Param
 ([Parameter(Position=0)][string]$dir="C:/plavormind/nginx", #Directory to install nginx
-[string]$version="1.17.4", #nginx version to install
+[string]$version="1.17.5", #nginx version to install
 [string]$web_dir="C:/plavormind/web") #Web server directory
 
 if (Test-Path "${PSScriptRoot}/../../init_script.ps1")
