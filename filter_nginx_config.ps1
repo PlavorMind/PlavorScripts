@@ -1,4 +1,3 @@
-#Filter nginx configurations
 #Filters nginx configuration files based on operating system.
 
 Param([Parameter(Position=0)][string]$dir="__DEFAULT__") #Directory to save filtered nginx configuration files
