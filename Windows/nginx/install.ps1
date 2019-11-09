@@ -1,4 +1,3 @@
-#nginx installer
 #Installs nginx.
 
 Param
