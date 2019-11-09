@@ -1,4 +1,3 @@
-#Disable services
 #Disables some unnecessary services.
 
 if (Test-Path "${PSScriptRoot}/../init_script.ps1")
