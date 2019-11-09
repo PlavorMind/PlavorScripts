@@ -1,4 +1,3 @@
-#Set Windows features
 #Enables or disables some Windows features.
 
 if (Test-Path "${PSScriptRoot}/../init_script.ps1")
