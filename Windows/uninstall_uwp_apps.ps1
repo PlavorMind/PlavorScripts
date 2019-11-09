@@ -1,4 +1,3 @@
-#Uninstall UWP apps
 #Uninstalls some unnecessary UWP apps that cannot be uninstalled through UI.
 
 if (Test-Path "${PSScriptRoot}/../init_script.ps1")
