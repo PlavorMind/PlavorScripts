@@ -1,4 +1,3 @@
-#Filter php.ini
 #Filters php.ini file based on operating system.
 
 Param
