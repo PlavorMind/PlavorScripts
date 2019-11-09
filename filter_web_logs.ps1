@@ -1,9 +1,8 @@
-#Filter web logs
 #Filters web server logs.
 
-param
-([string]$destdir="${PSScriptRoot}/filtered_logs", #Destination directory to save filtered web server logs
-[string]$dir="__DEFAULT__") #Web server logs directory to filter
+Param
+([Parameter(Position=1)][string]$destdir="${PSScriptRoot}/filtered_logs", #Destination directory to save filtered web server logs
+[Parameter(Position=0)][string]$dir="__DEFAULT__") #Web server logs directory to filter
 
 if (Test-Path "${PSScriptRoot}/init_script.ps1")
 {."${PSScriptRoot}/init_script.ps1"}
