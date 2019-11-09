@@ -1,4 +1,3 @@
-#Initialize script
 #Initializes functions, variables, etc. for PlavorScripts.
 
 function Expand-ArchiveWith7Zip
