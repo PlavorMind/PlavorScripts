@@ -1,4 +1,3 @@
-#Install apps
 #Installs some apps.
 
 Param
