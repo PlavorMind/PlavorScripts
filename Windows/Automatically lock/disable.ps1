@@ -1,4 +1,3 @@
-#Disable automatically lock
 #Disables automatically lock when signing in.
 
 Param([switch]$allusers) #Apply to all users if this parameter is set
