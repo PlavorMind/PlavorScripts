@@ -42,8 +42,8 @@ foreach ($server_block in $server_blocks)
 }
 
 "Copying install data"
-Copy-Item "${PSScriptRoot}/install_data/start.ps1" "${tempdir}/nginx/" -Force
-Copy-Item "${PSScriptRoot}/install_data/stop.ps1" "${tempdir}/nginx/" -Force
+Copy-Item "${PSScriptRoot}/install-data/start.ps1" "${tempdir}/nginx/" -Force
+Copy-Item "${PSScriptRoot}/install-data/stop.ps1" "${tempdir}/nginx/" -Force
 
 if (Test-Path "${PSScriptRoot}/additional-files")
 {"Copying additional files"
