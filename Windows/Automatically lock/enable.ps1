@@ -1,6 +1,4 @@
-#Enable automatically lock
-#Enables automatically lock when signing in.
-#Useful if you use automatic login.
+#Enables automatically lock when signing in. Useful when using automatic login.
 
 Param([switch]$allusers) #Apply to all users if this parameter is set
 
