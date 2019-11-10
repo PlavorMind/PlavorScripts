@@ -1,7 +1,6 @@
 #Configures a directory for web server.
 
-Param
-([Parameter(Position=0)][string]$dir) #Directory to configure for web server
+Param([Parameter(Position=0)][string]$dir) #Directory to configure for web server
 
 if (Test-Path "${PSScriptRoot}/../init_script.ps1")
 {."${PSScriptRoot}/../init_script.ps1"}
