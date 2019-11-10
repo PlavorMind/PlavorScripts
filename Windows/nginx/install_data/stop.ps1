@@ -1,4 +1,3 @@
-#Stop nginx
 #Stops nginx.
 
 if (Get-Process "nginx" -ErrorAction Ignore)
