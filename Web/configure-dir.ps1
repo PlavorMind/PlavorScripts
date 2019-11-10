@@ -59,7 +59,6 @@ foreach ($file in $files)
 if (Test-Path $dir)
 {"Renaming existing web server directory"
 Move-Item $dir "${dir}_old" -Force}
-
 "Moving web server directory"
 Move-Item "${tempdir}/web" $dir -Force
 
