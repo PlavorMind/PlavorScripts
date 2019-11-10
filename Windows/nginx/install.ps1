@@ -3,7 +3,7 @@
 Param
 ([Parameter(Position=0)][string]$dir="C:/plavormind/nginx", #Directory to install nginx
 [string]$version="1.17.5", #nginx version to install
-[string]$web_dir="C:/plavormind/web") #Web server directory
+[string]$web_dir="C:/plavormind/web/public") #Web server public directory
 
 if (Test-Path "${PSScriptRoot}/../../init_script.ps1")
 {."${PSScriptRoot}/../../init_script.ps1"}
@@ -35,20 +35,19 @@ if (!(Test-Path "${tempdir}/nginx/conf/nginx.conf"))
 {exit}
 
 if (Test-Path $web_dir)
-{[System.Collections.ArrayList]$virtual_hosts=Get-ChildItem $web_dir -Directory -Force -Name
-$virtual_hosts.Remove("global")
+{$server_blocks=Get-ChildItem $web_dir -Directory -Force -Name
 "Creating log directories"
-foreach ($virtual_host in $virtual_hosts)
-  {New-Item "${tempdir}/nginx/logs/${virtual_host}" -Force -ItemType Directory}
+foreach ($server_block in $server_blocks)
+  {New-Item "${tempdir}/nginx/logs/${server_block}" -Force -ItemType Directory}
 }
 
 "Copying install data"
 Copy-Item "${PSScriptRoot}/install_data/start.ps1" "${tempdir}/nginx/" -Force
 Copy-Item "${PSScriptRoot}/install_data/stop.ps1" "${tempdir}/nginx/" -Force
 
-if (Test-Path "${PSScriptRoot}/additional_files")
+if (Test-Path "${PSScriptRoot}/additional-files")
 {"Copying additional files"
-Copy-Item "${PSScriptRoot}/additional_files/*" "${tempdir}/nginx/" -Force -Recurse}
+Copy-Item "${PSScriptRoot}/additional-files/*" "${tempdir}/nginx/" -Force -Recurse}
 
 "Deleting unnecessary files"
 "Warning: This will remove documentations and license notices that are unnecessary for running."
@@ -62,8 +61,7 @@ Stop-Process -Force -Name "nginx"}
 
 if (Test-Path $dir)
 {"Renaming existing nginx directory"
-Move-Item $dir "${dir}_old" -Force}
-
+Move-Item $dir "${dir}-old" -Force}
 "Moving nginx directory"
 Move-Item "${tempdir}/nginx" $dir -Force
 
