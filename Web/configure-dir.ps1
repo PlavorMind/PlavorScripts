@@ -42,9 +42,9 @@ Move-Item "${tempdir}/adminer" "${tempdir}/web/public/main/adminer/index.php" -F
 New-Item "${tempdir}/web/public/gitea" -Force -ItemType Directory
 New-Item "${tempdir}/web/public/wiki" -Force -ItemType Directory
 
-if (Test-Path "${PSScriptRoot}/additional_files")
+if (Test-Path "${PSScriptRoot}/additional-files")
 {"Copying additional files"
-Copy-Item "${PSScriptRoot}/additional_files/*" "${tempdir}/web/" -Force -Recurse}
+Copy-Item "${PSScriptRoot}/additional-files/*" "${tempdir}/web/" -Force -Recurse}
 
 $virtual_hosts=Get-ChildItem "${tempdir}/web/public" -Directory -Force -Name
 foreach ($virtual_host in $virtual_hosts)
