@@ -1,4 +1,3 @@
-#nginx uninstaller
 #Uninstalls nginx.
 
 Param([Parameter(Position=0)][string]$dir="C:/plavormind/nginx") #Directory that nginx is installed
