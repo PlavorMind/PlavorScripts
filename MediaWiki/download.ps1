@@ -1,9 +1,8 @@
-#MediaWiki downloader
 #Downloads MediaWiki with some extensions and skins.
 
-param
+Param
 ([string]$core_branch="master", #Branch for MediaWiki core
-[string]$dir="__DEFAULT__", #Directory to download MediaWiki
+[Parameter(Position=0)][string]$dir, #Directory to download MediaWiki
 [string]$extensions_branch="master", #Branch for extensions
 [string]$skins_branch="master") #Branch for skins
 
@@ -13,7 +12,7 @@ else
 {"Cannot find initialize script."
 exit}
 
-if ($dir -eq "__DEFAULT__")
+if (!$dir)
 {if ($IsLinux)
   {$dir="/plavormind/web/wiki/mediawiki"}
 elseif ($IsWindows)
@@ -74,24 +73,24 @@ $extensions=
 $skins=@("Liberty","Timeless","PlavorBuma","Vector")
 
 "Downloading MediaWiki archive"
-Invoke-WebRequest "https://github.com/wikimedia/mediawiki/archive/${core_branch}.zip" -DisableKeepAlive -OutFile "${tempdir}/MediaWiki.zip"
-if (Test-Path "${tempdir}/MediaWiki.zip")
+Invoke-WebRequest "https://github.com/wikimedia/mediawiki/archive/${core_branch}.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki.zip"
+if (Test-Path "${tempdir}/mediawiki.zip")
 {"Extracting"
-Expand-Archive "${tempdir}/MediaWiki.zip" $tempdir -Force
+Expand-Archive "${tempdir}/mediawiki.zip" $tempdir -Force
 "Deleting a temporary file"
-Remove-Item "${tempdir}/MediaWiki.zip" -Force
+Remove-Item "${tempdir}/mediawiki.zip" -Force
 "Renaming MediaWiki directory"
-Move-Item "${tempdir}/mediawiki-*" "${tempdir}/MediaWiki" -Force}
+Move-Item "${tempdir}/mediawiki-*" "${tempdir}/mediawiki" -Force}
 else
 {"Cannot download MediaWiki archive."
 exit}
 
 "Updating dependencies"
-composer update --no-dev --working-dir="${tempdir}/MediaWiki"
+composer update --no-dev --working-dir="${tempdir}/mediawiki"
 
 "Emptying extensions and skins directory"
-Remove-Item "${tempdir}/MediaWiki/extensions/*" -Force -Recurse
-Remove-Item "${tempdir}/MediaWiki/skins/*" -Force -Recurse
+Remove-Item "${tempdir}/mediawiki/extensions/*" -Force -Recurse
+Remove-Item "${tempdir}/mediawiki/skins/*" -Force -Recurse
 
 foreach ($extension in $extensions)
 {"Downloading ${extension} extension archive"
@@ -109,21 +108,21 @@ switch ($extension)
   }
 if (Test-Path "${tempdir}/${extension}.zip")
   {"Extracting"
-  Expand-Archive "${tempdir}/${extension}.zip" "${tempdir}/MediaWiki/extensions/" -Force
+  Expand-Archive "${tempdir}/${extension}.zip" "${tempdir}/mediawiki/extensions/" -Force
   "Deleting a temporary file"
   Remove-Item "${tempdir}/${extension}.zip" -Force
   "Renaming ${extension} extension directory"
   switch ($extension)
     {"DiscordNotifications"
-      {Move-Item "${tempdir}/MediaWiki/extensions/DiscordNotifications-master" "${tempdir}/MediaWiki/extensions/${extension}" -Force}
+      {Move-Item "${tempdir}/mediawiki/extensions/DiscordNotifications-master" "${tempdir}/mediawiki/extensions/${extension}" -Force}
     "Highlightjs_Integration"
-      {Move-Item "${tempdir}/MediaWiki/extensions/Highlightjs_Integration-master" "${tempdir}/MediaWiki/extensions/${extension}" -Force}
+      {Move-Item "${tempdir}/mediawiki/extensions/Highlightjs_Integration-master" "${tempdir}/mediawiki/extensions/${extension}" -Force}
     "PlavorMindTools"
-      {Move-Item "${tempdir}/MediaWiki/extensions/PlavorMindTools-Main" "${tempdir}/MediaWiki/extensions/${extension}" -Force}
+      {Move-Item "${tempdir}/mediawiki/extensions/PlavorMindTools-Main" "${tempdir}/mediawiki/extensions/${extension}" -Force}
     "SimpleMathJax"
-      {Move-Item "${tempdir}/MediaWiki/extensions/SimpleMathJax-master" "${tempdir}/MediaWiki/extensions/${extension}" -Force}
+      {Move-Item "${tempdir}/mediawiki/extensions/SimpleMathJax-master" "${tempdir}/mediawiki/extensions/${extension}" -Force}
     default
-      {Move-Item "${tempdir}/MediaWiki/extensions/mediawiki-extensions-${extension}-*" "${tempdir}/MediaWiki/extensions/${extension}" -Force}
+      {Move-Item "${tempdir}/mediawiki/extensions/mediawiki-extensions-${extension}-*" "${tempdir}/mediawiki/extensions/${extension}" -Force}
     }
   }
 else
@@ -131,9 +130,9 @@ else
 }
 
 foreach ($extension in $composer_extensions)
-{if (Test-Path "${tempdir}/MediaWiki/extensions/${extension}")
+{if (Test-Path "${tempdir}/mediawiki/extensions/${extension}")
   {"Updating dependencies for ${extension} extension"
-  composer update --no-dev --working-dir="${tempdir}/MediaWiki/extensions/${extension}"}
+  composer update --no-dev --working-dir="${tempdir}/mediawiki/extensions/${extension}"}
 }
 
 foreach ($skin in $skins)
@@ -148,17 +147,17 @@ switch ($skin)
   }
 if (Test-Path "${tempdir}/${skin}.zip")
   {"Extracting"
-  Expand-Archive "${tempdir}/${skin}.zip" "${tempdir}/MediaWiki/skins/" -Force
+  Expand-Archive "${tempdir}/${skin}.zip" "${tempdir}/mediawiki/skins/" -Force
   "Deleting a temporary file"
   Remove-Item "${tempdir}/${skin}.zip" -Force
   "Renaming ${skin} skin directory"
   switch ($skin)
     {"Liberty"
-      {Move-Item "${tempdir}/MediaWiki/skins/Liberty-MW-Skin-master" "${tempdir}/MediaWiki/skins/${skin}" -Force}
+      {Move-Item "${tempdir}/mediawiki/skins/Liberty-MW-Skin-master" "${tempdir}/mediawiki/skins/${skin}" -Force}
     "PlavorBuma"
-      {Move-Item "${tempdir}/MediaWiki/skins/PlavorBuma-Main" "${tempdir}/MediaWiki/skins/${skin}" -Force}
+      {Move-Item "${tempdir}/mediawiki/skins/PlavorBuma-Main" "${tempdir}/mediawiki/skins/${skin}" -Force}
     default
-      {Move-Item "${tempdir}/MediaWiki/skins/mediawiki-skins-${skin}-*" "${tempdir}/MediaWiki/skins/${skin}" -Force}
+      {Move-Item "${tempdir}/mediawiki/skins/mediawiki-skins-${skin}-*" "${tempdir}/mediawiki/skins/${skin}" -Force}
     }
   }
 else
@@ -167,24 +166,22 @@ else
 
 "Deleting unnecessary files"
 "Warning: This will remove documentations and license notices that are unnecessary for running."
-Remove-Item "${tempdir}/MediaWiki/docs" -Force -Recurse
-Remove-Item "${tempdir}/MediaWiki/maintenance/README" -Force
-Remove-Item "${tempdir}/MediaWiki/resources/assets/file-type-icons/COPYING" -Force
-Remove-Item "${tempdir}/MediaWiki/resources/assets/licenses/public-domain.png" -Force
-Remove-Item "${tempdir}/MediaWiki/resources/assets/licenses/README" -Force
-Remove-Item "${tempdir}/MediaWiki/CODE_OF_CONDUCT.md" -Force
-Remove-Item "${tempdir}/MediaWiki/CREDITS" -Force
-Remove-Item "${tempdir}/MediaWiki/FAQ" -Force
-Remove-Item "${tempdir}/MediaWiki/HISTORY" -Force
-Remove-Item "${tempdir}/MediaWiki/INSTALL" -Force
-Remove-Item "${tempdir}/MediaWiki/README" -Force
-Remove-Item "${tempdir}/MediaWiki/RELEASE-NOTES-*" -Force
-Remove-Item "${tempdir}/MediaWiki/SECURITY" -Force
-Remove-Item "${tempdir}/MediaWiki/UPGRADE" -Force
+Remove-Item "${tempdir}/mediawiki/docs" -Force -Recurse
+Remove-Item "${tempdir}/mediawiki/maintenance/README" -Force
+Remove-Item "${tempdir}/mediawiki/resources/assets/file-type-icons/COPYING" -Force
+Remove-Item "${tempdir}/mediawiki/resources/assets/licenses/public-domain.png" -Force
+Remove-Item "${tempdir}/mediawiki/resources/assets/licenses/README" -Force
+Remove-Item "${tempdir}/mediawiki/CODE_OF_CONDUCT.md" -Force
+Remove-Item "${tempdir}/mediawiki/FAQ" -Force
+Remove-Item "${tempdir}/mediawiki/HISTORY" -Force
+Remove-Item "${tempdir}/mediawiki/INSTALL" -Force
+Remove-Item "${tempdir}/mediawiki/README" -Force
+Remove-Item "${tempdir}/mediawiki/RELEASE-NOTES-*" -Force
+Remove-Item "${tempdir}/mediawiki/SECURITY" -Force
+Remove-Item "${tempdir}/mediawiki/UPGRADE" -Force
 
 if (Test-Path $dir)
 {"Renaming existing MediaWiki directory"
-Move-Item $dir "${dir}_old" -Force}
-
+Move-Item $dir "${dir}-old" -Force}
 "Moving MediaWiki directory"
-Move-Item "${tempdir}/MediaWiki" $dir -Force
+Move-Item "${tempdir}/mediawiki" $dir -Force
