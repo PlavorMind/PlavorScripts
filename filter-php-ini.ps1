@@ -1,7 +1,7 @@
 #Filters php.ini file based on operating system.
 
 Param
-([Parameter(Position=1)][string]$destpath="__DEFAULT__", #Destination path to save filtered php.ini file
+([Parameter(Position=1)][string]$destpath, #Destination path to save filtered php.ini file
 [Parameter(Position=0)][string]$path="https://raw.githubusercontent.com/PlavorMind/Configurations/Main/php.ini") #File path or URL to filter
 
 if (Test-Path "${PSScriptRoot}/init_script.ps1")
@@ -10,11 +10,11 @@ else
 {"Cannot find initialize script."
 exit}
 
-if ($destpath -eq "__DEFAULT__")
+if (!$destpath)
 {if ($IsLinux)
   {$destpath="/etc/php/7.2/fpm/php.ini"}
 elseif ($IsWindows)
-  {$destpath="C:/plavormind/php/php.ini"}
+  {$destpath="C:/plavormind/php-nts/php.ini"}
 else
   {"Cannot detect default destination path."
   exit}
