@@ -1,8 +1,5 @@
 #Initializes functions, variables, etc. for PlavorScripts.
 
-function Expand-ArchiveWith7Zip
-{return $false}
-
 function Get-FilePathFromUri
 {Param
 ([Parameter(Mandatory=$true,Position=0)][string]$Uri)
