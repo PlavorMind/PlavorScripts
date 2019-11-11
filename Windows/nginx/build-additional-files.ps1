@@ -1,5 +1,4 @@
-#Build additional files
-#Builds additional files for nginx installer script.
+#Copys additional files for install.ps1 script.
 
 Param([Parameter(Position=0)][string]$dir="C:/plavormind/nginx") #Directory that nginx is installed
 
@@ -13,15 +12,14 @@ if (!$IsWindows)
 {"Your operating system is not supported."
 exit}
 
-if (Test-Path "${PSScriptRoot}/additional_files")
+if (Test-Path "${PSScriptRoot}/additional-files")
 {"Renaming existing directory for additional files"
-Move-Item "${PSScriptRoot}/additional_files" "${PSScriptRoot}/additional_files_old" -Force}
-
+Move-Item "${PSScriptRoot}/additional-files" "${PSScriptRoot}/additional-files-old" -Force}
 "Creating a directory for additioanl files"
-New-Item "${PSScriptRoot}/additional_files" -Force -ItemType Directory
+New-Item "${PSScriptRoot}/additional-files" -Force -ItemType Directory
 
 if (Test-Path "${dir}/conf/private")
 {"Creating conf directory"
-New-Item "${PSScriptRoot}/additional_files/conf" -Force -ItemType Directory
+New-Item "${PSScriptRoot}/additional-files/conf" -Force -ItemType Directory
 "Copying conf/private directory"
-Copy-Item "${dir}/conf/private" "${PSScriptRoot}/additional_files/conf/" -Force -Recurse}
+Copy-Item "${dir}/conf/private" "${PSScriptRoot}/additional-files/conf/" -Force -Recurse}
