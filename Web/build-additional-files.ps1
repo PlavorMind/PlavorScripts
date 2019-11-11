@@ -21,7 +21,6 @@ else
 if (Test-Path "${PSScriptRoot}/additional-files")
 {"Renaming existing directory for additional files"
 Move-Item "${PSScriptRoot}/additional-files" "${PSScriptRoot}/additional-files-old" -Force}
-
 "Creating a directory for additioanl files"
 New-Item "${PSScriptRoot}/additional-files" -Force -ItemType Directory
 
