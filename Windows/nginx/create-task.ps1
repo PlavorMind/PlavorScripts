@@ -1,4 +1,3 @@
-#Create nginx autostart task
 #Creates task to start nginx automatically.
 
 Param([Parameter(Position=0)][string]$path="C:/plavormind/nginx/start.ps1") #Path to start.ps1 file
