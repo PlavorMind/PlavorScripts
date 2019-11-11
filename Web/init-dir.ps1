@@ -1,6 +1,6 @@
-#Configures a directory for web server.
+#Initializes a directory for web server.
 
-Param([Parameter(Position=0)][string]$dir) #Directory to configure for web server
+Param([Parameter(Position=0)][string]$dir) #Directory to initialize
 
 if (Test-Path "${PSScriptRoot}/../init_script.ps1")
 {."${PSScriptRoot}/../init_script.ps1"}
@@ -32,13 +32,13 @@ exit}
 "Downloading Adminer"
 Invoke-WebRequest "https://www.adminer.org/latest-en.php" -DisableKeepAlive -OutFile "${tempdir}/adminer"
 if (!(Test-Path "${tempdir}/Adminer"))
-{"Cannot download Adminer."
-exit}
+{"Cannot download Adminer."}
 
 "Configuring directory"
 Move-Item "${tempdir}/Configurations-Main/Web" "${tempdir}/web" -Force
-New-Item "${tempdir}/web/public/main/adminer" -Force -ItemType Directory
-Move-Item "${tempdir}/adminer" "${tempdir}/web/public/main/adminer/index.php" -Force
+if (Test-Path "${tempdir}/adminer")
+{New-Item "${tempdir}/web/public/main/adminer" -Force -ItemType Directory
+Move-Item "${tempdir}/adminer" "${tempdir}/web/public/main/adminer/index.php" -Force}
 New-Item "${tempdir}/web/public/gitea" -Force -ItemType Directory
 New-Item "${tempdir}/web/public/wiki" -Force -ItemType Directory
 
@@ -46,13 +46,18 @@ if (Test-Path "${PSScriptRoot}/additional-files")
 {"Copying additional files"
 Copy-Item "${PSScriptRoot}/additional-files/*" "${tempdir}/web/" -Force -Recurse}
 
+$default_directories=Get-ChildItem "${tempdir}/web/default" -Directory -Force -Name -Recurse
+$default_files=Get-ChildItem "${tempdir}/web/default" -File -Force -Name -Recurse
 $virtual_hosts=Get-ChildItem "${tempdir}/web/public" -Directory -Force -Name
 foreach ($virtual_host in $virtual_hosts)
-{$files=Get-ChildItem "${tempdir}/web/default" -Force -Name
-foreach ($file in $files)
-  {if (!(Test-Path "${tempdir}/web/public/${virtual_host}/${file}"))
-    {"Copying ${file} file from global directory"
-    Copy-Item "${tempdir}/web/default/${file}"  "${tempdir}/web/public/${virtual_host}/${file}" -Force -Recurse}
+{foreach ($default_directory in $default_directories)
+  {"Creating ${default_directory} directory"
+  New-Item "${tempdir}/web/public/${virtual_host}/${default_directory}" -Force -ItemType Directory}
+
+foreach ($default_file in $default_files)
+  {if (!(Test-Path "${tempdir}/web/public/${virtual_host}/${default_file}"))
+    {"Copying default ${default_file} file"
+    Copy-Item "${tempdir}/web/default/${default_file}" "${tempdir}/web/public/${virtual_host}/${default_file}" -Force -Recurse}
   }
 }
 
