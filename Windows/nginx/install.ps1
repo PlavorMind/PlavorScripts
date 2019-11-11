@@ -29,7 +29,7 @@ else
 exit}
 
 $dir_temp=$dir
-."${PSScriptRoot}/../../filter_nginx_config.ps1" -dir "${tempdir}/nginx/conf"
+."${PSScriptRoot}/../../filter-nginx-config.ps1" "${tempdir}/nginx/conf"
 $dir=$dir_temp
 if (!(Test-Path "${tempdir}/nginx/conf/nginx.conf"))
 {exit}
@@ -66,4 +66,4 @@ Move-Item $dir "${dir}-old" -Force}
 Move-Item "${tempdir}/nginx" $dir -Force
 
 if (Test-AdminPermission)
-{."${PSScriptRoot}/create_task.ps1" -path "${dir}/start.ps1"}
+{."${PSScriptRoot}/create-task.ps1" "${dir}/start.ps1"}
