@@ -10,8 +10,8 @@ param
 [string]$user_pw_file="${PSScriptRoot}/additional_files/user_password.txt", #File containing password for user to create during installation
 [string]$wiki) #Wiki ID
 
-if (Test-Path "${PSScriptRoot}/../init_script.ps1")
-{."${PSScriptRoot}/../init_script.ps1"}
+if (Test-Path "${PSScriptRoot}/../init-script.ps1")
+{."${PSScriptRoot}/../init-script.ps1"}
 else
 {"Cannot find initialize script."
 exit}

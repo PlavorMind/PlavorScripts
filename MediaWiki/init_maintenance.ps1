@@ -6,8 +6,8 @@ param
 [string]$steward, #User to add to the steward group, skip if this is not set
 [string]$wiki) #Specify wiki to run scripts otherwise will run globally
 
-if (Test-Path "${PSScriptRoot}/../init_script.ps1")
-{."${PSScriptRoot}/../init_script.ps1"}
+if (Test-Path "${PSScriptRoot}/../init-script.ps1")
+{."${PSScriptRoot}/../init-script.ps1"}
 else
 {"Cannot find initialize script."
 exit}

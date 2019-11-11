@@ -7,8 +7,8 @@ param
 [string]$mediawiki_dir="__DEFAULT__", #Directory to configure for MediaWiki
 [string]$private_data_dir="__DEFAULT__") #Directory to configure for private data
 
-if (Test-Path "${PSScriptRoot}/../init_script.ps1")
-{."${PSScriptRoot}/../init_script.ps1"}
+if (Test-Path "${PSScriptRoot}/../init-script.ps1")
+{."${PSScriptRoot}/../init-script.ps1"}
 else
 {"Cannot find initialize script."
 exit}

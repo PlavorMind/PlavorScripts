@@ -2,8 +2,8 @@
 
 Param([Parameter(Position=0)][string]$path="C:/plavormind/nginx/start.ps1") #Path to start.ps1 file
 
-if (Test-Path "${PSScriptRoot}/../../init_script.ps1")
-{."${PSScriptRoot}/../../init_script.ps1"}
+if (Test-Path "${PSScriptRoot}/../../init-script.ps1")
+{."${PSScriptRoot}/../../init-script.ps1"}
 else
 {"Cannot find initialize script."
 exit}
