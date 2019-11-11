@@ -1,4 +1,3 @@
-#Start CGI/FastCGI
 #Starts PHP CGI/FastCGI.
 
 Param([Parameter(Position=0)][string]$bind="127.0.0.1:9000") #Bind path for CGI/FastCGI
