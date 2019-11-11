@@ -1,7 +1,6 @@
-#PHP uninstaller
 #Uninstalls PHP.
 
-Param([Parameter(Position=0)][string]$dir="C:/plavormind/php") #Directory that PHP is installed
+Param([Parameter(Position=0)][string]$dir="C:/plavormind/php-nts") #Directory that PHP is installed
 
 if (Test-Path "${PSScriptRoot}/../../init_script.ps1")
 {."${PSScriptRoot}/../../init_script.ps1"}
@@ -30,7 +29,7 @@ if (Get-Process "phpdbg" -ErrorAction Ignore)
 {Stop-Process -Force -Name "phpdbg"}
 
 if (Test-AdminPermission)
-{."${PSScriptRoot}/delete_task.ps1"}
+{."${PSScriptRoot}/delete-task.ps1"}
 
 "Deleting PHP directory"
 Remove-Item $dir -Force -Recurse
