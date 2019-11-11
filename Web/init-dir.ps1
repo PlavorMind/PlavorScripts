@@ -31,7 +31,7 @@ exit}
 
 "Downloading Adminer"
 Invoke-WebRequest "https://www.adminer.org/latest-en.php" -DisableKeepAlive -OutFile "${tempdir}/adminer"
-if (!(Test-Path "${tempdir}/Adminer"))
+if (!(Test-Path "${tempdir}/adminer"))
 {"Cannot download Adminer."}
 
 "Configuring directory"
