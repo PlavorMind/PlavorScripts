@@ -63,7 +63,6 @@ Move-Item $mediawiki_dir "${mediawiki_dir}-old" -Force}
 if (Test-Path $private_data_dir)
 {"Renaming existing private data directory"
 Move-Item $private_data_dir "${private_data_dir}-old" -Force}
-
 "Moving MediaWiki directory"
 Move-Item "${tempdir}/mediawiki" $mediawiki_dir -Force
 #Copy additional files for private data here because this is just copying a entire directory to seperated location from MediaWiki directory.
