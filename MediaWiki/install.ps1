@@ -1,14 +1,13 @@
-#Install MediaWiki
 #Installs MediaWiki.
 
 #Parameter names should not contain "password" to avoid warnings
-param
-([string]$db_pw_file="${PSScriptRoot}/additional_files/db_password.txt", #File containing database password
-[string]$mediawiki_dir="__DEFAULT__", #Directory to configure for MediaWiki
-[string]$private_data_dir="__DEFAULT__", #Directory to configure for private data
-[string]$user, #User to create during installation and add to the steward group
-[string]$user_pw_file="${PSScriptRoot}/additional_files/user_password.txt", #File containing password for user to create during installation
-[string]$wiki) #Wiki ID
+Param
+([string]$db_pw_file="${PSScriptRoot}/additional-files/db_password.txt", #File containing secure string of database password
+[string]$mediawiki_dir, #Directory to configure for MediaWiki
+[string]$private_data_dir, #Directory to configure for private data
+[Parameter(Mandatory=$true)][string]$user, #User to create during installation
+[string]$user_pw_file="${PSScriptRoot}/additional_files/user_password.txt", #File containing secure string of password for user to create during installation
+[Parameter(Mandatory=$true,Position=0)][string]$wiki) #Wiki ID
 
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
 {."${PSScriptRoot}/../init-script.ps1"}
@@ -16,29 +15,25 @@ else
 {"Cannot find initialize script."
 exit}
 
-if ($mediawiki_dir -eq "__DEFAULT__")
+if (!$mediawiki_dir)
 {if ($IsLinux)
-  {$mediawiki_dir="/plavormind/web/wiki/mediawiki"}
+  {$mediawiki_dir="/plavormind/web/public/wiki/mediawiki"}
 elseif ($IsWindows)
-  {$mediawiki_dir="C:/plavormind/web/wiki/mediawiki"}
+  {$mediawiki_dir="C:/plavormind/web/public/wiki/mediawiki"}
 else
   {"Cannot detect default directory."
   exit}
 }
 
-if ($private_data_dir -eq "__DEFAULT__")
+if (!$private_data_dir)
 {if ($IsLinux)
-  {$private_data_dir="/plavormind/web_data/mediawiki"}
+  {$private_data_dir="/plavormind/web/data/mediawiki"}
 elseif ($IsWindows)
-  {$private_data_dir="C:/plavormind/web_data/mediawiki"}
+  {$private_data_dir="C:/plavormind/web/data/mediawiki"}
 else
   {"Cannot detect default directory."
   exit}
 }
-
-if (!($user -and $wiki))
-{"`$user and/or `$wiki parameters are not specified."
-exit}
 
 if ((Test-Path $db_pw_file) -and (Test-Path $user_pw_file))
 {$db_pw=Get-Content $db_pw_file -Force}
