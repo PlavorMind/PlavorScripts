@@ -159,7 +159,7 @@ else
 foreach ($extension in $composer_extensions)
 {if (Test-Path "${tempdir}/mediawiki/extensions/${extension}")
   {"Updating dependencies for ${extension} extension"
-  composer update --no-dev --working-dir="${tempdir}/mediawiki/extensions/${extension}"}
+  .$php_path $composer_path upgrade --no-cache --no-dev --working-dir="${tempdir}/mediawiki/extensions/${extension}"}
 }
 
 foreach ($skin in $skins)
