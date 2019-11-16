@@ -1,9 +1,11 @@
 #Downloads MediaWiki with some extensions and skins.
 
 Param
-([string]$core_branch="master", #Branch for MediaWiki core
+([string]$composer_path, #Path to Composer
+[string]$core_branch="master", #Branch for MediaWiki core
 [Parameter(Position=0)][string]$dir, #Directory to download MediaWiki
 [string]$extensions_branch="master", #Branch for extensions
+[string]$php_path, #Path to PHP
 [string]$skins_branch="master") #Branch for skins
 
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
@@ -11,6 +13,16 @@ if (Test-Path "${PSScriptRoot}/../init-script.ps1")
 else
 {"Cannot find initialize script."
 exit}
+
+if (!$composer_path)
+{if ($IsLinux)
+  {$composer_path="/plavormind/composer.phar"}
+elseif ($IsWindows)
+  {$composer_path="C:/plavormind/php-nts/data/composer.phar"}
+else
+  {"Cannot detect default Composer path."
+  exit}
+}
 
 if (!$dir)
 {if ($IsLinux)
@@ -21,6 +33,21 @@ else
   {"Cannot detect default directory."
   exit}
 }
+
+if (!$php_path)
+{if ($IsWindows)
+  {$php_path="C:/plavormind/php-nts/php.exe"}
+else
+  {"Cannot detect default PHP path."
+  exit}
+}
+
+if (!(Test-Path $composer_path))
+{"Cannot find Composer."
+exit}
+if (!(Test-Path $php_path))
+{"Cannot find PHP."
+exit}
 
 $composer_extensions=@("AbuseFilter","AntiSpoof","Flow","TemplateStyles")
 $extensions=
@@ -86,7 +113,7 @@ else
 exit}
 
 "Updating dependencies"
-composer update --no-dev --working-dir="${tempdir}/mediawiki"
+.$php_path $composer_path upgrade --no-cache --no-dev --working-dir="${tempdir}/mediawiki"
 
 "Emptying extensions and skins directory"
 Remove-Item "${tempdir}/mediawiki/extensions/*" -Force -Recurse
