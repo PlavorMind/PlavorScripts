@@ -1,4 +1,4 @@
-#Installs PHP with APCu extension.
+#Installs PHP with some other software that depends on it.
 
 Param
 ([string]$apcu_archive="https://windows.php.net/downloads/pecl/snaps/apcu/5.1.18/php_apcu-5.1.18-7.4-nts-vc15-x64.zip", #URL or file path to APCu archive
@@ -56,16 +56,26 @@ Invoke-WebRequest "https://curl.haxx.se/ca/cacert.pem" -DisableKeepAlive -OutFil
 if (!(Test-Path "${tempdir}/cacert"))
 {"Cannot download CA certificate."}
 
+"Downloading Composer"
+Invoke-WebRequest "https://getcomposer.org/composer.phar" -DisableKeepAlive -OutFile "${tempdir}/composer"
+if (!(Test-Path "${tempdir}/composer"))
+{"Cannot download Composer."}
+
 "Moving APCu"
 Move-Item "${tempdir}/apcu/php_apcu.dll" "${tempdir}/php/ext/" -Force
 "Deleting a temporary directory"
 Remove-Item "${tempdir}/apcu" -Force -Recurse
 
-if (Test-Path "${tempdir}/cacert")
-{"Creating data directory"
+"Creating data directory"
 New-Item "${tempdir}/php/data" -Force -ItemType Directory
-"Moving CA certificate"
+
+if (Test-Path "${tempdir}/cacert")
+{"Moving CA certificate"
 Move-Item "${tempdir}/cacert" "${tempdir}/php/data/cacert.pem" -Force}
+
+if (Test-Path "${tempdir}/composer")
+{"Moving Composer"
+Move-Item "${tempdir}/composer" "${tempdir}/php/data/composer.phar" -Force}
 
 if (Test-Path "${PSScriptRoot}/../../filter-php-ini.ps1")
 {."${PSScriptRoot}/../../filter-php-ini.ps1" -destpath "${tempdir}/php/php.ini"
