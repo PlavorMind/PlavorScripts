@@ -1,9 +1,11 @@
 #Initializes directories for MediaWiki.
 
 Param
-([string]$core_branch="wmf/1.35.0-wmf.5", #Branch for MediaWiki core
+([string]$composer_path, #Path to Composer
+[string]$core_branch="wmf/1.35.0-wmf.5", #Branch for MediaWiki core
 [string]$extra_branch="master", #Branch for extensions and skins
 [Parameter(Position=0)][string]$mediawiki_dir, #Directory to configure for MediaWiki
+[string]$php_path, #Path to PHP
 [string]$private_data_dir) #Directory to configure for private data
 
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
@@ -12,6 +14,16 @@ else
 {"Cannot find initialize script."
 exit}
 
+if (!$composer_path)
+{if ($IsLinux)
+  {$composer_path="/plavormind/composer.phar"}
+elseif ($IsWindows)
+  {$composer_path="C:/plavormind/php-nts/data/composer.phar"}
+else
+  {"Cannot detect default Composer path."
+  exit}
+}
+
 if (!$mediawiki_dir)
 {if ($IsLinux)
   {$mediawiki_dir="/plavormind/web/public/wiki/mediawiki"}
@@ -19,6 +31,14 @@ elseif ($IsWindows)
   {$mediawiki_dir="C:/plavormind/web/public/wiki/mediawiki"}
 else
   {"Cannot detect default directory."
+  exit}
+}
+
+if (!$php_path)
+{if ($IsWindows)
+  {$php_path="C:/plavormind/php-nts/php.exe"}
+else
+  {"Cannot detect default PHP path."
   exit}
 }
 
@@ -32,6 +52,13 @@ else
   exit}
 }
 
+if (!(Test-Path $composer_path))
+{"Cannot find Composer."
+exit}
+if (!(Test-Path $php_path))
+{"Cannot find PHP."
+exit}
+
 "Downloading Configurations repository archive"
 Invoke-WebRequest "https://github.com/PlavorMind/Configurations/archive/Main.zip" -DisableKeepAlive -OutFile "${tempdir}/Configurations.zip"
 if (Test-Path "${tempdir}/Configurations.zip")
@@ -43,7 +70,7 @@ else
 {"Cannot download Configurations repository archive."
 exit}
 
-."${PSScriptRoot}/download.ps1" "${tempdir}/mw-install" -core_branch $core_branch -extensions_branch $extra_branch -skins_branch $extra_branch
+."${PSScriptRoot}/download.ps1" "${tempdir}/mw-install" -composer_path $composer_path -core_branch $core_branch -extensions_branch $extra_branch -php_path $php_path -skins_branch $extra_branch
 Move-Item "${tempdir}/mw-install" "${tempdir}/mediawiki" -Force
 
 "Moving configuration files"
