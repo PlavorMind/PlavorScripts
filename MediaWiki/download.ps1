@@ -95,7 +95,6 @@ $extensions=
 "TitleBlacklist",
 "TwoColConflict",
 "UserMerge",
-"UserPageEditProtection",
 "WikiEditor")
 $skins=@("Liberty","Timeless","PlavorBuma","Vector")
 
