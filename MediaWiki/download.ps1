@@ -94,8 +94,11 @@ $extensions=
 "TextExtracts",
 "TitleBlacklist",
 "TwoColConflict",
+"UploadsLink",
 "UserMerge",
-"WikiEditor")
+"WikiEditor",
+
+"SecureLinkFixer")
 $skins=@("Liberty","Timeless","PlavorBuma","Vector")
 
 "Downloading MediaWiki archive"
