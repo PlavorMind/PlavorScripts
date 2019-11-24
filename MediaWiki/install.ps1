@@ -4,6 +4,7 @@
 Param
 ([string]$db_pw_file="${PSScriptRoot}/additional-files/db_password.txt", #File containing secure string of database password
 [string]$mediawiki_dir, #Directory to configure for MediaWiki
+[string]$php_path, #Path to PHP
 [string]$private_data_dir, #Directory to configure for private data
 [Parameter(Mandatory=$true)][string]$user, #User to create during installation
 [string]$user_pw_file="${PSScriptRoot}/additional_files/user_password.txt", #File containing secure string of password for user to create during installation
@@ -25,6 +26,14 @@ else
   exit}
 }
 
+if (!$php_path)
+{if ($IsWindows)
+  {$php_path="C:/plavormind/php-nts/php.exe"}
+else
+  {"Cannot detect default PHP path."
+  exit}
+}
+
 if (!$private_data_dir)
 {if ($IsLinux)
   {$private_data_dir="/plavormind/web/data/mediawiki"}
@@ -34,6 +43,10 @@ else
   {"Cannot detect default directory."
   exit}
 }
+
+if (!(Test-Path $php_path))
+{"Cannot find PHP."
+exit}
 
 if ((Test-Path $db_pw_file) -and (Test-Path $user_pw_file))
 {$db_pw=Get-Content $db_pw_file -Force}
