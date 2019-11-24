@@ -2,6 +2,7 @@
 
 Param
 ([Parameter(Position=0)][string]$dir, #Directory that MediaWiki is installed
+[switch]$init, #Run scripts to initialize MediaWiki if this parameter is set
 [string]$php_path, #Path to PHP
 [switch]$update, #Run update.php script if this parameter is set
 [string]$wiki) #Specify wiki ID to run scripts otherwise will run globally
@@ -40,9 +41,15 @@ if (Test-Path $dir)
 else
   {$target_wikis=Get-ChildItem "${dir}/data" -Directory -Force -Name}
 foreach ($target_wiki in $target_wikis)
-  {if ($update)
+  {if ($init -or $update)
     {"Running update.php for ${target_wiki}"
     .$php_path "${dir}/maintenance/update.php" --doshared --quick --wiki $target_wiki}
+
+  if ($init)
+    {"Running emptyUserGroup.php for ${target_wiki}"
+    .$php_path "${dir}/maintenance/emptyUserGroup.php" "bureaucrat" --wiki $target_wiki
+    .$php_path "${dir}/maintenance/emptyUserGroup.php" "interface-admin" --wiki $target_wiki
+    .$php_path "${dir}/maintenance/emptyUserGroup.php" "sysop" --wiki $target_wiki}
 
   "Running purgeExpiredUserrights.php for ${target_wiki}"
   .$php_path "${dir}/maintenance/purgeExpiredUserrights.php" --wiki $target_wiki
