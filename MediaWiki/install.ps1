@@ -2,12 +2,12 @@
 
 #Parameter names should not contain "password" to avoid warnings
 Param
-([string]$db_pw_file="${PSScriptRoot}/additional-files/db_password.txt", #File containing secure string of database password
+([string]$db_pw_file="${PSScriptRoot}/additional-files/db-password.txt", #File containing database password
 [string]$mediawiki_dir, #Directory to configure for MediaWiki
 [string]$php_path, #Path to PHP
 [string]$private_data_dir, #Directory to configure for private data
 [Parameter(Mandatory=$true)][string]$user, #User to create during installation
-[string]$user_pw_file="${PSScriptRoot}/additional_files/user_password.txt", #File containing secure string of password for user to create during installation
+[string]$user_pw_file="${PSScriptRoot}/additional-files/user-password.txt", #File containing password for user to create during installation
 [Parameter(Mandatory=$true,Position=0)][string]$wiki) #Wiki ID
 
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
