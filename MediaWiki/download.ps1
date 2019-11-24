@@ -26,9 +26,9 @@ else
 
 if (!$dir)
 {if ($IsLinux)
-  {$dir="/plavormind/web/wiki/mediawiki"}
+  {$dir="/plavormind/web/public/wiki/mediawiki"}
 elseif ($IsWindows)
-  {$dir="C:/plavormind/web/wiki/mediawiki"}
+  {$dir="C:/plavormind/web/public/wiki/mediawiki"}
 else
   {"Cannot detect default directory."
   exit}
