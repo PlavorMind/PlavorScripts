@@ -59,7 +59,7 @@ if (!(Test-Path $php_path))
 {"Cannot find PHP."
 exit}
 
-."${PSScriptRoot}/download.ps1" "${tempdir}/mw-upgrade" -core_branch $core_branch -extensions_branch $extra_branch -skins_branch $extra_branch
+."${PSScriptRoot}/download.ps1" "${tempdir}/mw-upgrade" -composer_path $composer_path -core_branch $core_branch -extensions_branch $extra_branch -php_path $php_path -skins_branch $extra_branch
 Move-Item "${tempdir}/mw-upgrade" "${tempdir}/mediawiki" -Force
 
 if (Test-Path "${mediawiki_dir}/data")
