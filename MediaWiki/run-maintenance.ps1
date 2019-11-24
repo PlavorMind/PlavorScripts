@@ -42,7 +42,7 @@ else
 foreach ($target_wiki in $target_wikis)
   {if ($update)
     {"Running update.php for ${target_wiki}"
-    .$php_path "${dir}/maintenance/update.php" --quick --wiki $target_wiki}
+    .$php_path "${dir}/maintenance/update.php" --doshared --quick --wiki $target_wiki}
 
   "Running purgeExpiredUserrights.php for ${target_wiki}"
   .$php_path "${dir}/maintenance/purgeExpiredUserrights.php" --wiki $target_wiki
