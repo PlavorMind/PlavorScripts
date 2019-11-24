@@ -79,7 +79,4 @@ Move-Item $mediawiki_dir "${mediawiki_dir}-old" -Force}
 "Moving MediaWiki directory"
 Move-Item "${tempdir}/mediawiki" $mediawiki_dir -Force
 
-#NEEDS REVIEW
-."${PSScriptRoot}/run_script_globally.ps1" -dir $mediawiki_dir -script "update.php --doshared --quick"
-
-."${PSScriptRoot}/run-maintenance.ps1" $mediawiki_dir -php_path $php_path
+."${PSScriptRoot}/run-maintenance.ps1" $mediawiki_dir -php_path $php_path -update
