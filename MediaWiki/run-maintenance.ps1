@@ -3,6 +3,7 @@
 Param
 ([Parameter(Position=0)][string]$dir, #Directory that MediaWiki is installed
 [string]$php_path, #Path to PHP
+[switch]$update, #Run update.php script if this parameter is set
 [string]$wiki) #Specify wiki ID to run scripts otherwise will run globally
 
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
@@ -39,7 +40,11 @@ if (Test-Path $dir)
 else
   {$target_wikis=Get-ChildItem "${dir}/data" -Directory -Force -Name}
 foreach ($target_wiki in $target_wikis)
-  {"Running purgeExpiredUserrights.php for ${target_wiki}"
+  {if ($update)
+    {"Running update.php for ${target_wiki}"
+    .$php_path "${dir}/maintenance/update.php" --quick --wiki $target_wiki}
+
+  "Running purgeExpiredUserrights.php for ${target_wiki}"
   .$php_path "${dir}/maintenance/purgeExpiredUserrights.php" --wiki $target_wiki
   "Running pruneFileCache.php for ${target_wiki}"
   .$php_path "${dir}/maintenance/pruneFileCache.php" --agedays 0 --wiki $target_wiki
