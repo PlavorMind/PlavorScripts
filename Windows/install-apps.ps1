@@ -47,10 +47,9 @@ else
   {"Cannot download Microsoft Visual C++ Redistributable for Visual Studio 2019."}
 }
 
-if ($bleachbit_version -match "^(\d+\.\d+)\.\d+$")
-{$bleachbit_majorversion=$Matches[1]
-"Downloading BleachBit"
-Invoke-WebRequest "https://ci.bleachbit.org/dl/${bleachbit_version}/BleachBit-${bleachbit_majorversion}-setup-English.exe" -DisableKeepAlive -OutFile "${tempdir}/bleachbit.exe"
+if ($bleachbit_version)
+{"Downloading BleachBit"
+Invoke-WebRequest "https://ci.bleachbit.org/dl/${bleachbit_version}/BleachBit-${bleachbit_version}-setup-English.exe" -DisableKeepAlive -OutFile "${tempdir}/bleachbit.exe"
 if (Test-Path "${tempdir}/bleachbit.exe")
   {"Installing"
   Start-Process "${tempdir}/bleachbit.exe" -ArgumentList "/S" -Wait
