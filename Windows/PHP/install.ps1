@@ -3,7 +3,7 @@
 Param
 ([string]$apcu_archive="https://windows.php.net/downloads/pecl/snaps/apcu/5.1.18/php_apcu-5.1.18-7.4-nts-vc15-x64.zip", #URL or file path to APCu archive
 [Parameter(Position=0)][string]$dir="C:/plavormind/php-nts", #Directory to install PHP
-[string]$php_archive="https://windows.php.net/downloads/snaps/php-7.4/r3f4a151/php-7.4-nts-windows-vc15-x64-r3f4a151.zip") #URL or file path to PHP archive
+[string]$php_archive="https://windows.php.net/downloads/snaps/php-7.4/r71d42dc/php-7.4-nts-windows-vc15-x64-r71d42dc.zip") #URL or file path to PHP archive
 
 if (Test-Path "${PSScriptRoot}/../../init-script.ps1")
 {."${PSScriptRoot}/../../init-script.ps1"}
