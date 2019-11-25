@@ -63,7 +63,7 @@ else
 if ($gimp_version -match "^(\d+\.\d+)\.\d+$")
 {$gimp_majorversion=$Matches[1]
 "Downloading GIMP"
-Invoke-WebRequest "https://download.gimp.org/mirror/pub/gimp/v${gimp_majorversion}/windows/gimp-${gimp_version}-setup-3.exe" -DisableKeepAlive -OutFile "${tempdir}/gimp.exe"
+Invoke-WebRequest "https://download.gimp.org/mirror/pub/gimp/v${gimp_majorversion}/windows/gimp-${gimp_version}-setup.exe" -DisableKeepAlive -OutFile "${tempdir}/gimp.exe"
 if (Test-Path "${tempdir}/gimp.exe")
   {"Installing"
   Start-Process "${tempdir}/gimp.exe" -ArgumentList "/S" -Wait
