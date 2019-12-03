@@ -12,9 +12,9 @@ exit}
 
 if (!$destpath)
 {if ($IsLinux)
-  {$destpath="/etc/php/7.2/fpm/php.ini"}
+  {$destpath="/etc/php/7.4/fpm/php.ini"}
 elseif ($IsWindows)
-  {$destpath="C:/plavormind/php-nts/php.ini"}
+  {$destpath="C:/plavormind/php-ts/php.ini"}
 else
   {"Cannot detect default destination path."
   exit}
