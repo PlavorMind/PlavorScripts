@@ -1,9 +1,9 @@
 #Installs PHP with some other software that depends on it.
 
 Param
-([string]$apcu_archive="https://windows.php.net/downloads/pecl/snaps/apcu/5.1.18/php_apcu-5.1.18-7.4-nts-vc15-x64.zip", #URL or file path to APCu archive
-[Parameter(Position=0)][string]$dir="C:/plavormind/php-nts", #Directory to install PHP
-[string]$php_archive="https://windows.php.net/downloads/snaps/php-7.4/r71d42dc/php-7.4-nts-windows-vc15-x64-r71d42dc.zip") #URL or file path to PHP archive
+([string]$apcu_archive="https://windows.php.net/downloads/pecl/snaps/apcu/5.1.18/php_apcu-5.1.18-7.4-ts-vc15-x64.zip", #URL or file path to APCu archive
+[Parameter(Position=0)][string]$dir="C:/plavormind/php-ts", #Directory to install PHP
+[string]$php_archive="https://windows.php.net/downloads/snaps/php-7.4/r996f217/php-7.4-ts-windows-vc15-x64-r996f217.zip") #URL or file path to PHP archive
 
 if (Test-Path "${PSScriptRoot}/../../init-script.ps1")
 {."${PSScriptRoot}/../../init-script.ps1"}
@@ -92,10 +92,12 @@ Copy-Item "${PSScriptRoot}/install-data/stop.ps1" "${tempdir}/php/" -Force
 
 "Deleting unnecessary files"
 "Warning: This will remove documentations and license notices that are unnecessary for running."
+Remove-Item "${tempdir}/php/logs" -Force -Recurse
 Remove-Item "${tempdir}/php/license.txt" -Force
 Remove-Item "${tempdir}/php/news.txt" -Force
 Remove-Item "${tempdir}/php/php.ini-development" -Force
 Remove-Item "${tempdir}/php/php.ini-production" -Force
+Remove-Item "${tempdir}/php/README.md" -Force
 Remove-Item "${tempdir}/php/readme-redist-bins.txt" -Force
 Remove-Item "${tempdir}/php/snapshot.txt" -Force
 
