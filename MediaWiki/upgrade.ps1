@@ -2,7 +2,7 @@
 
 Param
 ([string]$composer_path, #Path to Composer
-[string]$core_branch="wmf/1.35.0-wmf.5", #Branch for MediaWiki core
+[string]$core_branch="wmf/1.35.0-wmf.8", #Branch for MediaWiki core
 [string]$extra_branch="master", #Branch for extensions and skins
 [Parameter(Position=0)][string]$mediawiki_dir, #Directory that MediaWiki is installed
 [string]$php_path, #Path to PHP
@@ -18,7 +18,7 @@ if (!$composer_path)
 {if ($IsLinux)
   {$composer_path="/plavormind/composer.phar"}
 elseif ($IsWindows)
-  {$composer_path="C:/plavormind/php-nts/data/composer.phar"}
+  {$composer_path="C:/plavormind/php-ts/data/composer.phar"}
 else
   {"Cannot detect default Composer path."
   exit}
@@ -36,7 +36,7 @@ else
 
 if (!$php_path)
 {if ($IsWindows)
-  {$php_path="C:/plavormind/php-nts/php.exe"}
+  {$php_path="C:/plavormind/php-ts/php.exe"}
 else
   {"Cannot detect default PHP path."
   exit}
