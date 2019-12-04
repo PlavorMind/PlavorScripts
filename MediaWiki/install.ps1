@@ -28,7 +28,7 @@ else
 
 if (!$php_path)
 {if ($IsWindows)
-  {$php_path="C:/plavormind/php-nts/php.exe"}
+  {$php_path="C:/plavormind/php-ts/php.exe"}
 else
   {"Cannot detect default PHP path."
   exit}
