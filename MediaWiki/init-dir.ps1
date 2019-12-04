@@ -18,7 +18,7 @@ if (!$composer_path)
 {if ($IsLinux)
   {$composer_path="/plavormind/composer.phar"}
 elseif ($IsWindows)
-  {$composer_path="C:/plavormind/php-nts/data/composer.phar"}
+  {$composer_path="C:/plavormind/php-ts/data/composer.phar"}
 else
   {"Cannot detect default Composer path."
   exit}
@@ -36,7 +36,7 @@ else
 
 if (!$php_path)
 {if ($IsWindows)
-  {$php_path="C:/plavormind/php-nts/php.exe"}
+  {$php_path="C:/plavormind/php-ts/php.exe"}
 else
   {"Cannot detect default PHP path."
   exit}
