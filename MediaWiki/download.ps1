@@ -83,6 +83,7 @@ $extensions=
 "Renameuser",
 "ReplaceText",
 "RevisionSlider",
+"Scribunto",
 "SecurePoll",
 "SimpleMathJax",
 "StaffPowers",
