@@ -17,7 +17,12 @@ if (!(Test-Path $dir))
 exit}
 
 if (Test-AdminPermission)
-{."${dir}/bin/httpd.exe" -k stop
+{Write-Verbose "Stopping service"
+."${dir}/bin/httpd.exe" -k stop
+Write-Verbose "Uninstalling service"
 ."${dir}/bin/httpd.exe" -k uninstall}
+else
+{Write-Warning "Skipped uninstalling service: This script must be run as administrator to uninstall service."}
 
+Write-Verbose "Deleting Apache HTTP Server directory"
 Remove-Item $dir -Force -Recurse
