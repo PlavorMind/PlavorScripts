@@ -7,7 +7,7 @@ Param
 if (Test-Path "${PSScriptRoot}/init-script.ps1")
 {."${PSScriptRoot}/init-script.ps1"}
 else
-{"Cannot find initialize script."
+{Write-Error "Cannot find initialize script." -Category ObjectNotFound
 exit}
 
 if (!$dir)
@@ -16,7 +16,7 @@ if (!$dir)
 elseif ($IsWindows)
   {$dir="C:/plavormind/nginx/logs"}
 else
-  {"Cannot detect default directory."
+  {Write-Error "Cannot detect default directory."
   exit}
 }
 
