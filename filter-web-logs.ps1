@@ -41,7 +41,7 @@ if ($log_file -like "*error.log")
   {Write-Verbose "Blanking original file"
   #$null > "${dir}/${log_file}" should not be used because of a bug on Windows.
   Set-Content "${dir}/${log_file}" $null -Encoding utf8 -Force}
-elseif ($log_file -ne "nginx.pid")
+elseif ($log_file -notlike "*.pid")
   {Write-Verbose "Deleting original file"
   Remove-Item "${dir}/${log_file}" -Force}
 }
