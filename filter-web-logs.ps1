@@ -37,11 +37,8 @@ foreach ($log_file in Get-ChildItem $dir -File -Force -Name -Recurse)
 {Write-Verbose "Filtering ${log_file} file"
 Select-String "(^(127\.0\.0\.[0-9]+|192\.168\.219\.30|::1 ).*|.*GET login\.cgi.*400 150.*)" "${dir}/${log_file}" -NotMatch | Select-Object -ExpandProperty Line > "${destdir}/${log_file}"
 
-if ($log_file -like "*error.log")
+if ($log_file -notlike "*.pid")
   {Write-Verbose "Blanking original file"
   #$null > "${dir}/${log_file}" should not be used because of a bug on Windows.
   Set-Content "${dir}/${log_file}" $null -Encoding utf8 -Force}
-elseif ($log_file -notlike "*.pid")
-  {Write-Verbose "Deleting original file"
-  Remove-Item "${dir}/${log_file}" -Force}
 }
