@@ -1,9 +1,9 @@
 #Installs Apache HTTP Server.
 
 Param
-([Parameter(Position=0)][string]$dir="C:/plavormind/apache-httpd", #Directory to install Apache HTTP Server
+([string]$apache_httpd_archive="https://www.apachehaus.com/downloads/httpd-2.4.41-o111c-x64-vc15-r2.zip", #URL or file path to Apache HTTP Server archive
+[Parameter(Position=0)][string]$dir="C:/plavormind/apache-httpd", #Directory to install Apache HTTP Server
 [string]$php_dir="C:/plavormind/php-ts", #PHP directory
-[string]$version="2.4.41", #Apache HTTP Server version
 [string]$web_dir="C:/plavormind/web/public") #Web server public directory
 
 if (Test-Path "${PSScriptRoot}/../../init-script.ps1")
@@ -15,6 +15,7 @@ exit}
 if (!$IsWindows)
 {Write-Error "Your operating system is not supported."
 exit}
+#End of preconditions
 
 Write-Verbose "Downloading configurations"
 Invoke-WebRequest "https://github.com/PlavorMind/Configurations/archive/Main.zip" -DisableKeepAlive -OutFile "${tempdir}/config.zip"
@@ -29,16 +30,16 @@ else
 {"Cannot download configurations."
 exit}
 
-Write-Verbose "Downloading Apache HTTP Server"
-Invoke-WebRequest "https://www.apachehaus.com/downloads/httpd-${version}-o111c-x64-vc15-r2.zip" -DisableKeepAlive -OutFile "${tempdir}/apache-httpd.zip"
-if (Test-Path "${tempdir}/apache-httpd.zip")
-{Write-Verbose "Extracting"
-Expand-Archive "${tempdir}/apache-httpd.zip" $tempdir -Force
+$output=Get-FilePathFromUri $apache_httpd_archive
+if ($output)
+{Write-Verbose "Extracting Apache HTTP Server"
+Expand-Archive $output $tempdir
 Write-Verbose "Deleting files that are no longer needed"
-Remove-Item "${tempdir}/apache-httpd.zip" -Force
+if ($output -like "${tempdir}*")
+  {Remove-Item $output -Force}
 Remove-Item "${tempdir}/readme_first.html" -Force}
 else
-{"Cannot download Apache HTTP Server."
+{Write-Error "Cannot download or find Apache HTTP Server."
 exit}
 
 Write-Verbose "Applying configurations"
