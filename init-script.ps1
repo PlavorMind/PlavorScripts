@@ -9,7 +9,7 @@ if ($Uri -match "^https?:\/\/")
   {if ($Uri -match "[^\\/:*?`"<>|]+\.[^\\/:*?`"<>|]+$")
     {$filename=$Matches[0]}
   else
-    {$filename="get_filepathfromuri_output"}
+    {$filename="get-filepathfromuri-output"}
   Invoke-WebRequest $Uri -DisableKeepAlive -OutFile "${tempdir}/${filename}"
   if (Test-Path "${tempdir}/${filename}")
     {$output="${tempdir}/${filename}"}
