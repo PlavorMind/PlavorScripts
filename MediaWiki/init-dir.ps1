@@ -2,7 +2,7 @@
 
 Param
 ([string]$composer_path, #Path to Composer
-[string]$core_branch="wmf/1.35.0-wmf.8", #Branch for MediaWiki core
+[string]$core_branch="wmf/1.35.0-wmf.10", #Branch for MediaWiki core
 [string]$extra_branch="master", #Branch for extensions and skins
 [Parameter(Position=0)][string]$mediawiki_dir, #Directory to configure for MediaWiki
 [string]$php_path, #Path to PHP
@@ -11,7 +11,7 @@ Param
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
 {."${PSScriptRoot}/../init-script.ps1"}
 else
-{"Cannot find initialize script."
+{Write-Error "Cannot find initialize script." -Category ObjectNotFound
 exit}
 
 if (!$composer_path)
@@ -20,7 +20,7 @@ if (!$composer_path)
 elseif ($IsWindows)
   {$composer_path="C:/plavormind/php-ts/data/composer.phar"}
 else
-  {"Cannot detect default Composer path."
+  {Write-Error "Cannot detect default Composer path." -Category NotSpecified
   exit}
 }
 
@@ -30,7 +30,7 @@ if (!$mediawiki_dir)
 elseif ($IsWindows)
   {$mediawiki_dir="C:/plavormind/web/public/wiki/mediawiki"}
 else
-  {"Cannot detect default directory."
+  {Write-Error "Cannot detect default MediaWiki directory." -Category NotSpecified
   exit}
 }
 
@@ -38,7 +38,7 @@ if (!$php_path)
 {if ($IsWindows)
   {$php_path="C:/plavormind/php-ts/php.exe"}
 else
-  {"Cannot detect default PHP path."
+  {Write-Error "Cannot detect default PHP path." -Category NotSpecified
   exit}
 }
 
@@ -48,15 +48,15 @@ if (!$private_data_dir)
 elseif ($IsWindows)
   {$private_data_dir="C:/plavormind/web/data/mediawiki"}
 else
-  {"Cannot detect default directory."
+  {Write-Error "Cannot detect default private data directory." -Category NotSpecified
   exit}
 }
 
 if (!(Test-Path $composer_path))
-{"Cannot find Composer."
+{Write-Error "Cannot find Composer." -Category NotInstalled
 exit}
 if (!(Test-Path $php_path))
-{"Cannot find PHP."
+{Write-Error "Cannot find PHP." -Category NotInstalled
 exit}
 
 "Downloading Configurations repository archive"
