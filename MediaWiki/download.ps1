@@ -20,7 +20,7 @@ if (!$composer_path)
 elseif ($IsWindows)
   {$composer_path="C:/plavormind/php-ts/data/composer.phar"}
 else
-  {Write-Error "Cannot detect default Composer path."
+  {Write-Error "Cannot detect default Composer path." -Category NotSpecified
   exit}
 }
 
@@ -30,7 +30,7 @@ if (!$dir)
 elseif ($IsWindows)
   {$dir="C:/plavormind/web/public/wiki/mediawiki"}
 else
-  {Write-Error "Cannot detect default directory."
+  {Write-Error "Cannot detect default directory." -Category NotSpecified
   exit}
 }
 
@@ -38,7 +38,7 @@ if (!$php_path)
 {if ($IsWindows)
   {$php_path="C:/plavormind/php-ts/php.exe"}
 else
-  {Write-Error "Cannot detect default PHP path."
+  {Write-Error "Cannot detect default PHP path." -Category NotSpecified
   exit}
 }
 
@@ -48,7 +48,6 @@ exit}
 if (!(Test-Path $php_path))
 {Write-Error "Cannot find PHP." -Category NotInstalled
 exit}
-#End of preconditions
 
 $composer_extensions=@("AbuseFilter","AntiSpoof","Flow","TemplateStyles")
 $extensions=
@@ -103,28 +102,27 @@ $extensions=
 "SecureLinkFixer")
 $skins=@("Liberty","Timeless","PlavorBuma","Vector")
 
-"Downloading MediaWiki archive"
+Write-Verbose "Downloading MediaWiki"
 Invoke-WebRequest "https://github.com/wikimedia/mediawiki/archive/${core_branch}.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki.zip"
 if (Test-Path "${tempdir}/mediawiki.zip")
-{"Extracting"
+{Write-Verbose "Extracting"
 Expand-Archive "${tempdir}/mediawiki.zip" $tempdir -Force
-"Deleting a temporary file"
+Write-Verbose "Deleting a file that are no longer needed"
 Remove-Item "${tempdir}/mediawiki.zip" -Force
-"Renaming MediaWiki directory"
 Move-Item "${tempdir}/mediawiki-*" "${tempdir}/mediawiki" -Force}
 else
-{"Cannot download MediaWiki archive."
+{Write-Error "Cannot download MediaWiki." -Category ConnectionError
 exit}
 
-"Updating dependencies"
-.$php_path $composer_path upgrade --no-cache --no-dev --working-dir="${tempdir}/mediawiki"
+Write-Verbose "Updating dependencies with Composer"
+.$php_path $composer_path update --ignore-platform-reqs --no-cache --no-dev --working-dir="${tempdir}/mediawiki"
 
-"Emptying extensions and skins directory"
+Write-Verbose "Emptying extensions and skins directory"
 Remove-Item "${tempdir}/mediawiki/extensions/*" -Force -Recurse
 Remove-Item "${tempdir}/mediawiki/skins/*" -Force -Recurse
 
 foreach ($extension in $extensions)
-{"Downloading ${extension} extension archive"
+{Write-Verbose "Downloading ${extension} extension"
 switch ($extension)
   {"DiscordNotifications"
     {Invoke-WebRequest "https://github.com/kulttuuri/DiscordNotifications/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension}.zip"}
@@ -138,11 +136,11 @@ switch ($extension)
     {Invoke-WebRequest "https://github.com/wikimedia/mediawiki-extensions-${extension}/archive/${extensions_branch}.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension}.zip"}
   }
 if (Test-Path "${tempdir}/${extension}.zip")
-  {"Extracting"
+  {Write-Verbose "Extracting"
   Expand-Archive "${tempdir}/${extension}.zip" "${tempdir}/mediawiki/extensions/" -Force
-  "Deleting a temporary file"
+  Write-Verbose "Deleting a file that are no longer needed"
   Remove-Item "${tempdir}/${extension}.zip" -Force
-  "Renaming ${extension} extension directory"
+  Write-Verbose "Renaming ${extension} extension directory"
   switch ($extension)
     {"DiscordNotifications"
       {Move-Item "${tempdir}/mediawiki/extensions/DiscordNotifications-master" "${tempdir}/mediawiki/extensions/${extension}" -Force}
@@ -157,17 +155,17 @@ if (Test-Path "${tempdir}/${extension}.zip")
     }
   }
 else
-  {"Cannot download ${extension} extension archive."}
+  {Write-Error "Cannot download ${extension} extension." -Category ConnectionError}
 }
 
 foreach ($extension in $composer_extensions)
 {if (Test-Path "${tempdir}/mediawiki/extensions/${extension}")
-  {"Updating dependencies for ${extension} extension"
-  .$php_path $composer_path upgrade --no-cache --no-dev --working-dir="${tempdir}/mediawiki/extensions/${extension}"}
+  {Write-Verbose "Updating dependencies for ${extension} extension with Composer"
+  .$php_path $composer_path update --no-cache --no-dev --working-dir="${tempdir}/mediawiki/extensions/${extension}"}
 }
 
 foreach ($skin in $skins)
-{"Downloading ${skin} skin archive"
+{Write-Verbose "Downloading ${skin} skin"
 switch ($skin)
   {"Liberty"
     {Invoke-WebRequest "https://gitlab.com/librewiki/Liberty-MW-Skin/-/archive/master/Liberty-MW-Skin-master.zip" -DisableKeepAlive -OutFile "${tempdir}/${skin}.zip"}
@@ -177,11 +175,11 @@ switch ($skin)
     {Invoke-WebRequest "https://github.com/wikimedia/mediawiki-skins-${skin}/archive/${skins_branch}.zip" -DisableKeepAlive -OutFile "${tempdir}/${skin}.zip"}
   }
 if (Test-Path "${tempdir}/${skin}.zip")
-  {"Extracting"
+  {Write-Verbose "Extracting"
   Expand-Archive "${tempdir}/${skin}.zip" "${tempdir}/mediawiki/skins/" -Force
-  "Deleting a temporary file"
+  Write-Verbose "Deleting a file that are no longer needed"
   Remove-Item "${tempdir}/${skin}.zip" -Force
-  "Renaming ${skin} skin directory"
+  Write-Verbose "Renaming ${skin} skin directory"
   switch ($skin)
     {"Liberty"
       {Move-Item "${tempdir}/mediawiki/skins/Liberty-MW-Skin-master" "${tempdir}/mediawiki/skins/${skin}" -Force}
@@ -192,16 +190,10 @@ if (Test-Path "${tempdir}/${skin}.zip")
     }
   }
 else
-  {"Cannot download ${skin} skin archive."}
+  {Write-Error "Cannot download ${skin} skin." -Category ConnectionError}
 }
 
-"Deleting unnecessary files"
-"Warning: This will remove documentations and license notices that are unnecessary for running."
-Remove-Item "${tempdir}/mediawiki/docs" -Force -Recurse
-Remove-Item "${tempdir}/mediawiki/maintenance/README" -Force
-Remove-Item "${tempdir}/mediawiki/resources/assets/file-type-icons/COPYING" -Force
-Remove-Item "${tempdir}/mediawiki/resources/assets/licenses/public-domain.png" -Force
-Remove-Item "${tempdir}/mediawiki/resources/assets/licenses/README" -Force
+Write-Verbose "Deleting files that are unnecessary for running"
 Remove-Item "${tempdir}/mediawiki/CODE_OF_CONDUCT.md" -Force
 Remove-Item "${tempdir}/mediawiki/FAQ" -Force
 Remove-Item "${tempdir}/mediawiki/HISTORY" -Force
@@ -210,9 +202,14 @@ Remove-Item "${tempdir}/mediawiki/README" -Force
 Remove-Item "${tempdir}/mediawiki/RELEASE-NOTES-*" -Force
 Remove-Item "${tempdir}/mediawiki/SECURITY" -Force
 Remove-Item "${tempdir}/mediawiki/UPGRADE" -Force
+Remove-Item "${tempdir}/mediawiki/docs" -Force -Recurse
+Remove-Item "${tempdir}/mediawiki/maintenance/README" -Force
+Remove-Item "${tempdir}/mediawiki/resources/assets/file-type-icons/COPYING" -Force
+Remove-Item "${tempdir}/mediawiki/resources/assets/licenses/public-domain.png" -Force
+Remove-Item "${tempdir}/mediawiki/resources/assets/licenses/README" -Force
 
 if (Test-Path $dir)
-{"Renaming existing MediaWiki directory"
+{Write-Warning "Renaming existing MediaWiki directory"
 Move-Item $dir "${dir}-old" -Force}
-"Moving MediaWiki directory"
+Write-Verbose "Moving MediaWiki directory from temporary directory to destination directory"
 Move-Item "${tempdir}/mediawiki" $dir -Force
