@@ -14,14 +14,13 @@ if (!$dir)
 {if ($IsWindows)
   {$dir="C:/plavormind/apache-httpd/logs"}
 else
-  {Write-Error "Cannot detect default directory."
+  {Write-Error "Cannot detect default directory." -Category NotSpecified
   exit}
 }
 
 if (!(Test-Path $dir))
 {Write-Error "Cannot find logs directory." -Category ObjectNotFound
 exit}
-#End of preconditions
 
 if (Test-Path $destdir)
 {Write-Warning "Renaming existing directory for filtered logs"
