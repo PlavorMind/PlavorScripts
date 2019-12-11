@@ -2,7 +2,7 @@
 
 Param
 ([string]$composer_path, #Path to Composer
-[string]$core_branch="wmf/1.35.0-wmf.8", #Branch for MediaWiki core
+[string]$core_branch="wmf/1.35.0-wmf.10", #Branch for MediaWiki core
 [string]$extra_branch="master", #Branch for extensions and skins
 [Parameter(Position=0)][string]$mediawiki_dir, #Directory that MediaWiki is installed
 [string]$php_path, #Path to PHP
