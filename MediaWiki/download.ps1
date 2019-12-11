@@ -11,7 +11,7 @@ Param
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
 {."${PSScriptRoot}/../init-script.ps1"}
 else
-{"Cannot find initialize script."
+{Write-Error "Cannot find initialize script." -Category ObjectNotFound
 exit}
 
 if (!$composer_path)
@@ -20,7 +20,7 @@ if (!$composer_path)
 elseif ($IsWindows)
   {$composer_path="C:/plavormind/php-ts/data/composer.phar"}
 else
-  {"Cannot detect default Composer path."
+  {Write-Error "Cannot detect default Composer path."
   exit}
 }
 
@@ -30,7 +30,7 @@ if (!$dir)
 elseif ($IsWindows)
   {$dir="C:/plavormind/web/public/wiki/mediawiki"}
 else
-  {"Cannot detect default directory."
+  {Write-Error "Cannot detect default directory."
   exit}
 }
 
@@ -38,16 +38,17 @@ if (!$php_path)
 {if ($IsWindows)
   {$php_path="C:/plavormind/php-ts/php.exe"}
 else
-  {"Cannot detect default PHP path."
+  {Write-Error "Cannot detect default PHP path."
   exit}
 }
 
 if (!(Test-Path $composer_path))
-{"Cannot find Composer."
+{Write-Error "Cannot find Composer." -Category NotInstalled
 exit}
 if (!(Test-Path $php_path))
-{"Cannot find PHP."
+{Write-Error "Cannot find PHP." -Category NotInstalled
 exit}
+#End of preconditions
 
 $composer_extensions=@("AbuseFilter","AntiSpoof","Flow","TemplateStyles")
 $extensions=
