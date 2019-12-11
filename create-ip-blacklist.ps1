@@ -15,7 +15,7 @@ if (!$destpath)
 {if ($IsWindows)
   {$destpath="C:/plavormind/apache-httpd/conf/private/blacklist.conf"}
 else
-  {Write-Error "Cannot detect default destination path."
+  {Write-Error "Cannot detect default destination path." -Category NotSpecified
   exit}
 }
 
@@ -25,10 +25,9 @@ if (!$path)
 elseif ($IsWindows)
   {$path="${Env:USERPROFILE}/OneDrive/Documents/blacklist.txt"}
 else
-  {Write-Error "Cannot detect default path."
+  {Write-Error "Cannot detect default path." -Category NotSpecified
   exit}
 }
-#End of preconditions
 
 $output=Get-FilePathFromUri $path
 if ($output)
@@ -55,4 +54,4 @@ switch ($platform)
   }
 }
 else
-{Write-Error "Cannot download or find IP address blacklist."}
+{Write-Error "Cannot download or find IP address blacklist." -Category ObjectNotFound}
