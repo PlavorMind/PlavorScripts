@@ -31,12 +31,12 @@ else
 
 $output=Get-FilePathFromUri $path
 if ($output)
-{$source=((Get-Content $output -Force) -replace "#.*","").Trim()
-$blacklist=@()
-foreach ($source_line in $source)
-  {if ($source_line -ne "")
-    {$blacklist+=$source_line}
-  }
+{$blacklist=(Get-Content $output -Force).Trim() -replace "#.*","" | Where-Object {$PSItem -ne ""}
+
+if ($output -like "${tempdir}*")
+  {Write-Verbose "Deleting files that are no longer needed"
+  Remove-Item $output -Force}
+
 switch ($platform)
   {"apache-httpd"
     {Write-Verbose "Creating IP address blacklist for Apache HTTP Server"
