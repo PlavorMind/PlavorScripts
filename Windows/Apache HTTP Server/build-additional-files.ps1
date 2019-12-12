@@ -15,12 +15,15 @@ exit}
 if (!(Test-Path $apache_httpd_dir))
 {Write-Error "Cannot find Apache HTTP Server." -Category NotInstalled
 exit}
-#End of preconditions
 
 if (Test-Path "${PSScriptRoot}/additional-files")
-{Move-Item "${PSScriptRoot}/additional-files" "${PSScriptRoot}/additional-files-old" -Force}
+{Write-Warning "Renaming existing directory for additional files"
+Move-Item "${PSScriptRoot}/additional-files" "${PSScriptRoot}/additional-files-old" -Force}
+Write-Verbose "Creating a directory for additioanl files"
 New-Item "${PSScriptRoot}/additional-files" -Force -ItemType Directory
 
 if (Test-Path "${apache_httpd_dir}/conf/private")
-{New-Item "${PSScriptRoot}/additional-files/conf" -Force -ItemType
+{Write-Verbose "Creating conf directory"
+New-Item "${PSScriptRoot}/additional-files/conf" -Force -ItemType
+Write-Verbose "Copying conf/private directory"
 Copy-Item "${apache_httpd_dir}/conf/private" "${PSScriptRoot}/additional-files/conf/" -Force -Recurse}
