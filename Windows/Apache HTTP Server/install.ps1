@@ -15,7 +15,6 @@ exit}
 if (!$IsWindows)
 {Write-Error "Your operating system is not supported."
 exit}
-#End of preconditions
 
 Write-Verbose "Downloading configurations"
 Invoke-WebRequest "https://github.com/PlavorMind/Configurations/archive/Main.zip" -DisableKeepAlive -OutFile "${tempdir}/config.zip"
@@ -27,7 +26,7 @@ Remove-Item "${tempdir}/config.zip" -Force
 Move-Item "${tempdir}/Configurations-Main/apache-httpd" "${tempdir}/apache-httpd-config" -Force
 Remove-Item "${tempdir}/Configurations-Main" -Force -Recurse}
 else
-{"Cannot download configurations."
+{Write-Error "Cannot download configurations." -Category ConnectionError
 exit}
 
 $output=Get-FilePathFromUri $apache_httpd_archive
@@ -39,7 +38,7 @@ if ($output -like "${tempdir}*")
   {Remove-Item $output -Force}
 Remove-Item "${tempdir}/readme_first.html" -Force}
 else
-{Write-Error "Cannot download or find Apache HTTP Server."
+{Write-Error "Cannot download or find Apache HTTP Server." -Category ObjectNotFound
 exit}
 
 Write-Verbose "Applying configurations"
