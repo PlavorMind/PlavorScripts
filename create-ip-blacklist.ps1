@@ -39,7 +39,8 @@ foreach ($source_line in $source)
   }
 switch ($platform)
   {"apache-httpd"
-    {"<RequireAll>" > $destpath
+    {Write-Verbose "Creating IP address blacklist for Apache HTTP Server"
+    "<RequireAll>" > $destpath
     "Require all granted" >> $destpath
     $result="Require not ip "
     foreach ($blacklisted_ip in $blacklist)
@@ -47,7 +48,8 @@ switch ($platform)
     $result >> $destpath
     "</RequireAll>" >> $destpath}
   "nginx"
-    {$null > $destpath
+    {Write-Verbose "Creating IP address blacklist for nginx"
+    $null > $destpath
     foreach ($blacklisted_ip in $blacklist)
       {"deny `"${blacklisted_ip}`";" >> $destpath}
     }
