@@ -31,7 +31,7 @@ else
 
 $output=Get-FilePathFromUri $path
 if ($output)
-{$blacklist=(Get-Content $output -Force).Trim() -replace "#.*","" | Where-Object {$PSItem -ne ""}
+{$blacklist=((Get-Content $output -Force) -replace "#.*","").Trim()  | Where-Object {$PSItem -ne ""}
 
 if ($output -like "${tempdir}*")
   {Write-Verbose "Deleting files that are no longer needed"
@@ -49,7 +49,7 @@ switch ($platform)
     "</RequireAll>" >> $destpath}
   "nginx"
     {Write-Verbose "Creating IP address blacklist for nginx"
-    $null > $destpath
+    Out-Null > $destpath
     foreach ($blacklisted_ip in $blacklist)
       {"deny `"${blacklisted_ip}`";" >> $destpath}
     }
