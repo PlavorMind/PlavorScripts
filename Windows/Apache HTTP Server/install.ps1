@@ -87,8 +87,10 @@ Remove-Item "${tempdir}/Apache24/README.txt" -Force
 Remove-Item "${tempdir}/Apache24/logs/install.log" -Force
 
 if (Test-Path $dir)
-{Write-Warning "Renaming existing Apache HTTP Server directory"
-Move-Item $dir "${dir}-old" -Force}
+{Write-Warning "Backing up existing Apache HTTP Server directory"
+Copy-Item $dir "${dir}-old" -Force -Recurse
+Write-Warning "Uninstalling existing Apache HTTP Server"
+."${PSScriptRoot}/uninstall.ps1" $dir}
 Write-Verbose "Moving Apache HTTP Server directory from temporary directory to destination directory"
 Move-Item "${tempdir}/Apache24" $dir -Force
 
