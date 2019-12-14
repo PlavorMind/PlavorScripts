@@ -24,6 +24,6 @@ New-Item "${PSScriptRoot}/additional-files" -Force -ItemType Directory
 
 if (Test-Path "${apache_httpd_dir}/conf/private")
 {Write-Verbose "Creating conf directory"
-New-Item "${PSScriptRoot}/additional-files/conf" -Force -ItemType
+New-Item "${PSScriptRoot}/additional-files/conf" -Force -ItemType Directory
 Write-Verbose "Copying conf/private directory"
 Copy-Item "${apache_httpd_dir}/conf/private" "${PSScriptRoot}/additional-files/conf/" -Force -Recurse}
