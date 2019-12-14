@@ -24,5 +24,13 @@ Write-Verbose "Uninstalling service"
 else
 {Write-Warning "Skipped uninstalling service: This script must be run as administrator to uninstall service."}
 
+if (Test-Path "${dir}/logs/httpd.pid")
+{$apache_httpd_pid=Get-Content "${dir}/logs/httpd.pid" -Force
+if (Get-Process -Id $apache_httpd_pid)
+  {Write-Verbose "Stopping Apache HTTP Server"
+  Stop-Process $apache_httpd_pid
+  Start-Sleep 5}
+}
+
 Write-Verbose "Deleting Apache HTTP Server directory"
 Remove-Item $dir -Force -Recurse
