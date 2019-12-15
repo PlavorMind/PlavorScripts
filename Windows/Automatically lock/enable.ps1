@@ -1,6 +1,6 @@
 #Enables automatically lock when signing in. Useful when using automatic login.
 
-Param([switch]$allusers) #Apply to all users if this parameter is set
+Param([Parameter()][switch]$allusers) #Apply to all users if this parameter is set
 
 if (Test-Path "${PSScriptRoot}/../../init-script.ps1")
 {."${PSScriptRoot}/../../init-script.ps1"}
