@@ -32,9 +32,8 @@ else
 $output=Get-FilePathFromUri $path
 if ($output)
 {$blacklist=((Get-Content $output -Force) -replace "#.*","").Trim()  | Where-Object {$PSItem -ne ""}
-
 if ($output -like "${tempdir}*")
-  {Write-Verbose "Deleting files that are no longer needed"
+  {Write-Verbose "Deleting a file that are no longer needed"
   Remove-Item $output -Force}
 
 switch ($platform)
