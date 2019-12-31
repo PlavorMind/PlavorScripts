@@ -72,6 +72,7 @@ $extensions=
 "GlobalUserPage",
 "Highlightjs_Integration",
 "Interwiki",
+"Math",
 "MinimumNameLength",
 "MultimediaViewer",
 "Nuke",
