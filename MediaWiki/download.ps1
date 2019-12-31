@@ -75,6 +75,7 @@ $extensions=
 "Math",
 "MinimumNameLength",
 "MultimediaViewer",
+"NativeSvgHandler",
 "Nuke",
 "PageImages",
 "ParserFunctions",
