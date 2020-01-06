@@ -49,7 +49,11 @@ if (!(Test-Path $php_path))
 {Write-Error "Cannot find PHP." -Category NotInstalled
 exit}
 
-$composer_extensions=@("AbuseFilter","AntiSpoof","Flow","TemplateStyles")
+$composer_extensions=
+@("AbuseFilter",
+"AntiSpoof",
+"Flow",
+"TemplateStyles")
 $extensions=
 @(#"AbuseFilter",
 "AntiSpoof",
@@ -102,14 +106,20 @@ $extensions=
 "WikiEditor",
 
 "SecureLinkFixer")
-$skins=@("Liberty","Timeless","PlavorBuma","Vector")
+$skins=
+@("Liberty",
+"Medik",
+"Vector",
+
+"PlavorBuma",
+"Timeless")
 
 Write-Verbose "Downloading MediaWiki"
 Invoke-WebRequest "https://github.com/wikimedia/mediawiki/archive/${core_branch}.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki.zip"
 if (Test-Path "${tempdir}/mediawiki.zip")
 {Write-Verbose "Extracting"
 Expand-Archive "${tempdir}/mediawiki.zip" $tempdir -Force
-Write-Verbose "Deleting a file that are no longer needed"
+Write-Verbose "Deleting a file that is no longer needed"
 Remove-Item "${tempdir}/mediawiki.zip" -Force
 Move-Item "${tempdir}/mediawiki-*" "${tempdir}/mediawiki" -Force}
 else
@@ -123,39 +133,30 @@ Write-Verbose "Emptying extensions and skins directory"
 Remove-Item "${tempdir}/mediawiki/extensions/*" -Force -Recurse
 Remove-Item "${tempdir}/mediawiki/skins/*" -Force -Recurse
 
+Write-Verbose "Creating a temporary directory for extracting extensions and skins"
+New-Item "${tempdir}/mediawiki-extras" -Force -ItemType Directory
+
 foreach ($extension in $extensions)
 {Write-Verbose "Downloading ${extension} extension"
 switch ($extension)
   {"DiscordNotifications"
-    {Invoke-WebRequest "https://github.com/kulttuuri/DiscordNotifications/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension}.zip"}
+    {Invoke-WebRequest "https://github.com/kulttuuri/DiscordNotifications/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
   "Highlightjs_Integration"
-    {Invoke-WebRequest "https://github.com/Nicolas01/Highlightjs_Integration/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension}.zip"}
+    {Invoke-WebRequest "https://github.com/Nicolas01/Highlightjs_Integration/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
   "PlavorMindTools"
-    {Invoke-WebRequest "https://github.com/PlavorMind/PlavorMindTools/archive/Main.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension}.zip"}
+    {Invoke-WebRequest "https://github.com/PlavorMind/PlavorMindTools/archive/Main.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
   "SimpleMathJax"
-    {Invoke-WebRequest "https://github.com/jmnote/SimpleMathJax/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension}.zip"}
+    {Invoke-WebRequest "https://github.com/jmnote/SimpleMathJax/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
   default
-    {Invoke-WebRequest "https://github.com/wikimedia/mediawiki-extensions-${extension}/archive/${extensions_branch}.zip" -DisableKeepAlive -OutFile "${tempdir}/${extension}.zip"}
+    {Invoke-WebRequest "https://github.com/wikimedia/mediawiki-extensions-${extension}/archive/${extensions_branch}.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
   }
-if (Test-Path "${tempdir}/${extension}.zip")
+if (Test-Path "${tempdir}/mediawiki-extension.zip")
   {Write-Verbose "Extracting"
-  Expand-Archive "${tempdir}/${extension}.zip" "${tempdir}/mediawiki/extensions/" -Force
-  Write-Verbose "Deleting a file that are no longer needed"
-  Remove-Item "${tempdir}/${extension}.zip" -Force
-  Write-Verbose "Renaming ${extension} extension directory"
-  switch ($extension)
-    {"DiscordNotifications"
-      {Move-Item "${tempdir}/mediawiki/extensions/DiscordNotifications-master" "${tempdir}/mediawiki/extensions/${extension}" -Force}
-    "Highlightjs_Integration"
-      {Move-Item "${tempdir}/mediawiki/extensions/Highlightjs_Integration-master" "${tempdir}/mediawiki/extensions/${extension}" -Force}
-    "PlavorMindTools"
-      {Move-Item "${tempdir}/mediawiki/extensions/PlavorMindTools-Main" "${tempdir}/mediawiki/extensions/${extension}" -Force}
-    "SimpleMathJax"
-      {Move-Item "${tempdir}/mediawiki/extensions/SimpleMathJax-master" "${tempdir}/mediawiki/extensions/${extension}" -Force}
-    default
-      {Move-Item "${tempdir}/mediawiki/extensions/mediawiki-extensions-${extension}-*" "${tempdir}/mediawiki/extensions/${extension}" -Force}
-    }
-  }
+  Expand-Archive "${tempdir}/mediawiki-extension.zip" "${tempdir}/mediawiki-extras/" -Force
+  Write-Verbose "Deleting a file that is no longer needed"
+  Remove-Item "${tempdir}/mediawiki-extension.zip" -Force
+  Write-Verbose "Moving ${extension} extension directory"
+  Move-Item "${tempdir}/mediawiki-extras/*" "${tempdir}/mediawiki/extensions/${extension}" -Force}
 else
   {Write-Error "Cannot download ${extension} extension." -Category ConnectionError}
 }
@@ -170,30 +171,27 @@ foreach ($skin in $skins)
 {Write-Verbose "Downloading ${skin} skin"
 switch ($skin)
   {"Liberty"
-    {Invoke-WebRequest "https://gitlab.com/librewiki/Liberty-MW-Skin/-/archive/master/Liberty-MW-Skin-master.zip" -DisableKeepAlive -OutFile "${tempdir}/${skin}.zip"}
+    {Invoke-WebRequest "https://gitlab.com/librewiki/Liberty-MW-Skin/-/archive/master/Liberty-MW-Skin-master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-skin.zip"}
+  "Medik"
+    {Invoke-WebRequest "https://bitbucket.org/wikiskripta/medik/get/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-skin.zip"}
   "PlavorBuma"
-    {Invoke-WebRequest "https://github.com/PlavorMind/PlavorBuma/archive/Main.zip" -DisableKeepAlive -OutFile "${tempdir}/${skin}.zip"}
+    {Invoke-WebRequest "https://github.com/PlavorMind/PlavorBuma/archive/Main.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-skin.zip"}
   default
-    {Invoke-WebRequest "https://github.com/wikimedia/mediawiki-skins-${skin}/archive/${skins_branch}.zip" -DisableKeepAlive -OutFile "${tempdir}/${skin}.zip"}
+    {Invoke-WebRequest "https://github.com/wikimedia/mediawiki-skins-${skin}/archive/${skins_branch}.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-skin.zip"}
   }
-if (Test-Path "${tempdir}/${skin}.zip")
+if (Test-Path "${tempdir}/mediawiki-skin.zip")
   {Write-Verbose "Extracting"
-  Expand-Archive "${tempdir}/${skin}.zip" "${tempdir}/mediawiki/skins/" -Force
-  Write-Verbose "Deleting a file that are no longer needed"
-  Remove-Item "${tempdir}/${skin}.zip" -Force
-  Write-Verbose "Renaming ${skin} skin directory"
-  switch ($skin)
-    {"Liberty"
-      {Move-Item "${tempdir}/mediawiki/skins/Liberty-MW-Skin-master" "${tempdir}/mediawiki/skins/${skin}" -Force}
-    "PlavorBuma"
-      {Move-Item "${tempdir}/mediawiki/skins/PlavorBuma-Main" "${tempdir}/mediawiki/skins/${skin}" -Force}
-    default
-      {Move-Item "${tempdir}/mediawiki/skins/mediawiki-skins-${skin}-*" "${tempdir}/mediawiki/skins/${skin}" -Force}
-    }
-  }
+  Expand-Archive "${tempdir}/mediawiki-skin.zip" "${tempdir}/mediawiki-extras/" -Force
+  Write-Verbose "Deleting a file that is no longer needed"
+  Remove-Item "${tempdir}/mediawiki-skin.zip" -Force
+  Write-Verbose "Moving ${skin} skin directory"
+  Move-Item "${tempdir}/mediawiki-extras/*" "${tempdir}/mediawiki/skins/${skin}" -Force}
 else
   {Write-Error "Cannot download ${skin} skin." -Category ConnectionError}
 }
+
+Write-Verbose "Deleting a directory that is no longer needed"
+Remove-Item "${tempdir}/mediawiki-extras" -Force -Recurse
 
 Write-Verbose "Deleting files that are unnecessary for running"
 Remove-Item "${tempdir}/mediawiki/CODE_OF_CONDUCT.md" -Force
