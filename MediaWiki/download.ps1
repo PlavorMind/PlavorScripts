@@ -141,10 +141,10 @@ switch ($extension)
     {Invoke-WebRequest "https://github.com/kulttuuri/DiscordNotifications/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
   "Highlightjs_Integration"
     {Invoke-WebRequest "https://github.com/Nicolas01/Highlightjs_Integration/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
+  "NativeSvgHandler"
+    {Invoke-WebRequest "https://github.com/StarCitizenTools/mediawiki-extensions-NativeSvgHandler/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
   "PlavorMindTools"
     {Invoke-WebRequest "https://github.com/PlavorMind/PlavorMindTools/archive/Main.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
-  "SimpleMathJax"
-    {Invoke-WebRequest "https://github.com/jmnote/SimpleMathJax/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
   default
     {Invoke-WebRequest "https://github.com/wikimedia/mediawiki-extensions-${extension}/archive/${extensions_branch}.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
   }
