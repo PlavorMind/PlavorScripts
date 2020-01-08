@@ -90,7 +90,6 @@ $extensions=
 "RevisionSlider",
 "Scribunto",
 "SecurePoll",
-"SimpleMathJax",
 "StaffPowers",
 "StalkerLog",
 "SyntaxHighlight_GeSHi",
