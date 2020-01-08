@@ -59,7 +59,6 @@ $extensions=
 "AntiSpoof",
 "Babel",
 "CentralAuth",
-"ChangeAuthor",
 "CheckUser",
 "Cite",
 "CodeEditor",
