@@ -16,7 +16,7 @@ if (!$mediawiki_dir)
 elseif ($IsWindows)
   {$mediawiki_dir="C:/plavormind/web/public/wiki/mediawiki"}
 else
-  {Write-Error "Cannot detect default directory." -Category NotSpecified
+  {Write-Error "Cannot detect default MediaWiki directory." -Category NotSpecified
   exit}
 }
 
@@ -26,7 +26,7 @@ if (!$private_data_dir)
 elseif ($IsWindows)
   {$private_data_dir="C:/plavormind/web/data/mediawiki"}
 else
-  {Write-Error "Cannot detect default directory." -Category NotSpecified
+  {Write-Error "Cannot detect default private data directory." -Category NotSpecified
   exit}
 }
 
