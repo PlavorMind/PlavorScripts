@@ -54,6 +54,7 @@ $composer_extensions=
 "AntiSpoof",
 "Flow",
 "TemplateStyles")
+$composer_skins=@()
 $extensions=
 @(#"AbuseFilter",
 "AntiSpoof",
@@ -186,6 +187,12 @@ if (Test-Path "${tempdir}/mediawiki-skin.zip")
   Move-Item "${tempdir}/mediawiki-extras/*" "${tempdir}/mediawiki/skins/${skin}" -Force}
 else
   {Write-Error "Cannot download ${skin} skin." -Category ConnectionError}
+}
+
+foreach ($skin in $composer_skins)
+{if (Test-Path "${tempdir}/mediawiki/skins/${skin}")
+  {Write-Verbose "Updating dependencies for ${skin} skin with Composer"
+  .$php_path $composer_path update --no-cache --no-dev --working-dir="${tempdir}/mediawiki/skins/${skin}"}
 }
 
 Write-Verbose "Deleting a directory that is no longer needed"
