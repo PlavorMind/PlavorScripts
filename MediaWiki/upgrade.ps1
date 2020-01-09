@@ -11,7 +11,7 @@ Param
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
 {."${PSScriptRoot}/../init-script.ps1"}
 else
-{"Cannot find initialize script."
+{Write-Error "Cannot find initialize script." -Category ObjectNotFound
 exit}
 
 if (!$composer_path)
@@ -20,7 +20,7 @@ if (!$composer_path)
 elseif ($IsWindows)
   {$composer_path="C:/plavormind/php-ts/data/composer.phar"}
 else
-  {"Cannot detect default Composer path."
+  {Write-Error "Cannot detect default Composer path." -Category NotSpecified
   exit}
 }
 
@@ -30,7 +30,7 @@ if (!$mediawiki_dir)
 elseif ($IsWindows)
   {$mediawiki_dir="C:/plavormind/web/public/wiki/mediawiki"}
 else
-  {"Cannot detect default directory."
+  {Write-Error "Cannot detect default MediaWiki directory." -Category NotSpecified
   exit}
 }
 
@@ -38,7 +38,7 @@ if (!$php_path)
 {if ($IsWindows)
   {$php_path="C:/plavormind/php-ts/php.exe"}
 else
-  {"Cannot detect default PHP path."
+  {Write-Error "Cannot detect default PHP path." -Category NotSpecified
   exit}
 }
 
@@ -48,35 +48,35 @@ if (!$private_data_dir)
 elseif ($IsWindows)
   {$private_data_dir="C:/plavormind/web/data/mediawiki"}
 else
-  {"Cannot detect default directory."
+  {Write-Error "Cannot detect default private data directory." -Category NotSpecified
   exit}
 }
 
 if (!(Test-Path $composer_path))
-{"Cannot find Composer."
+{Write-Error "Cannot find Composer." -Category NotInstalled
 exit}
 if (!(Test-Path $php_path))
-{"Cannot find PHP."
+{Write-Error "Cannot find PHP." -Category NotInstalled
 exit}
 
 ."${PSScriptRoot}/download.ps1" "${tempdir}/mw-upgrade" -composer_path $composer_path -core_branch $core_branch -extensions_branch $extra_branch -php_path $php_path -skins_branch $extra_branch
 Move-Item "${tempdir}/mw-upgrade" "${tempdir}/mediawiki" -Force
 
 if (Test-Path "${mediawiki_dir}/data")
-{"Copying existing data directory"
+{Write-Verbose "Copying existing data directory"
 Copy-Item "${mediawiki_dir}/data" "${tempdir}/mediawiki/" -Force -Recurse}
 if (Test-Path "${mediawiki_dir}/LocalSettings.php")
-{"Copying existing LocalSettings.php file"
+{Write-Verbose "Copying existing LocalSettings.php file"
 Copy-Item "${mediawiki_dir}/LocalSettings.php" "${tempdir}/mediawiki/" -Force}
-"Deleting core cache directory"
+Write-Verbose "Deleting cache directory"
 Remove-Item "${tempdir}/mediawiki/cache" -Force -Recurse
-"Deleting core images directory"
+Write-Verbose "Deleting images directory"
 Remove-Item "${tempdir}/mediawiki/images" -Force -Recurse
 
 if (Test-Path $mediawiki_dir)
-{"Renaming existing MediaWiki directory"
+{Write-Warning "Renaming existing MediaWiki directory"
 Move-Item $mediawiki_dir "${mediawiki_dir}-old" -Force}
-"Moving MediaWiki directory"
+Write-Verbose "Moving MediaWiki directory from temporary directory to destination directory"
 Move-Item "${tempdir}/mediawiki" $mediawiki_dir -Force
 
 ."${PSScriptRoot}/run-maintenance.ps1" $mediawiki_dir -php_path $php_path -update
