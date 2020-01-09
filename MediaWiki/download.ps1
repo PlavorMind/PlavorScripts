@@ -113,14 +113,17 @@ $skins=
 "PlavorBuma",
 "Timeless")
 
+Write-Verbose "Creating a temporary directory for extracting"
+New-Item "${tempdir}/mediawiki-extracts" -Force -ItemType Directory
+
 Write-Verbose "Downloading MediaWiki"
 Invoke-WebRequest "https://github.com/wikimedia/mediawiki/archive/${core_branch}.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki.zip"
 if (Test-Path "${tempdir}/mediawiki.zip")
 {Write-Verbose "Extracting"
-Expand-Archive "${tempdir}/mediawiki.zip" $tempdir -Force
+Expand-Archive "${tempdir}/mediawiki.zip" "${tempdir}/mediawiki-extracts/" -Force
 Write-Verbose "Deleting a file that is no longer needed"
 Remove-Item "${tempdir}/mediawiki.zip" -Force
-Move-Item "${tempdir}/mediawiki-*" "${tempdir}/mediawiki" -Force}
+Move-Item "${tempdir}/mediawiki-extracts/*" "${tempdir}/mediawiki" -Force}
 else
 {Write-Error "Cannot download MediaWiki." -Category ConnectionError
 exit}
@@ -131,9 +134,6 @@ Write-Verbose "Updating dependencies with Composer"
 Write-Verbose "Emptying extensions and skins directory"
 Remove-Item "${tempdir}/mediawiki/extensions/*" -Force -Recurse
 Remove-Item "${tempdir}/mediawiki/skins/*" -Force -Recurse
-
-Write-Verbose "Creating a temporary directory for extracting extensions and skins"
-New-Item "${tempdir}/mediawiki-extras" -Force -ItemType Directory
 
 foreach ($extension in $extensions)
 {Write-Verbose "Downloading ${extension} extension"
@@ -151,11 +151,11 @@ switch ($extension)
   }
 if (Test-Path "${tempdir}/mediawiki-extension.zip")
   {Write-Verbose "Extracting"
-  Expand-Archive "${tempdir}/mediawiki-extension.zip" "${tempdir}/mediawiki-extras/" -Force
+  Expand-Archive "${tempdir}/mediawiki-extension.zip" "${tempdir}/mediawiki-extracts/" -Force
   Write-Verbose "Deleting a file that is no longer needed"
   Remove-Item "${tempdir}/mediawiki-extension.zip" -Force
   Write-Verbose "Moving ${extension} extension directory"
-  Move-Item "${tempdir}/mediawiki-extras/*" "${tempdir}/mediawiki/extensions/${extension}" -Force}
+  Move-Item "${tempdir}/mediawiki-extracts/*" "${tempdir}/mediawiki/extensions/${extension}" -Force}
 else
   {Write-Error "Cannot download ${extension} extension." -Category ConnectionError}
 }
@@ -180,11 +180,11 @@ switch ($skin)
   }
 if (Test-Path "${tempdir}/mediawiki-skin.zip")
   {Write-Verbose "Extracting"
-  Expand-Archive "${tempdir}/mediawiki-skin.zip" "${tempdir}/mediawiki-extras/" -Force
+  Expand-Archive "${tempdir}/mediawiki-skin.zip" "${tempdir}/mediawiki-extracts/" -Force
   Write-Verbose "Deleting a file that is no longer needed"
   Remove-Item "${tempdir}/mediawiki-skin.zip" -Force
   Write-Verbose "Moving ${skin} skin directory"
-  Move-Item "${tempdir}/mediawiki-extras/*" "${tempdir}/mediawiki/skins/${skin}" -Force}
+  Move-Item "${tempdir}/mediawiki-extracts/*" "${tempdir}/mediawiki/skins/${skin}" -Force}
 else
   {Write-Error "Cannot download ${skin} skin." -Category ConnectionError}
 }
@@ -196,7 +196,7 @@ foreach ($skin in $composer_skins)
 }
 
 Write-Verbose "Deleting a directory that is no longer needed"
-Remove-Item "${tempdir}/mediawiki-extras" -Force -Recurse
+Remove-Item "${tempdir}/mediawiki-extracts" -Force -Recurse
 
 Write-Verbose "Deleting files that are unnecessary for running"
 Remove-Item "${tempdir}/mediawiki/CODE_OF_CONDUCT.md" -Force
