@@ -10,7 +10,7 @@ Param
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
 {."${PSScriptRoot}/../init-script.ps1"}
 else
-{"Cannot find initialize script."
+{Write-Error "Cannot find initialize script." -Category ObjectNotFound
 exit}
 
 if (!$dir)
@@ -19,7 +19,7 @@ if (!$dir)
 elseif ($IsWindows)
   {$dir="C:/plavormind/web/public/wiki/mediawiki"}
 else
-  {"Cannot detect default directory."
+  {Write-Error "Cannot detect default directory." -Category NotSpecified
   exit}
 }
 
@@ -27,12 +27,12 @@ if (!$php_path)
 {if ($IsWindows)
   {$php_path="C:/plavormind/php-ts/php.exe"}
 else
-  {"Cannot detect default PHP path."
+  {Write-Error "Cannot detect default PHP path." -Category NotSpecified
   exit}
 }
 
 if (!(Test-Path $php_path))
-{"Cannot find PHP."
+{Write-Error "Cannot find PHP." -Category NotInstalled
 exit}
 
 if (Test-Path $dir)
@@ -42,21 +42,21 @@ else
   {$target_wikis=Get-ChildItem "${dir}/data" -Directory -Force -Name}
 foreach ($target_wiki in $target_wikis)
   {if ($init -or $update)
-    {"Running update.php for ${target_wiki}"
+    {Write-Verbose "Running update.php for ${target_wiki}"
     .$php_path "${dir}/maintenance/update.php" --doshared --quick --wiki $target_wiki}
 
   if ($init)
-    {"Running emptyUserGroup.php for ${target_wiki}"
+    {Write-Verbose "Running emptyUserGroup.php for ${target_wiki}"
     .$php_path "${dir}/maintenance/emptyUserGroup.php" "bureaucrat" --wiki $target_wiki
     .$php_path "${dir}/maintenance/emptyUserGroup.php" "interface-admin" --wiki $target_wiki
     .$php_path "${dir}/maintenance/emptyUserGroup.php" "sysop" --wiki $target_wiki}
 
-  "Running purgeExpiredUserrights.php for ${target_wiki}"
+  Write-Verbose "Running purgeExpiredUserrights.php for ${target_wiki}"
   .$php_path "${dir}/maintenance/purgeExpiredUserrights.php" --wiki $target_wiki
-  "Running pruneFileCache.php for ${target_wiki}"
+  Write-Verbose "Running pruneFileCache.php for ${target_wiki}"
   .$php_path "${dir}/maintenance/pruneFileCache.php" --agedays 0 --wiki $target_wiki
-  "Running runJobs.php for ${target_wiki}"
+  Write-Verbose "Running runJobs.php for ${target_wiki}"
   .$php_path "${dir}/maintenance/runJobs.php" --wiki $target_wiki}
 }
 else
-{"Cannot find MediaWiki directory."}
+{Write-Error "Cannot find MediaWiki directory." -Category NotInstalled}
