@@ -72,6 +72,7 @@ $extensions=
 #"Echo",
 #"Flow",
 "GlobalBlocking",
+"GlobalCssJs"
 "GlobalPreferences",
 "GlobalUserPage",
 "Highlightjs_Integration",
