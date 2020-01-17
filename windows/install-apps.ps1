@@ -10,15 +10,15 @@ Param
 [string]$libreoffice_installer="https://dev-builds.libreoffice.org/daily/master/Win-x86_64@tb77-TDF/current/LibreOfficeDev_6.5.0.0.alpha0_Win_x64.msi", #URL or file path to LibreOffice installer
 [string]$musicbrainz_picard_version="2.2.3", #MusicBrainz Picard version
 [string]$nodejs_installer="https://nodejs.org/download/nightly/v13.2.1-nightly2019112294e4cbd808/node-v13.2.1-nightly2019112294e4cbd808-x64.msi", #URL or file path to Node.js installer
-[string]$obs_version="24.0.3", #OBS Studio version
+[boolean]$obs=$true, #Whether to install OBS Studio
 [string]$peazip_version="6.9.2", #PeaZip version
 [string]$python2_version="2.7.17", #Python 2 version
 [string]$python3_version="3.8.0", #Python 3 version
-[string]$qview_version="2.0", #qView version
+[boolean]$qview=$true, #Whether to install qView
 [string]$smplayer_version="19.5.0.9228", #SMPlayer development build version
 [string]$thunderbird_version="71.0b3", #Thunderbird version
 [boolean]$vc_redist=$true, #Whether to install Microsoft Visual C++ Redistributable for Visual Studio 2019
-[string]$vscodium_version="1.40.1") #VSCodium version
+[string]$vscodium=$true) #Whether to install VSCodium
 
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
 {."${PSScriptRoot}/../init-script.ps1"}
@@ -169,17 +169,10 @@ else
   {Write-Error "Cannot download or find Node.js." -Category ConnectionError}
 }
 
-if ($obs_version -match "^(\d+\.\d+)(-rc\d+|\.\d+)?$")
-{if ($Matches[2])
-  {if ($Matches[2] -like "-rc*")
-    {$obs_tagversion=$Matches[1]+".0"+$Matches[2]}
-  else
-    {$obs_tagversion=$obs_version}
-  }
-else
-  {$obs_tagversion=$Matches[1]+".0"}
+if ($obs)
+{$obs_installer=((Invoke-WebRequest "https://api.github.com/repos/obsproject/obs-studio/releases/latest" -DisableKeepAlive)."Content" | ConvertFrom-Json)."assets"."browser_download_url" | Select-String "OBS-Studio-.+-Full-Installer-x64\.exe$" -Raw
 Write-Verbose "Downloading OBS Studio"
-Invoke-WebRequest "https://github.com/obsproject/obs-studio/releases/download/${obs_tagversion}/OBS-Studio-${obs_version}-Full-Installer-x64.exe" -DisableKeepAlive -OutFile "${tempdir}/obs.exe"
+Invoke-WebRequest $obs_installer -DisableKeepAlive -OutFile "${tempdir}/obs.exe"
 if (Test-Path "${tempdir}/obs.exe")
   {Write-Verbose "Installing"
   Start-Process "${tempdir}/obs.exe" -ArgumentList "/S" -Wait
@@ -235,9 +228,10 @@ else
   {Write-Error "Cannot download Python 3." -Category ConnectionError}
 }
 
-if ($qview_version)
-{Write-Verbose "Downloading qView"
-Invoke-WebRequest "https://github.com/jurplel/qView/releases/download/${qview_version}/qView-${qview_version}-win64.exe" -DisableKeepAlive -OutFile "${tempdir}/qview.exe"
+if ($qview)
+{$qview_installer=((Invoke-WebRequest "https://api.github.com/repos/jurplel/qView/releases/latest" -DisableKeepAlive)."Content" | ConvertFrom-Json)."assets"."browser_download_url" | Select-String "qView-.+-win64\.exe$" -Raw
+Write-Verbose "Downloading qView"
+Invoke-WebRequest $qview_installer -DisableKeepAlive -OutFile "${tempdir}/qview.exe"
 if (Test-Path "${tempdir}/qview.exe")
   {Write-Verbose "Installing"
   Start-Process "${tempdir}/qview.exe" -ArgumentList "${inno_setup_parameters} /mergetasks=`"desktopicon`"" -Wait
@@ -271,9 +265,10 @@ else
   {Write-Error "Cannot download Thunderbird." -Category ConnectionError}
 }
 
-if ($vscodium_version)
-{Write-Verbose "Downloading VSCodium"
-Invoke-WebRequest "https://github.com/VSCodium/vscodium/releases/download/${vscodium_version}/VSCodiumSetup-x64-${vscodium_version}.exe" -DisableKeepAlive -OutFile "${tempdir}/vscodium.exe"
+if ($vscodium)
+{$vscodium_installer=((Invoke-WebRequest "https://api.github.com/repos/VSCodium/vscodium/releases/latest" -DisableKeepAlive)."Content" | ConvertFrom-Json)."assets"."browser_download_url" | Select-String "VSCodiumSetup-x64-.+\.exe$" -Raw
+Write-Verbose "Downloading VSCodium"
+Invoke-WebRequest $vscodium_installer -DisableKeepAlive -OutFile "${tempdir}/vscodium.exe"
 if (Test-Path "${tempdir}/vscodium.exe")
   {Write-Verbose "Installing"
   Start-Process "${tempdir}/vscodium.exe" -ArgumentList "${inno_setup_parameters} /mergetasks=`"addcontextmenufiles,addcontextmenufolders,addtopath,associatewithfiles,desktopicon,!runcode`"" -Wait
