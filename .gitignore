@@ -1,4 +1,4 @@
 *-old
 additional-files
 filtered-logs
-test-set-visual-effects.ps1
+test-*.ps1
