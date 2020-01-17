@@ -2,7 +2,7 @@
 
 Param
 ([string]$composer_path, #Path to Composer
-[string]$core_branch="wmf/1.35.0-wmf.14", #Branch for MediaWiki core
+[string]$core_branch="wmf/1.35.0-wmf.15", #Branch for MediaWiki core
 [string]$extra_branch="master", #Branch for extensions and skins
 [Parameter(Position=0)][string]$mediawiki_dir, #Directory to configure for MediaWiki
 [string]$php_path, #Path to PHP
@@ -66,7 +66,7 @@ if ("${tempdir}/config.zip")
 Expand-Archive "${tempdir}/config.zip" $tempdir -Force
 Write-Verbose "Deleting a file and directory that are no longer needed"
 Remove-Item "${tempdir}/config.zip" -Force
-Move-Item "${tempdir}/Configurations-Main/MediaWiki" "${tempdir}/mediawiki-config" -Force
+Move-Item "${tempdir}/Configurations-Main/mediawiki" "${tempdir}/mediawiki-config" -Force
 Remove-Item "${tempdir}/Configurations-Main" -Force -Recurse}
 else
 {Write-Error "Cannot download configurations." -Category ConnectionError
