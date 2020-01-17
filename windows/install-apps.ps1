@@ -23,150 +23,150 @@ Param
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
 {."${PSScriptRoot}/../init-script.ps1"}
 else
-{"Cannot find initialize script."
+{Write-Error "Cannot find initialize script." -Category ObjectNotFound
 exit}
 
 if (!(Test-AdminPermission))
-{"This script must be run as administrator on Windows."
+{Write-Error "This script must be run as administrator on Windows." -Category PermissionDenied
 exit}
 
 #Do not use single quotes(') in ArgumentList otherwise text inside of them will be broken.
 
 $inno_setup_parameters="/closeapplications /nocancel /norestart /restartapplications /silent /sp- /suppressmsgboxes"
 
-#Must be before any other apps
+#This should be installed before any other apps
 if ($vc_redist)
-{"Downloading Microsoft Visual C++ Redistributable for Visual Studio 2019"
+{Write-Verbose "Downloading Microsoft Visual C++ Redistributable for Visual Studio 2019"
 Invoke-WebRequest "https://aka.ms/vs/16/release/VC_redist.x64.exe" -DisableKeepAlive -OutFile "${tempdir}/vc_redist.exe"
 if (Test-Path "${tempdir}/vc_redist.exe")
-  {"Installing"
+  {Write-Verbose "Installing"
   Start-Process "${tempdir}/vc_redist.exe" -ArgumentList "/norestart /passive" -Wait
-  "Deleting a temporary file"
+  Write-Verbose "Deleting a file that is no longer needed"
   Remove-Item "${tempdir}/vc_redist.exe" -Force}
 else
-  {"Cannot download Microsoft Visual C++ Redistributable for Visual Studio 2019."}
+  {Write-Error "Cannot download Microsoft Visual C++ Redistributable for Visual Studio 2019." -Category ConnectionError}
 }
 
 if ($bleachbit_version)
-{"Downloading BleachBit"
+{Write-Verbose "Downloading BleachBit"
 Invoke-WebRequest "https://ci.bleachbit.org/dl/${bleachbit_version}/BleachBit-${bleachbit_version}-setup-English.exe" -DisableKeepAlive -OutFile "${tempdir}/bleachbit.exe"
 if (Test-Path "${tempdir}/bleachbit.exe")
-  {"Installing"
+  {Write-Verbose "Installing"
   Start-Process "${tempdir}/bleachbit.exe" -ArgumentList "/S" -Wait
-  "Deleting a temporary file"
+  Write-Verbose "Deleting a file that is no longer needed"
   Remove-Item "${tempdir}/bleachbit.exe" -Force}
 else
-  {"Cannot download BleachBit."}
+  {Write-Error "Cannot download BleachBit." -Category ConnectionError}
 }
 
 if ($gimp_version -match "^(\d+\.\d+)\.\d+$")
 {$gimp_majorversion=$Matches[1]
-"Downloading GIMP"
+Write-Verbose "Downloading GIMP"
 Invoke-WebRequest "https://download.gimp.org/mirror/pub/gimp/v${gimp_majorversion}/windows/gimp-${gimp_version}-setup.exe" -DisableKeepAlive -OutFile "${tempdir}/gimp.exe"
 if (Test-Path "${tempdir}/gimp.exe")
-  {"Installing"
+  {Write-Verbose "Installing"
   Start-Process "${tempdir}/gimp.exe" -ArgumentList "/S" -Wait
-  "Deleting a temporary file"
+  Write-Verbose "Deleting a file that is no longer needed"
   Remove-Item "${tempdir}/gimp.exe" -Force}
 else
-  {"Cannot download GIMP."}
+  {Write-Error "Cannot download GIMP." -Category ConnectionError}
 }
 
 if ($golang_version)
-{"Downloading Go"
+{Write-Verbose "Downloading Go"
 Invoke-WebRequest "https://dl.google.com/go/go${golang_version}.windows-amd64.msi" -DisableKeepAlive -OutFile "${tempdir}/golang.msi"
 if (Test-Path "${tempdir}/golang.msi")
   {$installer="${tempdir}/golang.msi".Replace("/","\")
-  "Installing"
+  Write-Verbose "Installing"
   Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${installer}`" /norestart /passive" -Wait
-  "Deleting a temporary file"
+  Write-Verbose "Deleting a file that is no longer needed"
   Remove-Item "${tempdir}/golang.msi" -Force}
 else
-  {"Cannot download Go."}
+  {Write-Verbose "Cannot download Go." -Category ConnectionError}
 }
 
 if ($imagemagick_version)
-{"Downloading ImageMagick"
+{Write-Verbose "Downloading ImageMagick"
 Invoke-WebRequest "https://imagemagick.org/download/binaries/ImageMagick-${imagemagick_version}-Q16-HDRI-x64-dll.exe" -DisableKeepAlive -OutFile "${tempdir}/imagemagick.exe"
 if (Test-Path "${tempdir}/imagemagick.exe")
-  {"Installing"
+  {Write-Verbose "Installing"
   Start-Process "${tempdir}/imagemagick.exe" -ArgumentList "${inno_setup_parameters} /mergetasks=`"legacy_support`"" -Wait
-  "Deleting a temporary file"
+  Write-Verbose "Deleting a file that is no longer needed"
   Remove-Item "${tempdir}/imagemagick.exe" -Force
 
-  "Moving a shortcut"
+  Write-Verbose "Moving a shortcut"
   if (Test-Path "${Env:USERPROFILE}/Desktop/ImageMagick Display.lnk")
     {Move-Item "${Env:USERPROFILE}/Desktop/ImageMagick Display.lnk" "C:/Users/Public/Desktop/" -Force}
   if (Test-Path "${Env:USERPROFILE}/OneDrive/Desktop/ImageMagick Display.lnk")
     {Move-Item "${Env:USERPROFILE}/OneDrive/Desktop/ImageMagick Display.lnk" "C:/Users/Public/Desktop/" -Force}
   }
 else
-  {"Cannot download ImageMagick."}
+  {Write-Error "Cannot download ImageMagick." -Category ConnectionError}
 }
 
 if ($inkscape_installer)
 {$output=Get-FilePathFromUri $inkscape_installer
 if ($output)
-  {"Installing Inkscape"
+  {Write-Verbose "Installing Inkscape"
   Start-Process $output -ArgumentList "/S" -Wait
   if ($output -like "${tempdir}*")
-    {"Deleting a temporary file"
+    {Write-Verbose "Deleting a file that is no longer needed"
     Remove-Item $output -Force}
   }
 else
-  {"Cannot download or find Inkscape."}
+  {Write-Error "Cannot download or find Inkscape." -Category ConnectionError}
 }
 
 if ($kdevelop_version)
-{"Downloading KDevelop"
+{Write-Verbose "Downloading KDevelop"
 Invoke-WebRequest "https://binary-factory.kde.org/view/Management/job/KDevelop_Nightly_win64/lastSuccessfulBuild/artifact/kdevelop-${kdevelop_version}-windows-msvc2017_64-cl.exe" -DisableKeepAlive -OutFile "${tempdir}/kdevelop.exe"
 if (Test-Path "${tempdir}/kdevelop.exe")
-  {"Installing"
+  {Write-Verbose "Installing"
   Start-Process "${tempdir}/kdevelop.exe" -ArgumentList "/S" -Wait
-  "Deleting a temporary file"
+  Write-Verbose "Deleting a file that is no longer needed"
   Remove-Item "${tempdir}/kdevelop.exe" -Force}
 else
-  {"Cannot download KDevelop."}
+  {Write-Error "Cannot download KDevelop." -Category ConnectionError}
 }
 
 if ($libreoffice_installer)
 {$output=Get-FilePathFromUri $libreoffice_installer
 if ($output)
   {$installer=$output.Replace("/","\")
-  "Installing LibreOffice"
+  Write-Verbose "Installing LibreOffice"
   Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${installer}`" RebootYesNo=No REGISTER_ALL_MSO_TYPES=1 /norestart /passive" -Wait
   if ($output -like "${tempdir}*")
-    {"Deleting a temporary file"
+    {Write-Verbose "Deleting a file that is no longer needed"
     Remove-Item $output -Force}
   }
 else
-  {"Cannot download or find LibreOffice."}
+  {Write-Error "Cannot download or find LibreOffice." -Category ConnectionError}
 }
 
 if ($musicbrainz_picard_version)
-{"Downloading MusicBrainz Picard"
+{Write-Verbose "Downloading MusicBrainz Picard"
 Invoke-WebRequest "https://musicbrainz.osuosl.org/pub/musicbrainz/picard/picard-setup-${musicbrainz_picard_version}.exe" -DisableKeepAlive -OutFile "${tempdir}/musicbrainz_picard.exe"
 if (Test-Path "${tempdir}/musicbrainz_picard.exe")
-  {"Installing"
+  {Write-Verbose "Installing"
   Start-Process "${tempdir}/musicbrainz_picard.exe" -ArgumentList "/S" -Wait
-  "Deleting a temporary file"
+  Write-Verbose "Deleting a file that is no longer needed"
   Remove-Item "${tempdir}/musicbrainz_picard.exe" -Force}
 else
-  {"Cannot download MusicBrainz Picard."}
+  {Write-Error "Cannot download MusicBrainz Picard." -Category ConnectionError}
 }
 
 if ($nodejs_installer)
 {$output=Get-FilePathFromUri $nodejs_installer
 if ($output)
   {$installer=$output.Replace("/","\")
-  "Installing Node.js"
+  Write-Verbose "Installing Node.js"
   Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${installer}`" /norestart /passive" -Wait
   if ($output -like "${tempdir}*")
-    {"Deleting a temporary file"
+    {Write-Verbose "Deleting a file that is no longer needed"
     Remove-Item $output -Force}
   }
 else
-  {"Cannot download or find Node.js."}
+  {Write-Error "Cannot download or find Node.js." -Category ConnectionError}
 }
 
 if ($obs_version -match "^(\d+\.\d+)(-rc\d+|\.\d+)?$")
@@ -178,107 +178,107 @@ if ($obs_version -match "^(\d+\.\d+)(-rc\d+|\.\d+)?$")
   }
 else
   {$obs_tagversion=$Matches[1]+".0"}
-"Downloading OBS Studio"
+Write-Verbose "Downloading OBS Studio"
 Invoke-WebRequest "https://github.com/obsproject/obs-studio/releases/download/${obs_tagversion}/OBS-Studio-${obs_version}-Full-Installer-x64.exe" -DisableKeepAlive -OutFile "${tempdir}/obs.exe"
 if (Test-Path "${tempdir}/obs.exe")
-  {"Installing"
+  {Write-Verbose "Installing"
   Start-Process "${tempdir}/obs.exe" -ArgumentList "/S" -Wait
-  "Deleting a temporary file"
+  Write-Verbose "Deleting a file that is no longer needed"
   Remove-Item "${tempdir}/obs.exe" -Force}
 else
-  {"Cannot download OBS Studio."}
+  {Write-Error "Cannot download OBS Studio." -Category ConnectionError}
 }
 
 if ($peazip_version)
-{"Downloading PeaZip"
+{Write-Verbose "Downloading PeaZip"
 Invoke-WebRequest "http://www.peazip.org/downloads/peazip-${peazip_version}.WIN64.exe" -DisableKeepAlive -OutFile "${tempdir}/peazip.exe"
 if (Test-Path "${tempdir}/peazip.exe")
-  {"Installing"
+  {Write-Verbose "Installing"
   Start-Process "${tempdir}/peazip.exe" -ArgumentList $inno_setup_parameters -Wait
-  "Deleting a temporary file"
+  Write-Verbose "Deleting a file that is no longer needed"
   Remove-Item "${tempdir}/peazip.exe" -Force
 
-  "Moving a shortcut"
+  Write-Verbose "Moving a shortcut"
   if (Test-Path "${Env:USERPROFILE}/Desktop/PeaZip.lnk")
     {Move-Item "${Env:USERPROFILE}/Desktop/PeaZip.lnk" "C:/Users/Public/Desktop/" -Force}
   if (Test-Path "${Env:USERPROFILE}/OneDrive/Desktop/PeaZip.lnk")
     {Move-Item "${Env:USERPROFILE}/OneDrive/Desktop/PeaZip.lnk" "C:/Users/Public/Desktop/" -Force}
   }
 else
-  {"Cannot download PeaZip."}
+  {Write-Error "Cannot download PeaZip." -Category ConnectionError}
 }
 
 if ($python2_version -match "^(\d+\.\d+\.\d+)(([ab]|rc)\d+)?$")
 {$python2_majorversion=$Matches[1]
-"Downloading Python 2"
+Write-Verbose "Downloading Python 2"
 Invoke-WebRequest "https://www.python.org/ftp/python/${python2_majorversion}/python-${python2_version}.amd64.msi" -DisableKeepAlive -OutFile "${tempdir}/python2.msi"
 if (Test-Path "${tempdir}/python2.msi")
   {$installer="${tempdir}/python2.msi".Replace("/","\")
-  "Installing"
+  Write-Verbose "Installing"
   Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${installer}`" /norestart /passive" -Wait
-  "Deleting a temporary file"
+  Write-Verbose "Deleting a file that is no longer needed"
   Remove-Item "${tempdir}/python2.msi" -Force}
 else
-  {"Cannot download Python 2."}
+  {Write-Error "Cannot download Python 2." -Category ConnectionError}
 }
 
 if ($python3_version -match "^(\d+\.\d+\.\d+)(([ab]|rc)\d+)?$")
 {$python3_majorversion=$Matches[1]
-"Downloading Python 3"
+Write-Verbose "Downloading Python 3"
 Invoke-WebRequest "https://www.python.org/ftp/python/${python3_majorversion}/python-${python3_version}-amd64.exe" -DisableKeepAlive -OutFile "${tempdir}/python3.exe"
 if (Test-Path "${tempdir}/python3.exe")
-  {"Installing"
+  {Write-Verbose "Installing"
   Start-Process "${tempdir}/python3.exe" -ArgumentList "InstallAllUsers=1 PrependPath=1 /passive" -Wait
-  "Deleting a temporary file"
+  Write-Verbose "Deleting a file that is no longer needed"
   Remove-Item "${tempdir}/python3.exe" -Force}
 else
-  {"Cannot download Python 3."}
+  {Write-Error "Cannot download Python 3." -Category ConnectionError}
 }
 
 if ($qview_version)
-{"Downloading qView"
+{Write-Verbose "Downloading qView"
 Invoke-WebRequest "https://github.com/jurplel/qView/releases/download/${qview_version}/qView-${qview_version}-win64.exe" -DisableKeepAlive -OutFile "${tempdir}/qview.exe"
 if (Test-Path "${tempdir}/qview.exe")
-  {"Installing"
+  {Write-Verbose "Installing"
   Start-Process "${tempdir}/qview.exe" -ArgumentList "${inno_setup_parameters} /mergetasks=`"desktopicon`"" -Wait
-  "Deleting a temporary file"
+  Write-Verbose "Deleting a file that is no longer needed"
   Remove-Item "${tempdir}/qview.exe" -Force}
 else
-  {"Cannot download qView."}
+  {Write-Error "Cannot download qView." -Category ConnectionError}
 }
 
 if ($smplayer_version)
-{"Downloading SMPlayer"
+{Write-Verbose "Downloading SMPlayer"
 Invoke-WebRequest "https://sourceforge.net/projects/smplayer/files/SMPlayer/Development-builds/smplayer-${smplayer_version}-x64.exe/download" -DisableKeepAlive -OutFile "${tempdir}/smplayer.exe" -UserAgent "Wget"
 if (Test-Path "${tempdir}/smplayer.exe")
-  {"Installing"
+  {Write-Verbose "Installing"
   Start-Process "${tempdir}/smplayer.exe" -ArgumentList "/S" -Wait
-  "Deleting a temporary file"
+  Write-Verbose "Deleting a file that is no longer needed"
   Remove-Item "${tempdir}/smplayer.exe" -Force}
 else
-  {"Cannot download SMPlayer."}
+  {Write-Error "Cannot download SMPlayer." -Category ConnectionError}
 }
 
 if ($thunderbird_version)
-{"Downloading Thunderbird"
+{Write-Verbose "Downloading Thunderbird"
 Invoke-WebRequest "https://download.mozilla.org/?product=thunderbird-${thunderbird_version}-SSL&os=win64&lang=en-US" -DisableKeepAlive -OutFile "${tempdir}/thunderbird.exe"
 if (Test-Path "${tempdir}/thunderbird.exe")
-  {"Installing"
+  {Write-Verbose "Installing"
   Start-Process "${tempdir}/thunderbird.exe" -ArgumentList "/S" -Wait
-  "Deleting a temporary file"
+  Write-Verbose "Deleting a file that is no longer needed"
   Remove-Item "${tempdir}/thunderbird.exe" -Force}
 else
-  {"Cannot download Thunderbird."}
+  {Write-Error "Cannot download Thunderbird." -Category ConnectionError}
 }
 
 if ($vscodium_version)
-{"Downloading VSCodium"
+{Write-Verbose "Downloading VSCodium"
 Invoke-WebRequest "https://github.com/VSCodium/vscodium/releases/download/${vscodium_version}/VSCodiumSetup-x64-${vscodium_version}.exe" -DisableKeepAlive -OutFile "${tempdir}/vscodium.exe"
 if (Test-Path "${tempdir}/vscodium.exe")
-  {"Installing"
+  {Write-Verbose "Installing"
   Start-Process "${tempdir}/vscodium.exe" -ArgumentList "${inno_setup_parameters} /mergetasks=`"addcontextmenufiles,addcontextmenufolders,addtopath,associatewithfiles,desktopicon,!runcode`"" -Wait
-  "Deleting a temporary file"
+  Write-Verbose "Deleting a file that is no longer needed"
   Remove-Item "${tempdir}/vscodium.exe" -Force}
 else
-  {"Cannot download VSCodium."}
+  {Write-Error "Cannot download VSCodium." -Category ConnectionError}
 }
