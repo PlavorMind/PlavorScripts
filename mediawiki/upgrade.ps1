@@ -2,7 +2,7 @@
 
 Param
 ([string]$composer_path, #Path to Composer
-[string]$core_branch="wmf/1.35.0-wmf.15", #Branch for MediaWiki core
+[string]$core_branch, #Branch for MediaWiki core
 [string]$extra_branch="master", #Branch for extensions and skins
 [Parameter(Position=0)][string]$mediawiki_dir, #Directory that MediaWiki is installed
 [string]$php_path, #Path to PHP
@@ -59,6 +59,8 @@ if (!(Test-Path $php_path))
 {Write-Error "Cannot find PHP." -Category NotInstalled
 exit}
 
+if (!$core_branch)
+{$core_branch=(((Invoke-WebRequest "https://noc.wikimedia.org/conf/wikiversions.json" -DisableKeepAlive)."Content" | ConvertFrom-Json)."mediawikiwiki").Replace("php-","wmf/")}
 ."${PSScriptRoot}/download.ps1" "${tempdir}/mw-upgrade" -composer_path $composer_path -core_branch $core_branch -extensions_branch $extra_branch -php_path $php_path -skins_branch $extra_branch
 Move-Item "${tempdir}/mw-upgrade" "${tempdir}/mediawiki" -Force
 
