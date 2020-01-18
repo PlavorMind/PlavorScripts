@@ -2,7 +2,7 @@
 
 Param
 ([Parameter(Position=1)][string]$destpath, #Destination path to save created IP address blacklist
-[Parameter(Position=0)][string]$path, #File path or URL to an IP address blacklist source
+[Parameter(Position=0)][string]$path="${PSScriptRoot}/additional-files/blacklist.txt", #File path or URL to an IP address blacklist source
 [string]$platform="apache-httpd") #Target platform
 
 if (Test-Path "${PSScriptRoot}/init-script.ps1")
@@ -19,33 +19,20 @@ else
   exit}
 }
 
-if (!$path)
-{if ($IsLinux)
-  {$path="/home/pseol2190/Documents/blacklist.txt"}
-elseif ($IsWindows)
-  {$path="${Env:USERPROFILE}/OneDrive/Documents/blacklist.txt"}
-else
-  {Write-Error "Cannot detect default path." -Category NotSpecified
-  exit}
-}
-
 $output=Get-FilePathFromUri $path
 if ($output)
 {$blacklist=((Get-Content $output -Force) -replace "#.*","").Trim()  | Where-Object {$PSItem -ne ""}
 if ($output -like "${tempdir}*")
-  {Write-Verbose "Deleting a file that are no longer needed"
+  {Write-Verbose "Deleting a file that is no longer needed"
   Remove-Item $output -Force}
 
 switch ($platform)
   {"apache-httpd"
     {Write-Verbose "Creating IP address blacklist for Apache HTTP Server"
-    "<RequireAll>" > $destpath
-    "Require all granted" >> $destpath
     $result="Require not ip "
     foreach ($blacklisted_ip in $blacklist)
       {$result+="`"${blacklisted_ip}`" "}
-    $result >> $destpath
-    "</RequireAll>" >> $destpath}
+    $result > $destpath}
   "nginx"
     {Write-Verbose "Creating IP address blacklist for nginx"
     Out-Null > $destpath
