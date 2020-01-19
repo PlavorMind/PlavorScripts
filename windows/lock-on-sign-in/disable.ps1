@@ -1,6 +1,6 @@
-#Disables automatically lock when signing in.
+#Disables locking when a user signs in.
 
-Param([Parameter()][switch]$allusers) #Apply to all users if this parameter is set
+Param([Parameter()][switch]$allusers) #Add this parameter to apply to all users
 
 if (Test-Path "${PSScriptRoot}/../../init-script.ps1")
 {."${PSScriptRoot}/../../init-script.ps1"}
@@ -21,7 +21,7 @@ else
 {$path="${Env:APPDATA}/Microsoft/Windows/Start Menu/Programs/Startup/Lock.lnk"}
 
 if (Test-Path $path)
-{Write-Verbose "Disabling automatically lock"
+{Write-Verbose "Disabling Lock on Sign In"
 Remove-Item $path -Force}
 else
-{Write-Error "Automatically lock is not enabled." -Category NotEnabled}
+{Write-Error "Lock on Sign In is not enabled." -Category NotEnabled}
