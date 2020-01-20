@@ -1,22 +1,22 @@
 #Installs some apps.
 
 Param
-([string]$bleachbit_version="3.0.1.1394", #BleachBit unstable build version
+([string]$bleachbit_version="3.1.0.1479", #BleachBit unstable build version
 [string]$gimp_version="2.10.14", #GIMP version
-[string]$golang_version="1.13.4", #Go version
-[string]$imagemagick_version="7.0.9-5", #ImageMagick version
+[string]$golang_version="1.13.6", #Go version
+[string]$imagemagick_version="7.0.9-17", #ImageMagick version
 [string]$inkscape_installer="https://inkscape.org/gallery/item/13318/inkscape-0.92.4-x64.exe", #URL or file path to Inkscape installer
-[string]$kdevelop_version="5.4-469", #KDevelop nightly build version
-[string]$libreoffice_installer="https://dev-builds.libreoffice.org/daily/master/Win-x86_64@tb77-TDF/current/LibreOfficeDev_6.5.0.0.alpha0_Win_x64.msi", #URL or file path to LibreOffice installer
-[string]$musicbrainz_picard_version="2.2.3", #MusicBrainz Picard version
+[string]$kdevelop_version="5.4-520", #KDevelop nightly build version
+[string]$libreoffice_installer="https://dev-builds.libreoffice.org/pre-releases/win/x86_64/LibreOffice_6.4.0.2_Win_x64.msi", #URL or file path to LibreOffice installer
+[boolean]$musicbrainz_picard=$true, #Whether to install MusicBrainz Picard
 [string]$nodejs_installer="https://nodejs.org/download/nightly/v13.2.1-nightly2019112294e4cbd808/node-v13.2.1-nightly2019112294e4cbd808-x64.msi", #URL or file path to Node.js installer
 [boolean]$obs=$true, #Whether to install OBS Studio
-[string]$peazip_version="6.9.2", #PeaZip version
+[string]$peazip_version="7.0.1", #PeaZip version
 [string]$python2_version="2.7.17", #Python 2 version
-[string]$python3_version="3.8.0", #Python 3 version
+[string]$python3_version="3.9.0a2", #Python 3 version
 [boolean]$qview=$true, #Whether to install qView
-[string]$smplayer_version="19.5.0.9228", #SMPlayer development build version
-[string]$thunderbird_version="71.0b3", #Thunderbird version
+[string]$smplayer_version="19.10.0.9253", #SMPlayer development build version
+[string]$thunderbird_version="74.0a1", #Thunderbird version
 [boolean]$vc_redist=$true, #Whether to install Microsoft Visual C++ Redistributable for Visual Studio 2019
 [string]$vscodium=$true) #Whether to install VSCodium
 
@@ -143,9 +143,10 @@ else
   {Write-Error "Cannot download or find LibreOffice." -Category ConnectionError}
 }
 
-if ($musicbrainz_picard_version)
-{Write-Verbose "Downloading MusicBrainz Picard"
-Invoke-WebRequest "https://musicbrainz.osuosl.org/pub/musicbrainz/picard/picard-setup-${musicbrainz_picard_version}.exe" -DisableKeepAlive -OutFile "${tempdir}/musicbrainz_picard.exe"
+if ($musicbrainz_picard)
+{$musicbrainz_picard_installer=((Invoke-WebRequest "https://api.github.com/repos/metabrainz/picard/releases/latest" -DisableKeepAlive)."Content" | ConvertFrom-Json)."assets"."browser_download_url" | Select-String "\.exe$" -Raw
+Write-Verbose "Downloading MusicBrainz Picard"
+Invoke-WebRequest $musicbrainz_picard_installer -DisableKeepAlive -OutFile "${tempdir}/musicbrainz_picard.exe"
 if (Test-Path "${tempdir}/musicbrainz_picard.exe")
   {Write-Verbose "Installing"
   Start-Process "${tempdir}/musicbrainz_picard.exe" -ArgumentList "/S" -Wait
@@ -255,7 +256,8 @@ else
 
 if ($thunderbird_version)
 {Write-Verbose "Downloading Thunderbird"
-Invoke-WebRequest "https://download.mozilla.org/?product=thunderbird-${thunderbird_version}-SSL&os=win64&lang=en-US" -DisableKeepAlive -OutFile "${tempdir}/thunderbird.exe"
+#https://ftp.mozilla.org/pub/thunderbird/nightly/
+Invoke-WebRequest "https://ftp.mozilla.org/pub/thunderbird/nightly/latest-comm-central/thunderbird-${thunderbird_version}.en-US.win64.installer.exe" -DisableKeepAlive -OutFile "${tempdir}/thunderbird.exe"
 if (Test-Path "${tempdir}/thunderbird.exe")
   {Write-Verbose "Installing"
   Start-Process "${tempdir}/thunderbird.exe" -ArgumentList "/S" -Wait
