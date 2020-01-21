@@ -1,18 +1,18 @@
-#Creates task to start PHP CGI/FastCGI automatically.
+#Creates task for starting PHP CGI/FastCGI automatically.
 
 Param([Parameter(Position=0)][string]$path="C:/plavormind/php-ts/start.ps1") #Path to start.ps1 file
 
 if (Test-Path "${PSScriptRoot}/../../init-script.ps1")
 {."${PSScriptRoot}/../../init-script.ps1"}
 else
-{"Cannot find initialize script."
+{Write-Error "Cannot find initialize script." -Category ObjectNotFound
 exit}
 
 if (!(Test-AdminPermission))
-{"This script must be run as administrator on Windows."
+{Write-Error "This script must be run as administrator on Windows." -Category PermissionDenied
 exit}
 
-"Creating a task"
+Write-Verbose "Creating task for starting PHP CGI/FastCGI automatically"
 if (Test-Path "C:/Program Files/PowerShell/7-preview/pwsh.exe")
 {$action=New-ScheduledTaskAction "C:/Program Files/PowerShell/7-preview/pwsh.exe" "-ExecutionPolicy Bypass `"${path}`""}
 else
