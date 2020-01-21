@@ -46,7 +46,7 @@ else
 exit}
 
 Write-Verbose "Deleting a directory that is no longer needed"
-Remove-Item "${tempdir}/mediawiki-extracts" -Force -Recurse
+Remove-Item "${tempdir}/apache-httpd-extracts" -Force -Recurse
 
 Write-Verbose "Applying configurations"
 Move-Item "${tempdir}/apache-httpd-config/*" "${tempdir}/apache-httpd/conf/" -Force
