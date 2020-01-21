@@ -5,20 +5,18 @@ Param([Parameter(Position=0)][string]$dir="C:/plavormind/php-ts") #Directory tha
 if (Test-Path "${PSScriptRoot}/../../init-script.ps1")
 {."${PSScriptRoot}/../../init-script.ps1"}
 else
-{"Cannot find initialize script."
+{Write-Error "Cannot find initialize script." -Category ObjectNotFound
 exit}
 
 if (!$IsWindows)
-{"Your operating system is not supported."
+{Write-Error "Your operating system is not supported."
 exit}
 
 if (!(Test-Path $dir))
-{"Cannot find PHP."
+{Write-Error "Cannot find PHP." -Category NotInstalled
 exit}
 
-"Stopping PHP-related processes"
-if (Test-Path "${dir}/stop.ps1")
-{."${dir}/stop.ps1"}
+Write-Verbose "Stopping PHP processes"
 if (Get-Process "php" -ErrorAction Ignore)
 {Stop-Process -Force -Name "php"}
 if (Get-Process "php-cgi" -ErrorAction Ignore)
@@ -30,6 +28,8 @@ if (Get-Process "phpdbg" -ErrorAction Ignore)
 
 if (Test-AdminPermission)
 {."${PSScriptRoot}/delete-task.ps1"}
+else
+{Write-Warning "Skipped deleting task: This script must be run as administrator to delete task."}
 
-"Deleting PHP directory"
+Write-Verbose "Deleting PHP directory"
 Remove-Item $dir -Force -Recurse
