@@ -7,7 +7,7 @@ Param
 if (Test-Path "${PSScriptRoot}/init-script.ps1")
 {."${PSScriptRoot}/init-script.ps1"}
 else
-{"Cannot find initialize script."
+{Write-Error "Cannot find initialize script." -Category ObjectNotFound
 exit}
 
 if (!$destpath)
@@ -16,23 +16,23 @@ if (!$destpath)
 elseif ($IsWindows)
   {$destpath="C:/plavormind/php-ts/php.ini"}
 else
-  {"Cannot detect default destination path."
+  {Write-Error "Cannot detect default destination path." -Category NotSpecified
   exit}
 }
 
 $output=Get-FilePathFromUri $path
 if ($output)
-{"Filtering php.ini file"
+{Write-Verbose "Filtering php.ini file"
 if ($IsLinux)
-  {Select-String ".*;(macos|windows)_only.*" $output -NotMatch | Select-Object -ExpandProperty Line > $destpath}
+  {Select-String ".*;(macos|windows)_only.*" $output -NotMatch -Raw > $destpath}
 elseif ($IsMacOS)
-  {Select-String ".*;(linux|windows)_only.*" $output -NotMatch | Select-Object -ExpandProperty Line > $destpath}
+  {Select-String ".*;(linux|windows)_only.*" $output -NotMatch -Raw > $destpath}
 elseif ($IsWindows)
-  {Select-String ".*;(linux|macos)_only.*" $output -NotMatch | Select-Object -ExpandProperty Line > $destpath}
+  {Select-String ".*;(linux|macos)_only.*" $output -NotMatch -Raw > $destpath}
 
 if ($output -like "${tempdir}*")
-  {"Deleting a temporary file"
+  {Write-Verbose "Deleting a file that is no longer needed"
   Remove-Item $output -Force}
 }
 else
-{"Cannot download or find php.ini file."}
+{Write-Error "Cannot download or find php.ini file." -Category ObjectNotFound}
