@@ -20,7 +20,7 @@ if ($output)
 {Write-Verbose "Extracting PHP"
 Expand-Archive $output "${tempdir}/php" -Force
 if ($output -like "${tempdir}*")
-  {Write-Verbose "Deleting a file that are no longer needed"
+  {Write-Verbose "Deleting a file that is no longer needed"
   Remove-Item $output -Force}
 }
 else 
@@ -31,7 +31,7 @@ $output=Get-FilePathFromUri $apcu_archive
 if ($output)
 {Write-Verbose "Extracting APCu"
 Expand-Archive $output "${tempdir}/apcu" -Force
-Write-Verbose "Deleting a file and directory that are no longer needed"
+Write-Verbose "Deleting a file and directory that is no longer needed"
 if ($output -like "${tempdir}*")
   {Remove-Item $output -Force}
 Move-Item "${tempdir}/apcu/php_apcu.dll" "${tempdir}/php/ext/" -Force
