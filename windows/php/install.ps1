@@ -40,16 +40,6 @@ else
 {Write-Error "Cannot download or find APCu." -Category ObjectNotFound
 exit}
 
-Write-Verbose "Downloading CA certificate"
-Invoke-WebRequest "https://curl.haxx.se/ca/cacert.pem" -DisableKeepAlive -OutFile "${tempdir}/cacert"
-if (!(Test-Path "${tempdir}/cacert"))
-{Write-Error "Cannot download CA certificate." -Category ConnectionError}
-
-Write-Verbose "Downloading Composer"
-Invoke-WebRequest "https://getcomposer.org/composer.phar" -DisableKeepAlive -OutFile "${tempdir}/composer"
-if (!(Test-Path "${tempdir}/composer"))
-{Write-Error "Cannot download Composer." -Category ConnectionError}
-
 if (Test-Path "${PSScriptRoot}/../../filter-php-ini.ps1")
 {."${PSScriptRoot}/../../filter-php-ini.ps1" -destpath "${tempdir}/php/php.ini"
 if (!(Test-Path "${tempdir}/php/php.ini"))
@@ -59,12 +49,18 @@ else
 {Write-Error "Cannot find filter-php-ini.ps1 script." -Category ObjectNotFound
 exit}
 
-Write-Verbose "Configuring PHP directory"
+Write-Verbose "Creating data directory"
 New-Item "${tempdir}/php/data" -Force -ItemType Directory
-if (Test-Path "${tempdir}/cacert")
-{Move-Item "${tempdir}/cacert" "${tempdir}/php/data/cacert.pem" -Force}
-if (Test-Path "${tempdir}/composer")
-{Move-Item "${tempdir}/composer" "${tempdir}/php/data/composer.phar" -Force}
+
+Write-Verbose "Downloading CA certificate"
+Invoke-WebRequest "https://curl.haxx.se/ca/cacert.pem" -DisableKeepAlive -OutFile "${tempdir}/php/data/cacert.pem"
+if (!(Test-Path "${tempdir}/php/data/cacert.pem"))
+{Write-Error "Cannot download CA certificate." -Category ConnectionError}
+
+Write-Verbose "Downloading Composer"
+Invoke-WebRequest "https://getcomposer.org/composer.phar" -DisableKeepAlive -OutFile "${tempdir}/php/data/composer.phar"
+if (!(Test-Path "${tempdir}/php/data/composer.phar"))
+{Write-Error "Cannot download Composer." -Category ConnectionError}
 
 Write-Verbose "Copying install data"
 Copy-Item "${PSScriptRoot}/install-data/start.ps1" "${tempdir}/php/" -Force
