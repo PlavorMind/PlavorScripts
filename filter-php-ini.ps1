@@ -24,11 +24,11 @@ $output=Get-FilePathFromUri $path
 if ($output)
 {Write-Verbose "Filtering php.ini file"
 if ($IsLinux)
-  {Select-String ".*;(macos|windows)_only.*" $output -NotMatch -Raw > $destpath}
+  {Select-String ";(macos|windows)_only" $output -NotMatch -Raw > $destpath}
 elseif ($IsMacOS)
-  {Select-String ".*;(linux|windows)_only.*" $output -NotMatch -Raw > $destpath}
+  {Select-String ";(linux|windows)_only" $output -NotMatch -Raw > $destpath}
 elseif ($IsWindows)
-  {Select-String ".*;(linux|macos)_only.*" $output -NotMatch -Raw > $destpath}
+  {Select-String ";(linux|macos)_only" $output -NotMatch -Raw > $destpath}
 
 if ($output -like "${tempdir}*")
   {Write-Verbose "Deleting a file that is no longer needed"
