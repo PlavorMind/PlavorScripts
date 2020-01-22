@@ -3,6 +3,7 @@
 Param
 ([Parameter(Position=0)][string]$dir="C:/plavormind/apache-httpd", #Directory to install Apache HTTP Server
 [string]$php_dir="C:/plavormind/php-ts", #PHP directory
+[switch]$portable, #Whether to install in portable mode
 [string]$version="2.4.41", #Apache HTTP Server version
 [string]$web_dir="C:/plavormind/web/public") #Web server public directory
 
@@ -14,6 +15,10 @@ exit}
 
 if (!$IsWindows)
 {Write-Error "Your operating system is not supported."
+exit}
+
+if (!($portable -or (Test-AdminPermission)))
+{Write-Error "This script must be run as administrator unless you install in portable mode." -Category PermissionDenied
 exit}
 
 Write-Verbose "Downloading configurations"
@@ -94,8 +99,6 @@ Write-Warning "Uninstalling existing Apache HTTP Server"
 Write-Verbose "Moving Apache HTTP Server directory from temporary directory to destination directory"
 Move-Item "${tempdir}/apache-httpd" $dir -Force
 
-if (Test-AdminPermission)
+if (!$portable)
 {Write-Verbose "Installing service"
 ."${dir}/bin/httpd.exe" -k install}
-else
-{Write-Warning "Skipped installing service: This script must be run as administrator to install service."}
