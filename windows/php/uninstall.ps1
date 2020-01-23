@@ -1,6 +1,8 @@
 #Uninstalls PHP.
 
-Param([Parameter(Position=0)][string]$dir="C:/plavormind/php-ts") #Directory that PHP is installed
+Param
+([Parameter(Position=0)][string]$dir="C:/plavormind/php-ts", #Directory that PHP is installed
+[switch]$portable) #Whether to uninstall in portable mode
 
 if (Test-Path "${PSScriptRoot}/../../init-script.ps1")
 {."${PSScriptRoot}/../../init-script.ps1"}
@@ -10,6 +12,10 @@ exit}
 
 if (!$IsWindows)
 {Write-Error "Your operating system is not supported."
+exit}
+
+if (!($portable -or (Test-AdminPermission)))
+{Write-Error "This script must be run as administrator unless you uninstall in portable mode." -Category PermissionDenied
 exit}
 
 if (!(Test-Path $dir))
@@ -26,10 +32,8 @@ if (Get-Process "php-win" -ErrorAction Ignore)
 if (Get-Process "phpdbg" -ErrorAction Ignore)
 {Stop-Process -Force -Name "phpdbg"}
 
-if (Test-AdminPermission)
-{."${PSScriptRoot}/delete-task.ps1"}
-else
-{Write-Warning "Skipped deleting task: This script must be run as administrator to delete task."}
+if (!$portable -and (Get-ScheduledTask "PHP CGI FastCGI" -ErrorAction Ignore))
+{Unregister-ScheduledTask "PHP CGI FastCGI"}
 
 Write-Verbose "Deleting PHP directory"
 Remove-Item $dir -Force -Recurse
