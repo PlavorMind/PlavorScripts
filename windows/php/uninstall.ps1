@@ -33,7 +33,7 @@ if (Get-Process "phpdbg" -ErrorAction Ignore)
 {Stop-Process -Force -Name "phpdbg"}
 
 if (!$portable -and (Get-ScheduledTask "PHP CGI FastCGI" -ErrorAction Ignore))
-{Unregister-ScheduledTask "PHP CGI FastCGI"}
+{Unregister-ScheduledTask "PHP CGI FastCGI" -Confirm:$false}
 
 Write-Verbose "Deleting PHP directory"
 Remove-Item $dir -Force -Recurse
