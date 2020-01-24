@@ -109,6 +109,7 @@ $extensions=
 $skins=
 @("Liberty",
 "Medik",
+"MinervaNeue",
 "Vector",
 
 "PlavorBuma",
