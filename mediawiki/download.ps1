@@ -68,6 +68,7 @@ $extensions=
 "CommonsMetadata",
 "ConfirmEdit",
 "DeletePagesForGood",
+"Discord",
 "DiscordNotifications",
 #"Echo",
 #"Flow",
@@ -91,7 +92,6 @@ $extensions=
 "ReplaceText",
 "RevisionSlider",
 "Scribunto",
-"SecurePoll",
 "StaffPowers",
 "StalkerLog",
 "SyntaxHighlight_GeSHi",
@@ -140,7 +140,9 @@ Remove-Item "${tempdir}/mediawiki/skins/*" -Force -Recurse
 foreach ($extension in $extensions)
 {Write-Verbose "Downloading ${extension} extension"
 switch ($extension)
-  {"DiscordNotifications"
+  {"Discord"
+    {Invoke-WebRequest "https://github.com/jaydenkieran/mw-discord/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
+  "DiscordNotifications"
     {Invoke-WebRequest "https://github.com/kulttuuri/DiscordNotifications/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
   "Highlightjs_Integration"
     {Invoke-WebRequest "https://github.com/Nicolas01/Highlightjs_Integration/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
