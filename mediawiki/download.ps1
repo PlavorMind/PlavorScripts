@@ -149,7 +149,7 @@ switch ($extension)
   "NativeSvgHandler"
     {Invoke-WebRequest "https://github.com/StarCitizenTools/mediawiki-extensions-NativeSvgHandler/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
   "PlavorMindTools"
-    {Invoke-WebRequest "https://github.com/PlavorMind/PlavorMindTools/archive/Main.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
+    {Invoke-WebRequest "https://github.com/PlavorMind/PlavorMindTools/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
   default
     {Invoke-WebRequest "https://github.com/wikimedia/mediawiki-extensions-${extension}/archive/${extensions_branch}.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
   }
