@@ -34,7 +34,7 @@ New-Item "${destdir}/${log_directory}" -Force -ItemType Directory}
 
 foreach ($log_file in Get-ChildItem $dir -File -Force -Name -Recurse)
 {Write-Verbose "Filtering ${log_file} file"
-Select-String "^(127\.0\.0\.\d+|192\.168\.35\.30|::1 )|`"GET login\.cgi HTTP\/1\.1`" 400 \d+ `"-`" `"-`"$" "${dir}/${log_file}" -NotMatch -Raw > "${destdir}/${log_file}"
+Select-String "^(127\.0\.0\.\d+|192\.168\.35\.1|::1 )|`"GET login\.cgi HTTP\/1\.1`" 400 \d+ `"-`" `"-`"$" "${dir}/${log_file}" -NotMatch -Raw > "${destdir}/${log_file}"
 
 if ($log_file -notlike "*.pid")
   {Write-Verbose "Blanking original file"
