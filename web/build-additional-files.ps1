@@ -1,6 +1,6 @@
 #Copys additional files for init-dir.ps1 script.
 
-Param([Parameter(Position=0)][string]$web_dir) #Web server directory
+Param([Parameter(Position=0)][string]$web_dir) #Web directory
 
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
 {."${PSScriptRoot}/../init-script.ps1"}
@@ -19,7 +19,7 @@ else
 }
 
 if (!(Test-Path $web_dir))
-{Write-Error "Cannot find web server directory." -Category ObjectNotFound
+{Write-Error "Cannot find web directory." -Category ObjectNotFound
 exit}
 
 if (Test-Path "${PSScriptRoot}/additional-files")
@@ -28,11 +28,11 @@ Move-Item "${PSScriptRoot}/additional-files" "${PSScriptRoot}/additional-files-o
 Write-Verbose "Creating a directory for additioanl files"
 New-Item "${PSScriptRoot}/additional-files" -Force -ItemType Directory
 
-if (Test-Path "${dir}/default")
+if (Test-Path "${web_dir}/default")
 {Write-Verbose "Creating default directory"
 New-Item "${PSScriptRoot}/additional-files/default" -Force -ItemType Directory
 
-if (Test-Path "${dir}/default/favicon.ico")
+if (Test-Path "${web_dir}/default/favicon.ico")
   {Write-Verbose "Copying default/favicon.ico file"
-  Copy-Item "${dir}/default/favicon.ico" "${PSScriptRoot}/additional-files/default/"}
+  Copy-Item "${web_dir}/default/favicon.ico" "${PSScriptRoot}/additional-files/default/"}
 }
