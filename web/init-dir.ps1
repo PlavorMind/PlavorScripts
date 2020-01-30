@@ -1,4 +1,4 @@
-#Initializes a directory for web server.
+#Initializes a directory for web.
 
 Param([Parameter(Position=0)][string]$dir) #Directory to initialize
 
@@ -31,21 +31,22 @@ else
 {Write-Error "Cannot download configurations." -Category ConnectionError
 exit}
 
+Write-Verbose "Creating a directory for Adminer"
+New-Item "${tempdir}/web/public/main/adminer" -Force -ItemType Directory
 Write-Verbose "Downloading Adminer"
-Invoke-WebRequest "https://www.adminer.org/latest-en.php" -DisableKeepAlive -OutFile "${tempdir}/adminer"
-if (!(Test-Path "${tempdir}/adminer"))
+Invoke-WebRequest "https://www.adminer.org/latest-en.php" -DisableKeepAlive -OutFile "${tempdir}/web/public/main/adminer/index.php"
+if (!(Test-Path "${tempdir}/web/public/main/adminer/index.php"))
 {Write-Error "Cannot download Adminer." -Category ConnectionError}
 
-Write-Verbose "Configuring directory"
-if (Test-Path "${tempdir}/adminer")
-{New-Item "${tempdir}/web/public/main/adminer" -Force -ItemType Directory
-Move-Item "${tempdir}/adminer" "${tempdir}/web/public/main/adminer/index.php" -Force}
+Write-Verbose "Creating directories for virtual hosts"
 New-Item "${tempdir}/web/public/gitea" -Force -ItemType Directory
 New-Item "${tempdir}/web/public/wiki" -Force -ItemType Directory
 
 if (Test-Path "${PSScriptRoot}/additional-files")
 {Write-Verbose "Copying additional files"
 Copy-Item "${PSScriptRoot}/additional-files/*" "${tempdir}/web/" -Force -Recurse}
+else
+{Write-Warning "Skipped copying additional files: Cannot find additional-files directory."}
 
 foreach ($virtual_host in Get-ChildItem "${tempdir}/web/public" -Directory -Force -Name)
 {foreach ($default_directory in Get-ChildItem "${tempdir}/web/default" -Directory -Force -Name -Recurse)
@@ -60,7 +61,7 @@ foreach ($default_file in Get-ChildItem "${tempdir}/web/default" -File -Force -N
 }
 
 if (Test-Path $dir)
-{Write-Warning "Renaming existing web server directory"
+{Write-Warning "Renaming existing web directory"
 Move-Item $dir "${dir}-old" -Force}
-Write-Verbose "Moving web server directory from temporary directory to destination directory"
+Write-Verbose "Moving web directory from temporary directory to destination directory"
 Move-Item "${tempdir}/web" $dir -Force
