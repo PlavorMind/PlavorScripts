@@ -178,7 +178,7 @@ switch ($skin)
   "Medik"
     {Invoke-WebRequest "https://bitbucket.org/wikiskripta/medik/get/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-skin.zip"}
   "PlavorBuma"
-    {Invoke-WebRequest "https://github.com/PlavorMind/PlavorBuma/archive/Main.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-skin.zip"}
+    {Invoke-WebRequest "https://github.com/PlavorMind/PlavorBuma/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-skin.zip"}
   default
     {Invoke-WebRequest "https://github.com/wikimedia/mediawiki-skins-${skin}/archive/${skins_branch}.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-skin.zip"}
   }
