@@ -2,7 +2,7 @@
 
 Param
 ([Parameter(Position=0)][string]$dir="C:/plavormind/php-ts", #Directory that PHP is installed
-[switch]$portable) #Whether to uninstall in portable mode
+[switch]$portable) #Uninstall in portable mode
 
 if (Test-Path "${PSScriptRoot}/../../init-script.ps1")
 {."${PSScriptRoot}/../../init-script.ps1"}
