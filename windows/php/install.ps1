@@ -4,7 +4,7 @@ Param
 ([string]$apcu_archive="https://windows.php.net/downloads/pecl/releases/apcu/5.1.18/php_apcu-5.1.18-7.4-ts-vc15-x64.zip", #URL or file path to APCu archive
 [Parameter(Position=0)][string]$dir="C:/plavormind/php-ts", #Directory to install PHP
 [string]$php_archive="https://windows.php.net/downloads/snaps/php-7.4/rea3afcb/php-7.4-ts-windows-vc15-x64-rea3afcb.zip", #URL or file path to PHP archive
-[switch]$portable) #Whether to install in portable mode
+[switch]$portable) #Install in portable mode
 
 if (Test-Path "${PSScriptRoot}/../../init-script.ps1")
 {."${PSScriptRoot}/../../init-script.ps1"}
