@@ -8,16 +8,16 @@ Param
 [string]$inkscape_installer="https://inkscape.org/gallery/item/13318/inkscape-0.92.4-x64.exe", #URL or file path to Inkscape installer
 [string]$kdevelop_version="5.4-520", #KDevelop nightly build version
 [string]$libreoffice_installer="https://dev-builds.libreoffice.org/pre-releases/win/x86_64/LibreOffice_6.4.0.2_Win_x64.msi", #URL or file path to LibreOffice installer
-[boolean]$musicbrainz_picard=$true, #Whether to install MusicBrainz Picard
+[bool]$musicbrainz_picard=$true, #Whether to install MusicBrainz Picard
 [string]$nodejs_installer="https://nodejs.org/download/nightly/v13.2.1-nightly2019112294e4cbd808/node-v13.2.1-nightly2019112294e4cbd808-x64.msi", #URL or file path to Node.js installer
-[boolean]$obs=$true, #Whether to install OBS Studio
+[bool]$obs=$true, #Whether to install OBS Studio
 [string]$peazip_version="7.0.1", #PeaZip version
 [string]$python2_version="2.7.17", #Python 2 version
 [string]$python3_version="3.9.0a2", #Python 3 version
-[boolean]$qview=$true, #Whether to install qView
+[bool]$qview=$true, #Whether to install qView
 [string]$smplayer_version="19.10.0.9253", #SMPlayer development build version
 [string]$thunderbird_version="74.0a1", #Thunderbird version
-[boolean]$vc_redist=$true, #Whether to install Microsoft Visual C++ Redistributable for Visual Studio 2019
+[bool]$vc_redist=$true, #Whether to install Microsoft Visual C++ Redistributable for Visual Studio 2019
 [string]$vscodium=$true) #Whether to install VSCodium
 
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
