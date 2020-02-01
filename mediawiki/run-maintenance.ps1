@@ -2,9 +2,9 @@
 
 Param
 ([Parameter(Position=0)][string]$dir, #Directory that MediaWiki is installed
-[switch]$init, #Run scripts to initialize MediaWiki if this parameter is set
+[switch]$init, #Run scripts to initialize MediaWiki
 [string]$php_path, #Path to PHP
-[switch]$update, #Run update.php script if this parameter is set
+[switch]$update, #Run update.php script
 [string]$wiki) #Specify wiki ID to run scripts otherwise will run globally
 
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
