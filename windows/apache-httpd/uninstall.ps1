@@ -24,9 +24,7 @@ exit}
 
 if (!$portable)
 {Write-Verbose "Stopping service"
-."${dir}/bin/httpd.exe" -k stop
-Write-Verbose "Uninstalling service"
-."${dir}/bin/httpd.exe" -k uninstall}
+."${dir}/bin/httpd.exe" -k stop}
 
 if (Test-Path "${dir}/logs/httpd.pid")
 {$apache_httpd_pid=Get-Content "${dir}/logs/httpd.pid" -Force
@@ -34,6 +32,15 @@ if (Get-Process -ErrorAction Ignore -Id $apache_httpd_pid)
   {Write-Verbose "Stopping Apache HTTP Server"
   Stop-Process $apache_httpd_pid
   Start-Sleep 5}
+}
+
+if (!$portable)
+{Write-Verbose "Uninstalling service"
+."${dir}/bin/httpd.exe" -k uninstall
+
+if (Get-NetFirewallRule -ErrorAction Ignore -Name "apache-httpd")
+  {Write-Verbose "Deleting a firewall rule for allowing connections to Apache HTTP Server"
+  Remove-NetFirewallRule -Name "apache-httpd"}
 }
 
 Write-Verbose "Deleting Apache HTTP Server directory"
