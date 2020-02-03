@@ -96,4 +96,4 @@ else
 $principal=New-ScheduledTaskPrincipal "SYSTEM" -LogonType ServiceAccount -RunLevel Highest
 $settings=New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -Compatibility Win8 -DontStopIfGoingOnBatteries -DontStopOnIdleEnd -ExecutionTimeLimit 0
 $trigger=New-ScheduledTaskTrigger -AtStartup
-Register-ScheduledTask "PHP CGI FastCGI" -Action $action -Description "Start PHP CGI/FastCGI" -Force -Principal $principal -Settings $settings -Trigger $trigger}
+Register-ScheduledTask "PHP CGI FastCGI" -Action $action -Description "Starts PHP CGI/FastCGI" -Force -Principal $principal -Settings $settings -Trigger $trigger}
