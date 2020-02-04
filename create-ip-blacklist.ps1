@@ -1,7 +1,7 @@
 #Creates an IP address blacklist for specific platform.
 
 Param
-([Parameter(Position=1)][string]$destpath, #Destination path to save created IP address blacklist
+([Parameter(Position=1)][string]$destpath, #Destination path or file name of firewall rule to save created IP address blacklist
 [Parameter(Position=0)][string]$path="${PSScriptRoot}/additional-files/blacklist.txt", #File path or URL to an IP address blacklist source
 [string]$platform="apache-httpd") #Target platform
 
@@ -26,6 +26,9 @@ switch ($platform)
     {if (!(Test-AdminPermission))
       {Write-Error "This script must be run as administrator to create a firewall rule on Windows." -Category PermissionDenied
       exit}
+
+    if (!$destpath)
+      {$destpath="ip-blacklist"}
     }
   else
     {Write-Error "Your operating system is not supported."
@@ -58,12 +61,12 @@ switch ($platform)
     $result > $destpath}
   "firewall"
     {if ($IsWindows)
-      {if (Get-NetFirewallRule -ErrorAction Ignore -Name "ip-blacklist")
+      {if (Get-NetFirewallRule -ErrorAction Ignore -Name $destpath)
         {Write-Verbose "Updating existing firewall rule with IP address blacklist source"
-        Set-NetFirewallRule -Name "ip-blacklist" -RemoteAddress $blacklist}
+        Set-NetFirewallRule -Name $destpath -RemoteAddress $blacklist}
       else
         {Write-Verbose "Creating a firewall rule with IP address blacklist source"
-        New-NetFirewallRule -Action Block -Description "Blocks some IP addresses" -DisplayName "IP address blacklist" -Name "ip-blacklist" -RemoteAddress $blacklist}
+        New-NetFirewallRule -Action Block -Description "Blocks some IP addresses" -DisplayName "IP address blacklist" -Name $destpath -RemoteAddress $blacklist}
       }
     }
   "nginx"
