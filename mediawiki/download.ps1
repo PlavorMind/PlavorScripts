@@ -110,7 +110,8 @@ $extensions=
 
 "SecureLinkFixer")
 $skins=
-@("Liberty",
+@("Citizen",
+"Liberty",
 "Medik",
 "MinervaNeue",
 "Vector",
@@ -176,7 +177,9 @@ foreach ($extension in $composer_extensions)
 foreach ($skin in $skins)
 {Write-Verbose "Downloading ${skin} skin"
 switch ($skin)
-  {"Liberty"
+  {"Citizen"
+    {Invoke-WebRequest "https://github.com/StarCitizenTools/mediawiki-skins-Citizen/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-skin.zip"}
+  "Liberty"
     {Invoke-WebRequest "https://gitlab.com/librewiki/Liberty-MW-Skin/-/archive/master/Liberty-MW-Skin-master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-skin.zip"}
   "Medik"
     {Invoke-WebRequest "https://bitbucket.org/wikiskripta/medik/get/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-skin.zip"}
