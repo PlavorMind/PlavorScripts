@@ -1,8 +1,8 @@
 #Copys additional files for init-dir.ps1 script.
 
 Param
-([Parameter(Position=0)][string]$mediawiki_dir, #Directory that MediaWiki is installed
-[string]$private_data_dir) #Directory that contains private data for PlavorMind wikis
+([Parameter(Position=0)][string]$mediawiki_dir, #MediaWiki directory
+[string]$private_data_dir) #Private data directory
 
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
 {."${PSScriptRoot}/../init-script.ps1"}
