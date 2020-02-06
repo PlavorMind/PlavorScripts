@@ -1,7 +1,8 @@
-#Runs some MediaWiki maintenance scripts.
+#Does some maintenance task for MediaWiki.
 
 Param
-([switch]$init, #Run scripts to initialize MediaWiki
+([switch]$flow_init, #Run scripts to initialize Flow
+[switch]$init, #Run scripts to initialize MediaWiki
 [Parameter(Position=0)][string]$mediawiki_dir, #MediaWiki directory
 [string]$php_path, #Path to PHP
 [string]$private_data_dir, #Private data directory
@@ -51,6 +52,7 @@ if (Test-Path $mediawiki_dir)
   {$target_wikis=@($wiki)}
 else
   {$target_wikis=Get-ChildItem "${mediawiki_dir}/data" -Directory -Force -Name}
+
 foreach ($target_wiki in $target_wikis)
   {if ($init -or $update)
     {Write-Verbose "Running update.php for ${target_wiki}"
@@ -61,6 +63,18 @@ foreach ($target_wiki in $target_wikis)
     .$php_path "${mediawiki_dir}/maintenance/emptyUserGroup.php" "bureaucrat" --wiki $target_wiki
     .$php_path "${mediawiki_dir}/maintenance/emptyUserGroup.php" "interface-admin" --wiki $target_wiki
     .$php_path "${mediawiki_dir}/maintenance/emptyUserGroup.php" "sysop" --wiki $target_wiki}
+
+  if ($flow_init)
+    {if (Test-Path "${mediawiki_dir}/extensions/Flow")
+      {Write-Verbose "Running emptyUserGroup.php for ${target_wiki}"
+      .$php_path "${mediawiki_dir}/maintenance/emptyUserGroup.php" "flow-bot" --wiki $target_wiki
+      Write-Verbose "Running populateContentModel.php for ${target_wiki}"
+      .$php_path "${mediawiki_dir}/maintenance/populateContentModel.php" --ns=all --table=archive --wiki $target_wiki
+      .$php_path "${mediawiki_dir}/maintenance/populateContentModel.php" --ns=all --table=page --wiki $target_wiki
+      .$php_path "${mediawiki_dir}/maintenance/populateContentModel.php" --ns=all --table=revision --wiki $target_wiki}
+    else
+      {Write-Warning "Skipped running scripts to initialize Flow: Cannot find Flow."}
+    }
 
   Write-Verbose "Running purgeExpiredUserrights.php for ${target_wiki}"
   .$php_path "${mediawiki_dir}/maintenance/purgeExpiredUserrights.php" --wiki $target_wiki
