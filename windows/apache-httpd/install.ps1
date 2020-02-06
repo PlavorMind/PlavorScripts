@@ -5,7 +5,7 @@ Param
 [string]$php_dir="C:/plavormind/php-ts", #PHP directory
 [switch]$portable, #Install in portable mode
 [string]$version="2.4.41", #Apache HTTP Server version
-[string]$web_dir="C:/plavormind/web/public") #Web server public directory
+[string]$web_dir="C:/plavormind/web/public") #Web public directory
 
 if (Test-Path "${PSScriptRoot}/../../init-script.ps1")
 {."${PSScriptRoot}/../../init-script.ps1"}
@@ -72,7 +72,7 @@ foreach ($virtual_host in Get-ChildItem $web_dir -Directory -Force -Name)
   {New-Item "${tempdir}/apache-httpd/logs/${virtual_host}" -Force -ItemType Directory}
 }
 else
-{Write-Warning "Skipped creating directories for logs: Cannot find web server public directory."}
+{Write-Warning "Skipped creating directories for logs: Cannot find web public directory."}
 
 if (Test-Path "${PSScriptRoot}/additional-files")
 {Write-Verbose "Copying additional files"
