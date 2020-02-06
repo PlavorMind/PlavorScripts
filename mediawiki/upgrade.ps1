@@ -4,9 +4,9 @@ Param
 ([string]$composer_path, #Path to Composer
 [string]$core_branch, #Branch for MediaWiki core
 [string]$extra_branch="master", #Branch for extensions and skins
-[Parameter(Position=0)][string]$mediawiki_dir, #Directory that MediaWiki is installed
+[Parameter(Position=0)][string]$mediawiki_dir, #MediaWiki directory
 [string]$php_path, #Path to PHP
-[string]$private_data_dir) #Directory that contains private data for PlavorMind wikis
+[string]$private_data_dir) #Private data directory
 
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
 {."${PSScriptRoot}/../init-script.ps1"}
