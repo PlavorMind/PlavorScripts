@@ -1,5 +1,7 @@
 #Enables the scheduled task for starting PHP CGI/FastCGI automatically
 
+Param([Parameter()]$vb) #Parameter added just for making the -Verbose parameter work and does nothing
+
 if (Test-Path "${PSScriptRoot}/../../init-script.ps1")
 {."${PSScriptRoot}/../../init-script.ps1"}
 else
