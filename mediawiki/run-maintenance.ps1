@@ -1,7 +1,7 @@
 #Runs some MediaWiki maintenance scripts.
 
 Param
-([Parameter(Position=0)][string]$dir, #Directory that MediaWiki is installed
+([Parameter(Position=0)][string]$dir, #MediaWiki directory
 [switch]$init, #Run scripts to initialize MediaWiki
 [string]$php_path, #Path to PHP
 [switch]$update, #Run update.php script
