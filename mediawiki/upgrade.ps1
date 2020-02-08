@@ -81,4 +81,4 @@ Move-Item $mediawiki_dir "${mediawiki_dir}-old" -Force}
 Write-Verbose "Moving MediaWiki directory from temporary directory to destination directory"
 Move-Item "${tempdir}/mediawiki" $mediawiki_dir -Force
 
-."${PSScriptRoot}/run-maintenance.ps1" $mediawiki_dir -php_path $php_path -update
+."${PSScriptRoot}/maintenance.ps1" $mediawiki_dir -php_path $php_path -private_data_dir $private_data_dir -update
