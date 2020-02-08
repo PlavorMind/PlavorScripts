@@ -70,7 +70,7 @@ $extensions=
 "DeletePagesForGood",
 "Discord",
 "DiscordNotifications",
-#"Echo",
+"Echo",
 #"Flow",
 "GlobalBlocking",
 "GlobalCssJs"
