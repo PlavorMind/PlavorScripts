@@ -3,17 +3,18 @@
 #Parameter names should not contain "password" to avoid warnings
 Param
 ([string]$db_pw_file="${PSScriptRoot}/additional-files/db-password.txt", #File containing database password
-[string]$mediawiki_dir, #Directory to configure for MediaWiki
+[string]$mediawiki_dir, #MediaWiki directory
 [string]$php_path, #Path to PHP
-[string]$private_data_dir, #Directory to configure for private data
-[Parameter(Mandatory=$true)][string]$user, #User to create during installation
+[string]$private_data_dir, #Private data directory
+[Parameter(Mandatory=$true)][string]$pw_json, #JSON file containing passwords
+[Parameter(Mandatory=$true)][string]$user, #Username of the user that will be created during installation
 [string]$user_pw_file="${PSScriptRoot}/additional-files/user-password.txt", #File containing password for user to create during installation
 [Parameter(Mandatory=$true,Position=0)][string]$wiki) #Wiki ID
 
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
 {."${PSScriptRoot}/../init-script.ps1"}
 else
-{"Cannot find initialize script."
+{Write-Error "Cannot find initialize script." -Category ObjectNotFound
 exit}
 
 if (!$mediawiki_dir)
@@ -22,7 +23,7 @@ if (!$mediawiki_dir)
 elseif ($IsWindows)
   {$mediawiki_dir="C:/plavormind/web/public/wiki/mediawiki"}
 else
-  {"Cannot detect default directory."
+  {Write-Error "Cannot detect default MediaWiki directory." -Category NotSpecified
   exit}
 }
 
@@ -30,7 +31,7 @@ if (!$php_path)
 {if ($IsWindows)
   {$php_path="C:/plavormind/php-ts/php.exe"}
 else
-  {"Cannot detect default PHP path."
+  {Write-Error "Cannot detect default PHP path." -Category NotSpecified
   exit}
 }
 
@@ -40,12 +41,15 @@ if (!$private_data_dir)
 elseif ($IsWindows)
   {$private_data_dir="C:/plavormind/web/data/mediawiki"}
 else
-  {"Cannot detect default directory."
+  {Write-Error "Cannot detect default private data directory." -Category NotSpecified
   exit}
 }
 
 if (!(Test-Path $php_path))
-{"Cannot find PHP."
+{Write-Error "Cannot find PHP." -Category NotInstalled
+exit}
+if (!(Test-Path $pw_json))
+{Write-Error "Cannot find JSON file containing passwords." -Category ObjectNotFound
 exit}
 
 if ((Test-Path $db_pw_file) -and (Test-Path $user_pw_file))
