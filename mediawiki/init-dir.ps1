@@ -4,9 +4,9 @@ Param
 ([string]$composer_path, #Path to Composer
 [string]$core_branch, #Branch for MediaWiki core
 [string]$extra_branch="master", #Branch for extensions and skins
-[Parameter(Position=0)][string]$mediawiki_dir, #Directory to configure for MediaWiki
+[Parameter(Position=0)][string]$mediawiki_dir, #Directory to initialize for MediaWiki
 [string]$php_path, #Path to PHP
-[string]$private_data_dir) #Directory to configure for private data
+[string]$private_data_dir) #Directory to initialize for private data
 
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
 {."${PSScriptRoot}/../init-script.ps1"}
