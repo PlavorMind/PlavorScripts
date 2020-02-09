@@ -2,14 +2,12 @@
 
 #Parameter names should not contain "password" to avoid warnings
 Param
-([string]$db_pw_file="${PSScriptRoot}/additional-files/db-password.txt", #File containing database password
-[string]$mediawiki_dir, #MediaWiki directory
+([Parameter(Position=0)][string]$mediawiki_dir, #MediaWiki directory
 [string]$php_path, #Path to PHP
 [string]$private_data_dir, #Private data directory
 [Parameter(Mandatory=$true)][string]$pw_json, #JSON file containing passwords
 [Parameter(Mandatory=$true)][string]$user, #Username of the user that will be created during installation
-[string]$user_pw_file="${PSScriptRoot}/additional-files/user-password.txt", #File containing password for user to create during installation
-[Parameter(Mandatory=$true,Position=0)][string]$wiki) #Wiki ID
+[Parameter(Mandatory=$true,Position=1)][string]$wiki) #Wiki ID
 
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
 {."${PSScriptRoot}/../init-script.ps1"}
@@ -52,37 +50,35 @@ if (!(Test-Path $pw_json))
 {Write-Error "Cannot find JSON file containing passwords." -Category ObjectNotFound
 exit}
 
-if ((Test-Path $db_pw_file) -and (Test-Path $user_pw_file))
-{$db_pw=Get-Content $db_pw_file -Force}
-else
-{"Cannot find password files."
-exit}
+#JSON parsing part
+$database_password=""
+$user_password=""
 
 if (Test-Path $mediawiki_dir)
-{"Creating data directory"
+{Write-Verbose "Creating data directory"
 New-Item "${mediawiki_dir}/data" -Force -ItemType Directory
-"Creating data directory for ${wiki}"
+Write-Verbose "Creating data directory of ${wiki}"
 New-Item "${mediawiki_dir}/data/${wiki}" -Force -ItemType Directory
-"Creating private data directory"
+Write-Verbose "Creating private data directory"
 New-Item $private_data_dir -Force -ItemType Directory
-"Creating private data directory for ${wiki}"
+Write-Verbose "Creating private data directory of ${wiki}"
 New-Item "${private_data_dir}/${wiki}" -Force -ItemType Directory
-"Creating deleted_files directory for ${wiki}"
-New-Item "${private_data_dir}/${wiki}/deleted_files" -Force -ItemType Directory
-"Creating files directory for ${wiki}"
+Write-Verbose "Creating a directory for files that will be deleted on ${wiki}"
+New-Item "${private_data_dir}/${wiki}/deleted-files" -Force -ItemType Directory
+Write-Verbose "Creating a directory for files that will be uploaded to ${wiki}"
 New-Item "${private_data_dir}/${wiki}/files" -Force -ItemType Directory
 
 if (Test-Path "${mediawiki_dir}/LocalSettings.php")
-  {"Renaming LocalSettings.php file temporarily"
-  Move-Item "${mediawiki_dir}/LocalSettings.php" "${mediawiki_dir}/LocalSettings_temp.php" -Force}
+  {Write-Warning "Renaming LocalSettings.php file temporarily"
+  Move-Item "${mediawiki_dir}/LocalSettings.php" "${mediawiki_dir}/LocalSettings-temp.php" -Force}
 
-"Running installation script"
-php "${mediawiki_dir}/maintenance/install.php" --confpath "${private_data_dir}/${wiki}" --dbname "${wiki}wiki" --dbpath "${private_data_dir}/databases" --installdbpass $db_pw --installdbuser "root" --passfile $user_pw_file "Nameless" $user
+Write-Verbose "Running installation script"
+.$php_path "${mediawiki_dir}/maintenance/install.php" $user --confpath "${private_data_dir}/${wiki}" --dbname "${wiki}wiki" --dbpath "${private_data_dir}/databases" --installdbpass $database_password --installdbuser "root" --pass $user_password
 
-if (Test-Path "${mediawiki_dir}/LocalSettings_temp.php")
-  {"Restoring LocalSettings.php file"
-  Move-Item "${mediawiki_dir}/LocalSettings_temp.php" "${mediawiki_dir}/LocalSettings.php" -Force}
+if (Test-Path "${mediawiki_dir}/LocalSettings-temp.php")
+  {Write-Warning "Restoring LocalSettings.php file"
+  Move-Item "${mediawiki_dir}/LocalSettings-temp.php" "${mediawiki_dir}/LocalSettings.php" -Force}
 
-."${PSScriptRoot}/init_maintenance.ps1" -dir $mediawiki_dir -steward $user -wiki $wiki}
+."${PSScriptRoot}/maintenance.ps1" $mediawiki_dir -init -php_path $php_path -private_data_dir $private_data_dir -wiki $wiki}
 else
-{"Cannot find MediaWiki directory."}
+{Write-Error "Cannot find MediaWiki directory." -Category NotInstalled}
