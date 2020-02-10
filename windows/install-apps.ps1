@@ -1,7 +1,7 @@
 #Installs some apps.
 
 Param
-([string]$bleachbit_version="3.1.0.1479", #BleachBit unstable build version
+([Parameter()][string]$bleachbit_version="3.1.0.1479", #BleachBit unstable build version
 [string]$gimp_version="2.10.14", #GIMP version
 [string]$golang_version="1.13.6", #Go version
 [string]$imagemagick_version="7.0.9-17", #ImageMagick version
@@ -18,7 +18,7 @@ Param
 [string]$smplayer_version="19.10.0.9253", #SMPlayer development build version
 [string]$thunderbird_version="74.0a1", #Thunderbird version
 [bool]$vc_redist=$true, #Whether to install Microsoft Visual C++ Redistributable for Visual Studio 2019
-[string]$vscodium=$true) #Whether to install VSCodium
+[bool]$vscodium=$true) #Whether to install VSCodium
 
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
 {."${PSScriptRoot}/../init-script.ps1"}
