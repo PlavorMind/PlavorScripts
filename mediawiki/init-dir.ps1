@@ -1,8 +1,7 @@
 #Initializes directories for MediaWiki.
 
 Param
-([string]$composer_local_json="https://raw.githubusercontent.com/PlavorMind/Configurations/master/mediawiki/composer.local.json", #File path or URL to composer.local.json file
-[string]$composer_path, #Path to Composer
+([string]$composer_path, #Path to Composer
 [string]$core_branch, #Branch for MediaWiki core
 [string]$extra_branch="master", #Branch for extensions and skins
 [Parameter(Position=0)][string]$mediawiki_dir, #Directory to initialize for MediaWiki
@@ -75,7 +74,7 @@ exit}
 
 if (!$core_branch)
 {$core_branch=(((Invoke-WebRequest "https://noc.wikimedia.org/conf/wikiversions.json" -DisableKeepAlive)."Content" | ConvertFrom-Json)."mediawikiwiki").Replace("php-","wmf/")}
-."${PSScriptRoot}/download.ps1" "${tempdir}/mw-install" -composer_local_json $composer_local_json -composer_path $composer_path -core_branch $core_branch -extensions_branch $extra_branch -php_path $php_path -skins_branch $extra_branch
+."${PSScriptRoot}/download.ps1" "${tempdir}/mw-install" -composer_local_json "${tempdir}/mediawiki-config/composer.local.json" -composer_path $composer_path -core_branch $core_branch -extensions_branch $extra_branch -php_path $php_path -skins_branch $extra_branch
 Move-Item "${tempdir}/mw-install" "${tempdir}/mediawiki" -Force
 
 Write-Verbose "Applying configurations"
