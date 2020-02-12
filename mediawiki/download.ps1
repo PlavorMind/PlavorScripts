@@ -149,7 +149,7 @@ else
 {Write-Error "Cannot download or find composer.local.json file." -Category ObjectNotFound}
 
 Write-Verbose "Updating dependencies with Composer"
-.$php_path $composer_path update --ignore-platform-reqs --no-cache --no-dev --working-dir="${tempdir}/mediawiki"
+.$php_path $composer_path update --no-cache --no-dev --working-dir="${tempdir}/mediawiki"
 
 Write-Verbose "Emptying extensions and skins directory"
 Remove-Item "${tempdir}/mediawiki/extensions/*" -Force -Recurse
