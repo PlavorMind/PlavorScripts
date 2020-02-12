@@ -136,18 +136,6 @@ else
 {Write-Error "Cannot download MediaWiki." -Category ConnectionError
 exit}
 
-$output=Get-FilePathFromUri $composer_local_json
-if ($output)
-{if ($output -like "${tempdir}*")
-  {Write-Verbose "Moving composer.local.json file"
-  Move-Item $output "${tempdir}/mediawiki/composer.local.json" -Force}
-else
-  {Write-Verbose "Copying composer.local.json file"
-  Copy-Item $output "${tempdir}/mediawiki/composer.local.json" -Force}
-}
-else
-{Write-Error "Cannot download or find composer.local.json file." -Category ObjectNotFound}
-
 Write-Verbose "Updating dependencies with Composer"
 .$php_path $composer_path update --no-cache --no-dev --working-dir="${tempdir}/mediawiki"
 
@@ -221,6 +209,19 @@ foreach ($skin in $composer_skins)
 
 Write-Verbose "Deleting a directory that is no longer needed"
 Remove-Item "${tempdir}/mediawiki-extracts" -Force -Recurse
+
+$output=Get-FilePathFromUri $composer_local_json
+if ($output)
+{if ($output -like "${tempdir}*")
+  {Write-Verbose "Moving composer.local.json file"
+  Move-Item $output "${tempdir}/mediawiki/composer.local.json" -Force}
+else
+  {Write-Verbose "Copying composer.local.json file"
+  Copy-Item $output "${tempdir}/mediawiki/composer.local.json" -Force}
+Write-Verbose "Updating dependencies with Composer"
+.$php_path $composer_path update --no-cache --no-dev --working-dir="${tempdir}/mediawiki"}
+else
+{Write-Error "Cannot download or find composer.local.json file." -Category ObjectNotFound}
 
 Write-Verbose "Deleting files that are unnecessary for running"
 Remove-Item "${tempdir}/mediawiki/CODE_OF_CONDUCT.md" -Force
