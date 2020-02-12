@@ -1,7 +1,7 @@
 #Initializes directories for MediaWiki.
 
 Param
-([string]$composer_local_json="https://github.com/PlavorMind/Configurations/blob/master/mediawiki/composer.local.json", #File path or URL to composer.local.json file
+([string]$composer_local_json="https://raw.githubusercontent.com/PlavorMind/Configurations/master/mediawiki/composer.local.json", #File path or URL to composer.local.json file
 [string]$composer_path, #Path to Composer
 [string]$core_branch, #Branch for MediaWiki core
 [string]$extra_branch="master", #Branch for extensions and skins
