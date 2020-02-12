@@ -1,7 +1,8 @@
 #Downloads MediaWiki with some extensions and skins.
 
 Param
-([string]$composer_path, #Path to Composer
+([string]$composer_local_json, #File path or URL to composer.local.json file
+[string]$composer_path, #Path to Composer
 [string]$core_branch="master", #Branch for MediaWiki core
 [Parameter(Position=0)][string]$dir, #Directory to download MediaWiki
 [string]$extensions_branch="master", #Branch for extensions
@@ -134,6 +135,18 @@ Move-Item "${tempdir}/mediawiki-extracts/*" "${tempdir}/mediawiki" -Force}
 else
 {Write-Error "Cannot download MediaWiki." -Category ConnectionError
 exit}
+
+$output=Get-FilePathFromUri $composer_local_json
+if ($output)
+{if ($output -like "${tempdir}*")
+  {Write-Verbose "Moving composer.local.json file"
+  Move-Item $output "${tempdir}/mediawiki/composer.local.json" -Force}
+else
+  {Write-Verbose "Copying composer.local.json file"
+  Copy-Item $output "${tempdir}/mediawiki/composer.local.json" -Force}
+}
+else
+{Write-Error "Cannot download or find composer.local.json file." -Category ObjectNotFound}
 
 Write-Verbose "Updating dependencies with Composer"
 .$php_path $composer_path update --ignore-platform-reqs --no-cache --no-dev --working-dir="${tempdir}/mediawiki"
