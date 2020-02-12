@@ -106,6 +106,7 @@ $extensions=
 "TwoColConflict",
 "UploadsLink",
 "UserMerge",
+"Wikibase",
 "WikiEditor",
 
 "SecureLinkFixer")
