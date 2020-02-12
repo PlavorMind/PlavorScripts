@@ -211,6 +211,7 @@ Remove-Item "${tempdir}/mediawiki-extracts" -Force -Recurse
 
 Write-Verbose "Deleting files that are unnecessary for running"
 Remove-Item "${tempdir}/mediawiki/CODE_OF_CONDUCT.md" -Force
+Remove-Item "${tempdir}/mediawiki/composer.local.json-sample" -Force
 Remove-Item "${tempdir}/mediawiki/FAQ" -Force
 Remove-Item "${tempdir}/mediawiki/HISTORY" -Force
 Remove-Item "${tempdir}/mediawiki/INSTALL" -Force
