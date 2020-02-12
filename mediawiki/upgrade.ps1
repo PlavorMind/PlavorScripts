@@ -61,15 +61,15 @@ exit}
 
 if (!$core_branch)
 {$core_branch=(((Invoke-WebRequest "https://noc.wikimedia.org/conf/wikiversions.json" -DisableKeepAlive)."Content" | ConvertFrom-Json)."mediawikiwiki").Replace("php-","wmf/")}
-."${PSScriptRoot}/download.ps1" "${tempdir}/mw-upgrade" -composer_path $composer_path -core_branch $core_branch -extensions_branch $extra_branch -php_path $php_path -skins_branch $extra_branch
+."${PSScriptRoot}/download.ps1" "${tempdir}/mw-upgrade" -composer_local_json "${mediawiki_dir}/composer.local.json" -composer_path $composer_path -core_branch $core_branch -extensions_branch $extra_branch -php_path $php_path -skins_branch $extra_branch
 Move-Item "${tempdir}/mw-upgrade" "${tempdir}/mediawiki" -Force
 
-if (Test-Path "${mediawiki_dir}/data")
-{Write-Verbose "Copying existing data directory"
-Copy-Item "${mediawiki_dir}/data" "${tempdir}/mediawiki/" -Force -Recurse}
 if (Test-Path "${mediawiki_dir}/LocalSettings.php")
 {Write-Verbose "Copying existing LocalSettings.php file"
 Copy-Item "${mediawiki_dir}/LocalSettings.php" "${tempdir}/mediawiki/" -Force}
+if (Test-Path "${mediawiki_dir}/data")
+{Write-Verbose "Copying existing data directory"
+Copy-Item "${mediawiki_dir}/data" "${tempdir}/mediawiki/" -Force -Recurse}
 Write-Verbose "Deleting cache directory"
 Remove-Item "${tempdir}/mediawiki/cache" -Force -Recurse
 Write-Verbose "Deleting images directory"
