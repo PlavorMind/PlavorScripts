@@ -22,14 +22,14 @@ if (!($portable -or (Test-AdminPermission)))
 exit}
 
 Write-Verbose "Downloading configurations"
-Invoke-WebRequest "https://github.com/PlavorMind/Configurations/archive/Main.zip" -DisableKeepAlive -OutFile "${tempdir}/config.zip"
+Invoke-WebRequest "https://github.com/PlavorMind/Configurations/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/config.zip"
 if ("${tempdir}/config.zip")
 {Write-Verbose "Extracting"
 Expand-Archive "${tempdir}/config.zip" $tempdir -Force
 Write-Verbose "Deleting a file and directory that are no longer needed"
 Remove-Item "${tempdir}/config.zip" -Force
-Move-Item "${tempdir}/Configurations-Main/apache-httpd" "${tempdir}/apache-httpd-config" -Force
-Remove-Item "${tempdir}/Configurations-Main" -Force -Recurse}
+Move-Item "${tempdir}/Configurations-master/apache-httpd" "${tempdir}/apache-httpd-config" -Force
+Remove-Item "${tempdir}/Configurations-master" -Force -Recurse}
 else
 {Write-Error "Cannot download configurations." -Category ConnectionError
 exit}
