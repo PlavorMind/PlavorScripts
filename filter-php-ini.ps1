@@ -2,7 +2,7 @@
 
 Param
 ([Parameter(Position=1)][string]$destpath, #Destination path to save filtered php.ini file
-[Parameter(Position=0)][string]$path="https://raw.githubusercontent.com/PlavorMind/Configurations/Main/php.ini") #File path or URL to filter
+[Parameter(Position=0)][string]$path="https://raw.githubusercontent.com/PlavorMind/Configurations/master/php.ini") #File path or URL to filter
 
 if (Test-Path "${PSScriptRoot}/init-script.ps1")
 {."${PSScriptRoot}/init-script.ps1"}
