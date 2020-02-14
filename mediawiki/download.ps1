@@ -54,6 +54,7 @@ $composer_extensions=
 @("AbuseFilter",
 "AntiSpoof",
 "Flow",
+"Parsoid-testing",
 "TemplateStyles")
 $composer_skins=@()
 $extensions=
@@ -71,6 +72,7 @@ $extensions=
 "DeletePagesForGood",
 "Discord",
 "DiscordNotifications",
+"DiscussionTools",
 "Echo",
 #"Flow",
 "GlobalBlocking",
@@ -89,6 +91,7 @@ $extensions=
 "Nuke",
 "PageImages",
 "ParserFunctions",
+"Parsoid-testing",
 "PerformanceInspector",
 "PlavorMindTools",
 "Popups",
@@ -107,6 +110,7 @@ $extensions=
 "TwoColConflict",
 "UploadsLink",
 "UserMerge",
+"VisualEditor",
 "Wikibase",
 "WikiEditor",
 
@@ -154,6 +158,8 @@ switch ($extension)
     {Invoke-WebRequest "https://github.com/Nicolas01/Highlightjs_Integration/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
   "NativeSvgHandler"
     {Invoke-WebRequest "https://github.com/StarCitizenTools/mediawiki-extensions-NativeSvgHandler/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
+  "Parsoid-testing"
+    {Invoke-WebRequest "https://github.com/wikimedia/parsoid/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
   "PlavorMindTools"
     {Invoke-WebRequest "https://github.com/PlavorMind/PlavorMindTools/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
   default
