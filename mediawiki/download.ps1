@@ -58,7 +58,7 @@ $composer_extensions=
 "TemplateStyles")
 $composer_skins=@()
 $extensions=
-@(#"AbuseFilter",
+@("AbuseFilter",
 "AntiSpoof",
 "Babel",
 "CentralAuth",
