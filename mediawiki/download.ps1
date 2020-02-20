@@ -53,6 +53,7 @@ exit}
 $composer_extensions=
 @("AbuseFilter",
 "AntiSpoof",
+"CheckUser",
 "Flow",
 "Parsoid-testing",
 "TemplateStyles")
