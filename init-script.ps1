@@ -24,8 +24,8 @@ function New-Shortcut
 [Parameter(Mandatory=$true,Position=0)][string]$Path, #Path of a shortcut
 [Parameter(Mandatory=$true,Position=1)][string]$TargetPath) #Target of a shortcut
 
-if ($IsWindows)
-  {if (Test-Path $TargetPath)
+if (Test-Path $TargetPath)
+  {if ($IsWindows)
     {$shortcut=(New-Object "WScript.Shell").CreateShortcut($Path)
     if ($Arguments)
       {$shortcut.Arguments=$Arguments}
@@ -33,10 +33,10 @@ if ($IsWindows)
     Write-Verbose "Creating a shortcut to "+$TargetPath+" at "+$Path
     $shortcut.Save()}
   else
-    {Write-Error "Cannot find the target."}
+    {Write-Error "Your operating system is not supported."}
   }
 else
-  {Write-Error "Your operating system is not supported."}
+  {Write-Error "Cannot find the target."}
 }
 
 function Test-AdminPermission
