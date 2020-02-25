@@ -37,17 +37,29 @@ function Test-AdminPermission
   {$permissions=New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
   return $permissions.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)}
 else
-  {return $false}
+  {if ((id --user) -eq 0)
+    {return $true}
+  else
+    {return $false}
+  }
 }
 
-if (!$IsLinux -and !$IsMacOS -and !$IsWindows)
-{$IsLinux=$false
-$IsMacOS=$false
-$IsWindows=$true}
+if ($PSVersionTable."PSVersion"."Major" -lt 7)
+{Write-Error "PlavorScripts require PowerShell 7 or newer."
+return $false}
 
 if ($IsLinux)
-{$tempdir="/tmp"}
+{$PlaScrDefaultBaseDirectory="/plavormind"
+$PlaScrTempDirectory="/tmp"}
 elseif ($IsMacOS)
-{$tempdir="/private/tmp"}
+{$PlaScrDefaultBaseDirectory="/plavormind"
+$PlaScrTempDirectory="/private/tmp"}
 elseif ($IsWindows)
-{$tempdir=$Env:TEMP}
+{$PlaScrDefaultBaseDirectory="C:/plavormind"
+$PlaScrDefaultPHPPath="${PlaScrDefaultBaseDirectory}/php-ts/php.exe"
+$PlaScrTempDirectory=$Env:TEMP}
+
+#For backward compatibility
+$tempdir=$PlaScrTempDirectory
+
+return $true
