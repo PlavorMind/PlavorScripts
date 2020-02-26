@@ -4,19 +4,26 @@ function Get-FilePathFromUri
 {Param
 ([Parameter(Mandatory=$true,Position=0)][string]$Uri)
 
-$output=$false
-if ($Uri -match "^https?:\/\/")
-  {if ($Uri -match "[^\\/:*?`"<>|]+\.[^\\/:*?`"<>|]+$")
+#For backward compatibility
+return Get-LocalFile $Uri}
+
+function Get-LocalFile
+{Param([Parameter(Mandatory=$true,Position=0)][string]$URL)
+
+if ($URL -match "^https?:\/\/")
+  {if ($URL -match "[^\\/:*?`"<>|]+\.[^\\/:*?`"<>|]+$")
     {$filename=$Matches[0]}
   else
-    {$filename="get-filepathfromuri-output"}
-  Invoke-WebRequest $Uri -DisableKeepAlive -OutFile "${tempdir}/${filename}"
-  if (Test-Path "${tempdir}/${filename}")
-    {$output="${tempdir}/${filename}"}
+    {$filename="get-localfile"}
+  #TODO: Prepend "URL detected" but with the better grammar
+  Write-Verbose "Downloading a file from "+$URL
+  Invoke-WebRequest $URL -DisableKeepAlive -OutFile $PlaScrTempDirectory+"/"+$filename
+  if (Test-Path $PlaScrTempDirectory+"/"+$filename)
+    {return $PlaScrTempDirectory+"/"+$filename}
   }
-elseif (Test-Path $Uri)
-  {$output=$Uri}
-return $output}
+elseif (Test-Path $URL)
+  {return $URL}
+return $false}
 
 function New-Shortcut
 {Param
