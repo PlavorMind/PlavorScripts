@@ -8,10 +8,9 @@ function Expand-ArchiveSmart
 $output=Get-FilePathFromURL $Path
 if ($output)
   {Write-Verbose "Extracting archive"
-  $extracted_items=Expand-Archive $Path "${PlaScrTempDirectory}/expand-archivesmart-extracts/" -Force -PassThru
-  if (($extracted_items."Directory" | Measure-Object)."Count" -eq 1)
-    {$extracted_directory=$extracted_items."Directory"."Name" | Select-Object -First 1
-    Move-Item "${PlaScrTempDirectory}/expand-archivesmart-extracts/${extracted_directory}/*" $DestinationPath -Force}
+  Expand-Archive $output "${PlaScrTempDirectory}/expand-archivesmart-extracts/" -Force
+  if ((Get-ChildItem "${PlaScrTempDirectory}/expand-archivesmart-extracts" -Force -Name | Measure-Object)."Count" -eq 1)
+    {Move-Item "${PlaScrTempDirectory}/expand-archivesmart-extracts/*/*" $DestinationPath -Force}
   else
     {Move-Item "${PlaScrTempDirectory}/expand-archivesmart-extracts/*" $DestinationPath -Force}
   Write-Verbose "Deleting a file and a directory that are no longer needed"
