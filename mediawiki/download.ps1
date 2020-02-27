@@ -96,6 +96,7 @@ $extensions=
 "PerformanceInspector",
 "PlavorMindTools",
 "Popups",
+"ProtectionIndicator",
 "Renameuser",
 "ReplaceText",
 "RevisionSlider",
