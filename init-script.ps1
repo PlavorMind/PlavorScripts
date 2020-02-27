@@ -63,6 +63,8 @@ elseif (Test-Path $URL)
   {return $URL}
 return $false}
 
+#Creates a shortcut.
+#This function only supports Windows.
 function New-Shortcut
 {Param
 ([Parameter(Position=2)][string]$Arguments, #Arguments of a shortcut
@@ -84,6 +86,7 @@ else
   {Write-Error "Cannot find the target."}
 }
 
+#Returns whether the user has administrator permission on Windows, or root permission on Linux and macOS.
 function Test-AdminPermission
 {if ($IsWindows)
   {$permissions=New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
@@ -102,6 +105,7 @@ return $false}
 
 if ($IsLinux)
 {$PlaScrDefaultBaseDirectory="/plavormind"
+$PlaScrDefaultPHPPath="/usr/bin/php"
 $PlaScrTempDirectory="/tmp"}
 elseif ($IsMacOS)
 {$PlaScrDefaultBaseDirectory="/plavormind"
@@ -113,5 +117,8 @@ $PlaScrTempDirectory=$Env:TEMP}
 
 #For backward compatibility
 $tempdir=$PlaScrTempDirectory
+#For suppressing warnings in VSCodium
+$PlaScrDefaultPHPPath | Out-Null
+$tempdir | Out-Null
 
 return $true
