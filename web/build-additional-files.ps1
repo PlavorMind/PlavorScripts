@@ -3,20 +3,15 @@
 Param([Parameter(Position=0)][string]$web_dir) #Web directory
 
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
-{."${PSScriptRoot}/../init-script.ps1"}
+{if (!(."${PSScriptRoot}/../init-script.ps1"))
+  {exit}
+}
 else
-{Write-Error "Cannot find initialize script." -Category ObjectNotFound
+{Write-Error "Cannot find init-script.ps1 file." -Category ObjectNotFound
 exit}
 
 if (!$web_dir)
-{if ($IsLinux)
-  {$web_dir="/plavormind/web"}
-elseif ($IsWindows)
-  {$web_dir="C:/plavormind/web"}
-else
-  {Write-Error "Cannot detect default directory." -Category NotSpecified
-  exit}
-}
+{$web_dir="${PlaScrDefaultBaseDirectory}/web"}
 
 if (!(Test-Path $web_dir))
 {Write-Error "Cannot find web directory." -Category ObjectNotFound
