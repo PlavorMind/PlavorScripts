@@ -10,38 +10,28 @@ Param
 [string]$skins_branch="master") #Branch for skins
 
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
-{."${PSScriptRoot}/../init-script.ps1"}
+{if (!(."${PSScriptRoot}/../init-script.ps1"))
+  {exit}
+}
 else
-{Write-Error "Cannot find initialize script." -Category ObjectNotFound
+{Write-Error "Cannot find init-script.ps1 file." -Category ObjectNotFound
 exit}
 
 if (!$composer_path)
 {if ($IsLinux)
-  {$composer_path="/plavormind/composer.phar"}
+  {$composer_path="${PlaScrDefaultBaseDirectory}/composer.phar"}
 elseif ($IsWindows)
-  {$composer_path="C:/plavormind/php-ts/data/composer.phar"}
+  {$composer_path="${PlaScrDefaultBaseDirectory}/php-ts/data/composer.phar"}
 else
   {Write-Error "Cannot detect default Composer path." -Category NotSpecified
   exit}
 }
 
 if (!$dir)
-{if ($IsLinux)
-  {$dir="/plavormind/web/public/wiki/mediawiki"}
-elseif ($IsWindows)
-  {$dir="C:/plavormind/web/public/wiki/mediawiki"}
-else
-  {Write-Error "Cannot detect default directory." -Category NotSpecified
-  exit}
-}
+{$dir="${PlaScrDefaultBaseDirectory}/web/public/wiki/mediawiki"}
 
 if (!$php_path)
-{if ($IsWindows)
-  {$php_path="C:/plavormind/php-ts/php.exe"}
-else
-  {Write-Error "Cannot detect default PHP path." -Category NotSpecified
-  exit}
-}
+{$php_path=$PlaScrDefaultPHPPath}
 
 if (!(Test-Path $composer_path))
 {Write-Error "Cannot find Composer." -Category NotInstalled
@@ -121,6 +111,7 @@ $skins=
 @("Citizen",
 "Liberty",
 "Medik",
+"Metrolook",
 "MinervaNeue",
 "Vector",
 
