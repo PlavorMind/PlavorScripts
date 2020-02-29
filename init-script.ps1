@@ -47,7 +47,7 @@ return Get-FilePathFromURL $Uri}
 
 #Downloads a file to temporary directory and returns path of downloaded file if URL is specified, otherwise returns specified item back if it exists.
 function Get-FilePathFromURL
-{Param([Parameter(Mandatory=$true,Position=0)][string]$URL)
+{Param([Parameter(Mandatory=$true,Position=0)][string]$URL) #File path or URL to check
 
 if ($URL -match "^https?:\/\/")
   {if ($URL -match "[^\\/:*?`"<>|]+\.[^\\/:*?`"<>|]+$")
