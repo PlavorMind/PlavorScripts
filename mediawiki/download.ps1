@@ -26,10 +26,8 @@ else
   {Write-Error "Cannot detect default Composer path." -Category NotSpecified
   exit}
 }
-
 if (!$dir)
 {$dir="${PlaScrDefaultBaseDirectory}/web/public/wiki/mediawiki"}
-
 if (!$php_path)
 {$php_path=$PlaScrDefaultPHPPath}
 
@@ -45,7 +43,6 @@ $composer_extensions=
 "AntiSpoof",
 "CheckUser",
 "Flow",
-"Parsoid-testing",
 "TemplateStyles")
 $composer_skins=@()
 $extensions=
@@ -82,7 +79,6 @@ $extensions=
 "Nuke",
 "PageImages",
 "ParserFunctions",
-"Parsoid-testing",
 "PerformanceInspector",
 "PlavorMindTools",
 "Popups",
@@ -118,111 +114,80 @@ $skins=
 "PlavorBuma",
 "Timeless")
 
-Write-Verbose "Creating a temporary directory for extracting"
-New-Item "${tempdir}/mediawiki-extracts" -Force -ItemType Directory
-
 Write-Verbose "Downloading MediaWiki"
-Invoke-WebRequest "https://github.com/wikimedia/mediawiki/archive/${core_branch}.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki.zip"
-if (Test-Path "${tempdir}/mediawiki.zip")
-{Write-Verbose "Extracting"
-Expand-Archive "${tempdir}/mediawiki.zip" "${tempdir}/mediawiki-extracts/" -Force
-Write-Verbose "Deleting a file that is no longer needed"
-Remove-Item "${tempdir}/mediawiki.zip" -Force
-Move-Item "${tempdir}/mediawiki-extracts/*" "${tempdir}/mediawiki" -Force}
-else
+Expand-ArchiveSmart "https://github.com/wikimedia/mediawiki/archive/${core_branch}.zip" "${PlaScrTempDirectory}/mediawiki"
+if (!(Test-Path "${PlaScrTempDirectory}/mediawiki"))
 {Write-Error "Cannot download MediaWiki." -Category ConnectionError
 exit}
 
-Write-Verbose "Updating dependencies with Composer"
-.$php_path $composer_path update --no-cache --no-dev --working-dir="${tempdir}/mediawiki"
-
 Write-Verbose "Emptying extensions and skins directory"
-Remove-Item "${tempdir}/mediawiki/extensions/*" -Force -Recurse
-Remove-Item "${tempdir}/mediawiki/skins/*" -Force -Recurse
+Remove-Item "${PlaScrTempDirectory}/mediawiki/extensions/*" -Force -Recurse
+Remove-Item "${PlaScrTempDirectory}/mediawiki/skins/*" -Force -Recurse
 
 foreach ($extension in $extensions)
 {Write-Verbose "Downloading ${extension} extension"
 switch ($extension)
   {"Discord"
-    {Invoke-WebRequest "https://github.com/jaydenkieran/mw-discord/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
+    {Expand-ArchiveSmart "https://github.com/jaydenkieran/mw-discord/archive/master.zip" "${PlaScrTempDirectory}/mediawiki/extensions/${extension}"}
   "DiscordNotifications"
-    {Invoke-WebRequest "https://github.com/kulttuuri/DiscordNotifications/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
+    {Expand-ArchiveSmart "https://github.com/kulttuuri/DiscordNotifications/archive/master.zip" "${PlaScrTempDirectory}/mediawiki/extensions/${extension}"}
   "Highlightjs_Integration"
-    {Invoke-WebRequest "https://github.com/Nicolas01/Highlightjs_Integration/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
+    {Expand-ArchiveSmart "https://github.com/Nicolas01/Highlightjs_Integration/archive/master.zip" "${PlaScrTempDirectory}/mediawiki/extensions/${extension}"}
   "NativeSvgHandler"
-    {Invoke-WebRequest "https://github.com/StarCitizenTools/mediawiki-extensions-NativeSvgHandler/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
-  "Parsoid-testing"
-    {Invoke-WebRequest "https://github.com/wikimedia/parsoid/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
+    {Expand-ArchiveSmart "https://github.com/StarCitizenTools/mediawiki-extensions-NativeSvgHandler/archive/master.zip" "${PlaScrTempDirectory}/mediawiki/extensions/${extension}"}
   "PlavorMindTools"
-    {Invoke-WebRequest "https://github.com/PlavorMind/PlavorMindTools/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
-  default
-    {Invoke-WebRequest "https://github.com/wikimedia/mediawiki-extensions-${extension}/archive/${extensions_branch}.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-extension.zip"}
+    {Expand-ArchiveSmart "https://github.com/PlavorMind/PlavorMindTools/archive/master.zip" "${PlaScrTempDirectory}/mediawiki/extensions/${extension}"}
+  Default
+    {Expand-ArchiveSmart "https://github.com/wikimedia/mediawiki-extensions-${extension}/archive/${extensions_branch}.zip" "${PlaScrTempDirectory}/mediawiki/extensions/${extension}"}
   }
-if (Test-Path "${tempdir}/mediawiki-extension.zip")
-  {Write-Verbose "Extracting"
-  Expand-Archive "${tempdir}/mediawiki-extension.zip" "${tempdir}/mediawiki-extracts/" -Force
-  Write-Verbose "Deleting a file that is no longer needed"
-  Remove-Item "${tempdir}/mediawiki-extension.zip" -Force
-  Write-Verbose "Moving ${extension} extension directory"
-  Move-Item "${tempdir}/mediawiki-extracts/*" "${tempdir}/mediawiki/extensions/${extension}" -Force}
-else
+if (!(Test-Path "${PlaScrTempDirectory}/mediawiki/extensions/${extension}"))
   {Write-Error "Cannot download ${extension} extension." -Category ConnectionError}
-}
-
-foreach ($extension in $composer_extensions)
-{if (Test-Path "${tempdir}/mediawiki/extensions/${extension}")
-  {Write-Verbose "Updating dependencies for ${extension} extension with Composer"
-  .$php_path $composer_path update --no-cache --no-dev --working-dir="${tempdir}/mediawiki/extensions/${extension}"}
 }
 
 foreach ($skin in $skins)
 {Write-Verbose "Downloading ${skin} skin"
 switch ($skin)
   {"Citizen"
-    {Invoke-WebRequest "https://github.com/StarCitizenTools/mediawiki-skins-Citizen/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-skin.zip"}
+    {Expand-ArchiveSmart "https://github.com/StarCitizenTools/mediawiki-skins-Citizen/archive/master.zip" "${PlaScrTempDirectory}/mediawiki/skins/${skin}"}
   "Liberty"
-    {Invoke-WebRequest "https://gitlab.com/librewiki/Liberty-MW-Skin/-/archive/master/Liberty-MW-Skin-master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-skin.zip"}
+    {Expand-ArchiveSmart "https://gitlab.com/librewiki/Liberty-MW-Skin/-/archive/master/Liberty-MW-Skin-master.zip" "${PlaScrTempDirectory}/mediawiki/skins/${skin}"}
   "Medik"
-    {Invoke-WebRequest "https://bitbucket.org/wikiskripta/medik/get/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-skin.zip"}
+    {Expand-ArchiveSmart "https://bitbucket.org/wikiskripta/medik/get/master.zip" "${PlaScrTempDirectory}/mediawiki/skins/${skin}"}
   "PlavorBuma"
-    {Invoke-WebRequest "https://github.com/PlavorMind/PlavorBuma/archive/master.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-skin.zip"}
-  default
-    {Invoke-WebRequest "https://github.com/wikimedia/mediawiki-skins-${skin}/archive/${skins_branch}.zip" -DisableKeepAlive -OutFile "${tempdir}/mediawiki-skin.zip"}
+    {Expand-ArchiveSmart "https://github.com/PlavorMind/PlavorBuma/archive/master.zip" "${PlaScrTempDirectory}/mediawiki/skins/${skin}"}
+  Default
+    {Expand-ArchiveSmart "https://github.com/wikimedia/mediawiki-skins-${skin}/archive/${skins_branch}.zip" "${PlaScrTempDirectory}/mediawiki/skins/${skin}"}
   }
-if (Test-Path "${tempdir}/mediawiki-skin.zip")
-  {Write-Verbose "Extracting"
-  Expand-Archive "${tempdir}/mediawiki-skin.zip" "${tempdir}/mediawiki-extracts/" -Force
-  Write-Verbose "Deleting a file that is no longer needed"
-  Remove-Item "${tempdir}/mediawiki-skin.zip" -Force
-  Write-Verbose "Moving ${skin} skin directory"
-  Move-Item "${tempdir}/mediawiki-extracts/*" "${tempdir}/mediawiki/skins/${skin}" -Force}
-else
+if (!(Test-Path "${PlaScrTempDirectory}/mediawiki/skins/${skin}"))
   {Write-Error "Cannot download ${skin} skin." -Category ConnectionError}
 }
 
-foreach ($skin in $composer_skins)
-{if (Test-Path "${tempdir}/mediawiki/skins/${skin}")
-  {Write-Verbose "Updating dependencies for ${skin} skin with Composer"
-  .$php_path $composer_path update --no-cache --no-dev --working-dir="${tempdir}/mediawiki/skins/${skin}"}
-}
-
-Write-Verbose "Deleting a directory that is no longer needed"
-Remove-Item "${tempdir}/mediawiki-extracts" -Force -Recurse
-
-$output=Get-FilePathFromUri $composer_local_json
+$output=Get-FilePathFromURL $composer_local_json
 if ($output)
-{if ($output -like "${tempdir}*")
+{if ($output -like "${PlaScrTempDirectory}*")
   {Write-Verbose "Moving composer.local.json file"
-  Move-Item $output "${tempdir}/mediawiki/composer.local.json" -Force}
+  Move-Item $output "${PlaScrTempDirectory}/mediawiki/composer.local.json" -Force}
 else
   {Write-Verbose "Copying composer.local.json file"
-  Copy-Item $output "${tempdir}/mediawiki/composer.local.json" -Force}
-Write-Verbose "Updating dependencies with Composer"
-.$php_path $composer_path update --no-cache --no-dev --working-dir="${tempdir}/mediawiki"}
+  Copy-Item $output "${PlaScrTempDirectory}/mediawiki/composer.local.json" -Force}
+}
 else
 {Write-Error "Cannot download or find composer.local.json file." -Category ObjectNotFound}
 
-Write-Verbose "Deleting files that are unnecessary for running"
+Write-Verbose "Updating dependencies with Composer"
+.$php_path $composer_path update --no-cache --no-dev --working-dir="${PlaScrTempDirectory}/mediawiki"
+foreach ($extension in $composer_extensions)
+{if (Test-Path "${PlaScrTempDirectory}/mediawiki/extensions/${extension}")
+  {Write-Verbose "Updating dependencies for ${extension} extension with Composer"
+  .$php_path $composer_path update --no-cache --no-dev --working-dir="${PlaScrTempDirectory}/mediawiki/extensions/${extension}"}
+}
+foreach ($skin in $composer_skins)
+{if (Test-Path "${PlaScrTempDirectory}/mediawiki/skins/${skin}")
+  {Write-Verbose "Updating dependencies for ${skin} skin with Composer"
+  .$php_path $composer_path update --no-cache --no-dev --working-dir="${PlaScrTempDirectory}/mediawiki/skins/${skin}"}
+}
+
+Write-Verbose "Deleting files and a directory that are unnecessary for running"
 Remove-Item "${tempdir}/mediawiki/CODE_OF_CONDUCT.md" -Force
 Remove-Item "${tempdir}/mediawiki/composer.local.json-sample" -Force
 Remove-Item "${tempdir}/mediawiki/FAQ" -Force
@@ -241,5 +206,5 @@ Remove-Item "${tempdir}/mediawiki/resources/assets/licenses/README" -Force
 if (Test-Path $dir)
 {Write-Warning "Renaming existing MediaWiki directory"
 Move-Item $dir "${dir}-old" -Force}
-Write-Verbose "Moving MediaWiki directory from temporary directory to destination directory"
-Move-Item "${tempdir}/mediawiki" $dir -Force
+Write-Verbose "Moving MediaWiki directory to destination directory"
+Move-Item "${PlaScrTempDirectory}/mediawiki" $dir -Force
