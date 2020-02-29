@@ -188,20 +188,20 @@ foreach ($skin in $composer_skins)
 }
 
 Write-Verbose "Deleting files and a directory that are unnecessary for running"
-Remove-Item "${tempdir}/mediawiki/CODE_OF_CONDUCT.md" -Force
-Remove-Item "${tempdir}/mediawiki/composer.local.json-sample" -Force
-Remove-Item "${tempdir}/mediawiki/FAQ" -Force
-Remove-Item "${tempdir}/mediawiki/HISTORY" -Force
-Remove-Item "${tempdir}/mediawiki/INSTALL" -Force
-Remove-Item "${tempdir}/mediawiki/README" -Force
-Remove-Item "${tempdir}/mediawiki/RELEASE-NOTES-*" -Force
-Remove-Item "${tempdir}/mediawiki/SECURITY" -Force
-Remove-Item "${tempdir}/mediawiki/UPGRADE" -Force
-Remove-Item "${tempdir}/mediawiki/docs" -Force -Recurse
-Remove-Item "${tempdir}/mediawiki/maintenance/README" -Force
-Remove-Item "${tempdir}/mediawiki/resources/assets/file-type-icons/COPYING" -Force
-Remove-Item "${tempdir}/mediawiki/resources/assets/licenses/public-domain.png" -Force
-Remove-Item "${tempdir}/mediawiki/resources/assets/licenses/README" -Force
+Remove-Item "${PlaScrTempDirectory}/mediawiki/CODE_OF_CONDUCT.md" -Force
+Remove-Item "${PlaScrTempDirectory}/mediawiki/composer.local.json-sample" -Force
+Remove-Item "${PlaScrTempDirectory}/mediawiki/FAQ" -Force
+Remove-Item "${PlaScrTempDirectory}/mediawiki/HISTORY" -Force
+Remove-Item "${PlaScrTempDirectory}/mediawiki/INSTALL" -Force
+Remove-Item "${PlaScrTempDirectory}/mediawiki/README" -Force
+Remove-Item "${PlaScrTempDirectory}/mediawiki/RELEASE-NOTES-*" -Force
+Remove-Item "${PlaScrTempDirectory}/mediawiki/SECURITY" -Force
+Remove-Item "${PlaScrTempDirectory}/mediawiki/UPGRADE" -Force
+Remove-Item "${PlaScrTempDirectory}/mediawiki/docs" -Force -Recurse
+Remove-Item "${PlaScrTempDirectory}/mediawiki/maintenance/README" -Force
+Remove-Item "${PlaScrTempDirectory}/mediawiki/resources/assets/file-type-icons/COPYING" -Force
+Remove-Item "${PlaScrTempDirectory}/mediawiki/resources/assets/licenses/public-domain.png" -Force
+Remove-Item "${PlaScrTempDirectory}/mediawiki/resources/assets/licenses/README" -Force
 
 if (Test-Path $dir)
 {Write-Warning "Renaming existing MediaWiki directory"
