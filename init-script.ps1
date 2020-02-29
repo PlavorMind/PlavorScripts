@@ -25,21 +25,22 @@ else
   {Write-Error "Cannot download or find ${Path} archive."}
 }
 
+##TODO: TEST THIS!!!
 function Get-ConfigFromArchive
 {Param
 ([string]$Archive="https://github.com/PlavorMind/Configurations/archive/master.zip",
 [Parameter(Mandatory=$true,Position=1)][string]$DestinationPath,
 [Parameter(Mandatory=$true,Position=0)][string]$Path)
 
-Write-Verbose "Creating a temporary directory for extracting"
-New-Item "${PlaScrTempDirectory}/get-configfromarchive-config" -Force -ItemType Directory
 Write-Verbose "Extracting configurations archive"
-Expand-ArchiveSmart $Archive "${PlaScrTempDirectory}/get-configfromarchive-config/"
+Expand-ArchiveSmart $Archive "${PlaScrTempDirectory}/get-configfromarchive-config"
+
 if (Test-Path "${PlaScrTempDirectory}/get-configfromarchive-config/${Path}")
   {Write-Verbose "Moving configurations"
   Move-Item "${PlaScrTempDirectory}/get-configfromarchive-config/${Path}" $DestinationPath -Force}
 else
   {Write-Error "Cannot download or find configurations."}
+
 Write-Verbose "Deleting a directory that is no longer needed"
 Remove-Item "${PlaScrTempDirectory}/get-configfromarchive-config" -Force -Recurse}
 
