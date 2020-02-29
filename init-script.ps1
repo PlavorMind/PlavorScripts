@@ -45,6 +45,7 @@ function Get-FilePathFromUri
 
 return Get-FilePathFromURL $Uri}
 
+#Downloads a file to temporary directory and returns path of downloaded file if URL is specified, otherwise returns specified item back if it exists.
 function Get-FilePathFromURL
 {Param([Parameter(Mandatory=$true,Position=0)][string]$URL)
 
@@ -53,7 +54,6 @@ if ($URL -match "^https?:\/\/")
     {$filename=$Matches[0]}
   else
     {$filename="get-filepathfromurl"}
-  #TODO: Prepend "URL detected" but with the better grammar
   Write-Verbose "Downloading a file from ${URL}"
   Invoke-WebRequest $URL -DisableKeepAlive -OutFile "${PlaScrTempDirectory}/${filename}"
   if (Test-Path "${PlaScrTempDirectory}/${filename}")
