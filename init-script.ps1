@@ -54,7 +54,6 @@ if ($URL -match "^https?:\/\/")
     {$filename=$Matches[0]}
   else
     {$filename="get-filepathfromurl"}
-  Write-Verbose "Downloading a file from ${URL}"
   Invoke-WebRequest $URL -DisableKeepAlive -OutFile "${PlaScrTempDirectory}/${filename}"
   if (Test-Path "${PlaScrTempDirectory}/${filename}")
     {return "${PlaScrTempDirectory}/${filename}"}
