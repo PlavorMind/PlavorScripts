@@ -3,22 +3,26 @@
 function Expand-ArchiveSmart
 {Param
 ([Parameter(Mandatory=$true,Position=1)][string]$DestinationPath,
-[Parameter(Mandatory=$true,Position=0)][string]$Path)
+[Parameter(Mandatory=$true,Position=0)][string]$Path) #File path or URL to archive
 
 $output=Get-FilePathFromURL $Path
 if ($output)
-  {Write-Verbose "Extracting archive"
+  {Write-Verbose "Extracting ${Path} archive"
   Expand-Archive $output "${PlaScrTempDirectory}/expand-archivesmart-extracts/" -Force
+
+  Write-Verbose "Moving extracted files to destination path"
   if ((Get-ChildItem "${PlaScrTempDirectory}/expand-archivesmart-extracts" -Force -Name | Measure-Object)."Count" -eq 1)
-    {Move-Item "${PlaScrTempDirectory}/expand-archivesmart-extracts/*/*" $DestinationPath -Force}
+    {Move-Item "${PlaScrTempDirectory}/expand-archivesmart-extracts/*" $DestinationPath -Force
+    Remove-Item "${PlaScrTempDirectory}/expand-archivesmart-extracts" -Force -Recurse}
   else
-    {Move-Item "${PlaScrTempDirectory}/expand-archivesmart-extracts/*" $DestinationPath -Force}
-  Write-Verbose "Deleting a file and a directory that are no longer needed"
+    {Move-Item "${PlaScrTempDirectory}/expand-archivesmart-extracts" $DestinationPath -Force}
+
+  Write-Verbose "Deleting a file that is no longer needed"
   if ($output -like "${PlaScrTempDirectory}*")
     {Remove-Item $output -Force}
-  Remove-Item "${PlaScrTempDirectory}/expand-archivesmart-extracts" -Force -Recurse}
+  }
 else
-  {Write-Error "Cannot download or find archive."}
+  {Write-Error "Cannot download or find ${Path} archive."}
 }
 
 function Get-ConfigFromArchive
@@ -54,6 +58,7 @@ if ($URL -match "^https?:\/\/")
     {$filename=$Matches[0]}
   else
     {$filename="get-filepathfromurl"}
+
   Invoke-WebRequest $URL -DisableKeepAlive -OutFile "${PlaScrTempDirectory}/${filename}"
   if (Test-Path "${PlaScrTempDirectory}/${filename}")
     {return "${PlaScrTempDirectory}/${filename}"}
