@@ -52,20 +52,20 @@ Get-ConfigFromArchive "mediawiki" "${PlaScrTempDirectory}/mediawiki-config"
 if (!(Test-Path "${PlaScrTempDirectory}/mediawiki-config"))
 {exit}
 
-."${PSScriptRoot}/download.ps1" "${tempdir}/mw-install" -composer_local_json "${tempdir}/mediawiki-config/composer.local.json" -composer_path $composer_path -core_branch $core_branch -extensions_branch $extra_branch -php_path $php_path -skins_branch $extra_branch
-Move-Item "${tempdir}/mw-install" "${tempdir}/mediawiki" -Force
+."${PSScriptRoot}/download.ps1" "${PlaScrTempDirectory}/mw-install" -composer_local_json "${PlaScrTempDirectory}/mediawiki-config/composer.local.json" -composer_path $composer_path -core_branch $core_branch -extensions_branch $extra_branch -php_path $php_path -skins_branch $extra_branch
+Move-Item "${PlaScrTempDirectory}/mw-install" "${PlaScrTempDirectory}/mediawiki" -Force
 
 Write-Verbose "Applying configurations"
-Move-Item "${tempdir}/mediawiki-config/*" "${tempdir}/mediawiki/" -Force
-Remove-Item "${tempdir}/mediawiki-config" -Force -Recurse
+Move-Item "${PlaScrTempDirectory}/mediawiki-config/*" "${PlaScrTempDirectory}/mediawiki/" -Force
+Remove-Item "${PlaScrTempDirectory}/mediawiki-config" -Force -Recurse
 Write-Verbose "Deleting cache directory"
-Remove-Item "${tempdir}/mediawiki/cache" -Force -Recurse
+Remove-Item "${PlaScrTempDirectory}/mediawiki/cache" -Force -Recurse
 Write-Verbose "Deleting images directory"
-Remove-Item "${tempdir}/mediawiki/images" -Force -Recurse
+Remove-Item "${PlaScrTempDirectory}/mediawiki/images" -Force -Recurse
 
 if (Test-Path "${PSScriptRoot}/additional-files/data")
 {Write-Verbose "Copying additional files for data directory"
-Copy-Item "${PSScriptRoot}/additional-files/data/*" "${tempdir}/mediawiki/data/" -Force -Recurse}
+Copy-Item "${PSScriptRoot}/additional-files/data/*" "${PlaScrTempDirectory}/mediawiki/data/" -Force -Recurse}
 
 if (Test-Path $mediawiki_dir)
 {Write-Warning "Renaming existing MediaWiki directory"
@@ -74,7 +74,7 @@ if (Test-Path $private_data_dir)
 {Write-Warning "Renaming existing private data directory"
 Move-Item $private_data_dir "${private_data_dir}-old" -Force}
 Write-Verbose "Moving MediaWiki directory to destination directory"
-Move-Item "${tempdir}/mediawiki" $mediawiki_dir -Force
+Move-Item "${PlaScrTempDirectory}/mediawiki" $mediawiki_dir -Force
 #Copy additional files for private data here because this is just copying entire directory to seperated location from MediaWiki directory.
 if (Test-Path "${PSScriptRoot}/additional-files/private-data")
 {Write-Verbose "Copying additional files for private data directory"
