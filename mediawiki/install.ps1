@@ -10,38 +10,19 @@ Param
 [Parameter(Mandatory=$true,Position=1)][string]$wiki) #Wiki ID
 
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
-{."${PSScriptRoot}/../init-script.ps1"}
+{if (!(."${PSScriptRoot}/../init-script.ps1"))
+  {exit}
+}
 else
-{Write-Error "Cannot find initialize script." -Category ObjectNotFound
+{Write-Error "Cannot find init-script.ps1 file." -Category ObjectNotFound
 exit}
 
 if (!$mediawiki_dir)
-{if ($IsLinux)
-  {$mediawiki_dir="/plavormind/web/public/wiki/mediawiki"}
-elseif ($IsWindows)
-  {$mediawiki_dir="C:/plavormind/web/public/wiki/mediawiki"}
-else
-  {Write-Error "Cannot detect default MediaWiki directory." -Category NotSpecified
-  exit}
-}
-
+{$mediawiki_dir="${PlaScrDefaultBaseDirectory}/web/public/wiki/mediawiki"}
 if (!$php_path)
-{if ($IsWindows)
-  {$php_path="C:/plavormind/php-ts/php.exe"}
-else
-  {Write-Error "Cannot detect default PHP path." -Category NotSpecified
-  exit}
-}
-
+{$php_path=$PlaScrDefaultPHPPath}
 if (!$private_data_dir)
-{if ($IsLinux)
-  {$private_data_dir="/plavormind/web/data/mediawiki"}
-elseif ($IsWindows)
-  {$private_data_dir="C:/plavormind/web/data/mediawiki"}
-else
-  {Write-Error "Cannot detect default private data directory." -Category NotSpecified
-  exit}
-}
+{$private_data_dir="${PlaScrDefaultBaseDirectory}/web/data/mediawiki"}
 
 if (!(Test-Path $php_path))
 {Write-Error "Cannot find PHP." -Category NotInstalled
