@@ -5,14 +5,16 @@ Param
 [Parameter(Position=0)][string]$dir) #Logs directory to filter
 
 if (Test-Path "${PSScriptRoot}/init-script.ps1")
-{."${PSScriptRoot}/init-script.ps1"}
+{if (!(."${PSScriptRoot}/init-script.ps1"))
+  {exit}
+}
 else
-{Write-Error "Cannot find initialize script." -Category ObjectNotFound
+{Write-Error "Cannot find init-script.ps1 file." -Category ObjectNotFound
 exit}
 
 if (!$dir)
 {if ($IsWindows)
-  {$dir="C:/plavormind/apache-httpd/logs"}
+  {$dir="${PlaScrDefaultBaseDirectory}/apache-httpd/logs"}
 else
   {Write-Error "Cannot detect default directory." -Category NotSpecified
   exit}
