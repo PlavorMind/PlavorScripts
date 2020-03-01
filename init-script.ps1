@@ -1,47 +1,40 @@
 #Initializes functions, variables, etc. for PlavorScripts.
 
+#Extract an archive and move an extract item to destination path if only 1 item is extracted, otherwise move extracted items into destination directory.
 function Expand-ArchiveSmart
 {Param
-([Parameter(Mandatory=$true,Position=1)][string]$DestinationPath,
-[Parameter(Mandatory=$true,Position=0)][string]$Path) #File path or URL to archive
+([Parameter(Mandatory=$true,Position=1)][string]$DestinationPath, #Path to save extracted item if archive only contains 1 item, otherwise directory to save extracted items
+[Parameter(Mandatory=$true,Position=0)][string]$Path) #File path or URL of archive
 
 $output=Get-FilePathFromURL $Path
 if ($output)
   {Write-Verbose "Extracting ${Path} archive"
   Expand-Archive $output "${PlaScrTempDirectory}/expand-archivesmart-extracts/" -Force
 
-  Write-Verbose "Moving extracted files to destination path"
   if ((Get-ChildItem "${PlaScrTempDirectory}/expand-archivesmart-extracts" -Force -Name | Measure-Object)."Count" -eq 1)
-    {Move-Item "${PlaScrTempDirectory}/expand-archivesmart-extracts/*" $DestinationPath -Force
+    {Write-Verbose "Moving an extracted item to destination path"
+    Move-Item "${PlaScrTempDirectory}/expand-archivesmart-extracts/*" $DestinationPath -Force
+    Write-Verbose "Deleting a temporary directory"
     Remove-Item "${PlaScrTempDirectory}/expand-archivesmart-extracts" -Force -Recurse}
   else
-    {Move-Item "${PlaScrTempDirectory}/expand-archivesmart-extracts" $DestinationPath -Force}
+    {Write-Verbose "Moving extracted items to destination directory"
+    Move-Item "${PlaScrTempDirectory}/expand-archivesmart-extracts" $DestinationPath -Force}
 
-  Write-Verbose "Deleting a file that is no longer needed"
+  Write-Verbose "Deleting a temporary file"
   if ($output -like "${PlaScrTempDirectory}*")
     {Remove-Item $output -Force}
   }
 else
-  {Write-Error "Cannot download or find ${Path} archive."}
+  {Write-Error "Cannot download or find ${Path} archive." -Category ObjectNotFound}
 }
 
+#For backward compatibility
 function Get-ConfigFromArchive
 {Param
-([string]$Archive="https://github.com/PlavorMind/Configurations/archive/master.zip",
-[Parameter(Mandatory=$true,Position=1)][string]$DestinationPath,
-[Parameter(Mandatory=$true,Position=0)][string]$Path)
+([Parameter(Mandatory=$true,Position=0)][string]$ConfigPath,
+[Parameter(Mandatory=$true,Position=1)][string]$DestinationPath)
 
-Write-Verbose "Extracting configurations archive"
-Expand-ArchiveSmart $Archive "${PlaScrTempDirectory}/get-configfromarchive-config"
-
-if (Test-Path "${PlaScrTempDirectory}/get-configfromarchive-config/${Path}")
-  {Write-Verbose "Moving configurations"
-  Move-Item "${PlaScrTempDirectory}/get-configfromarchive-config/${Path}" $DestinationPath -Force}
-else
-  {Write-Error "Cannot download or find configurations."}
-
-Write-Verbose "Deleting a directory that is no longer needed"
-Remove-Item "${PlaScrTempDirectory}/get-configfromarchive-config" -Force -Recurse}
+Get-ItemFromArchive $ConfigPath $DestinationPath}
 
 #For backward compatibility
 function Get-FilePathFromUri
@@ -67,27 +60,47 @@ elseif (Test-Path $URL)
   {return $URL}
 return $false}
 
+#Get an item from an archive.
+function Get-ItemFromArchive
+{Param
+([string]$Archive="https://github.com/PlavorMind/Configurations/archive/master.zip", #File path or URL of archive
+[Parameter(Mandatory=$true,Position=1)][string]$DestinationPath, #Path to save item
+[Parameter(Mandatory=$true,Position=0)][string]$PathInArchive) #Path of item in archive
+
+Expand-ArchiveSmart $Archive "${PlaScrTempDirectory}/get-itemfromarchive-extracts"
+if (Test-Path "${PlaScrTempDirectory}/get-itemfromarchive-extracts")
+  {if (Test-Path "${PlaScrTempDirectory}/get-itemfromarchive-extracts/${PathInArchive}")
+    {Write-Verbose "Moving an item"
+    Move-Item "${PlaScrTempDirectory}/get-itemfromarchive-extracts/${PathInArchive}" $DestinationPath -Force}
+  else
+    {Write-Error "Cannot find the item." -Category ObjectNotFound}
+  Write-Verbose "Deleting a temporary directory"
+  Remove-Item Expand-ArchiveSmart $Archive "${PlaScrTempDirectory}/get-itemfromarchive-extracts" -Force -Recurse}
+}
+
 #Creates a shortcut.
 #This function only supports Windows.
 function New-Shortcut
 {Param
-([Parameter(Position=2)][string]$Arguments, #Arguments of a shortcut
-[Parameter(Mandatory=$true,Position=0)][string]$Path, #Path of a shortcut
-[Parameter(Mandatory=$true,Position=1)][string]$TargetPath) #Target of a shortcut
+([Parameter(Position=2)][string]$Arguments, #Arguments to use when running app with shortcut
+[Parameter(Mandatory=$true,Position=0)][string]$Path, #Path to create shortcut
+[Parameter(Mandatory=$true,Position=1)][string]$TargetPath) #Path of app to run with shortcut
 
 if (Test-Path $TargetPath)
   {if ($IsWindows)
     {$shortcut=(New-Object "WScript.Shell").CreateShortcut($Path)
-    if ($Arguments)
-      {$shortcut.Arguments=$Arguments}
     $shortcut.TargetPath=$TargetPath
-    Write-Verbose "Creating a shortcut to ${TargetPath} at ${Path}"
+    if ($Arguments)
+      {$shortcut.Arguments=$Arguments
+      Write-Verbose "Creating a shortcut to ${TargetPath} ${Arguments} at ${Path}"}
+    else
+      {Write-Verbose "Creating a shortcut to ${TargetPath} at ${Path}"}
     $shortcut.Save()}
   else
-    {Write-Error "Your operating system is not supported."}
+    {Write-Error "Your operating system is not supported." -Category NotImplemented}
   }
 else
-  {Write-Error "Cannot find the target."}
+  {Write-Error "Cannot find the app." -Category ObjectNotFound}
 }
 
 #Returns whether the user has administrator permission on Windows, or root permission on Linux and macOS.
@@ -104,7 +117,7 @@ else
 }
 
 if ($PSVersionTable."PSVersion"."Major" -lt 7)
-{Write-Error "PlavorScripts require PowerShell 7 or newer."
+{Write-Error "PlavorScripts require PowerShell 7 or newer." -Category NotInstalled
 return $false}
 
 if ($IsLinux)
