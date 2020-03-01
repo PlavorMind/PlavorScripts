@@ -5,22 +5,24 @@ Param
 [Parameter(Position=0)][string]$path="https://raw.githubusercontent.com/PlavorMind/Configurations/master/php.ini") #File path or URL to filter
 
 if (Test-Path "${PSScriptRoot}/init-script.ps1")
-{."${PSScriptRoot}/init-script.ps1"}
+{if (!(."${PSScriptRoot}/init-script.ps1"))
+  {exit}
+}
 else
-{Write-Error "Cannot find initialize script." -Category ObjectNotFound
+{Write-Error "Cannot find init-script.ps1 file." -Category ObjectNotFound
 exit}
 
 if (!$destpath)
 {if ($IsLinux)
   {$destpath="/etc/php/7.4/fpm/php.ini"}
 elseif ($IsWindows)
-  {$destpath="C:/plavormind/php-ts/php.ini"}
+  {$destpath="${PlaScrDefaultBaseDirectory}/php-ts/php.ini"}
 else
   {Write-Error "Cannot detect default destination path." -Category NotSpecified
   exit}
 }
 
-$output=Get-FilePathFromUri $path
+$output=Get-FilePathFromURL $path
 if ($output)
 {Write-Verbose "Filtering php.ini file"
 if ($IsLinux)
