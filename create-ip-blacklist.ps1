@@ -2,20 +2,22 @@
 
 Param
 ([Parameter(Position=1)][string]$destpath, #Destination path or file name of firewall rule to save created IP address blacklist
-[Parameter(Position=0)][string]$path="${PSScriptRoot}/additional-files/blacklist.txt", #File path or URL to an IP address blacklist source
-[string]$platform="apache-httpd") #Target platform
+[Parameter(Mandatory=$true,Position=0)][string]$path, #File path or URL to an IP address blacklist source
+[Parameter(Mandatory=$true)][string]$platform) #Target platform
 
 if (Test-Path "${PSScriptRoot}/init-script.ps1")
-{."${PSScriptRoot}/init-script.ps1"}
+{if (!(."${PSScriptRoot}/init-script.ps1"))
+  {exit}
+}
 else
-{Write-Error "Cannot find initialize script." -Category ObjectNotFound
+{Write-Error "Cannot find init-script.ps1 file." -Category ObjectNotFound
 exit}
 
 switch ($platform)
 {"apache-httpd"
   {if (!$destpath)
     {if ($IsWindows)
-      {$destpath="C:/plavormind/apache-httpd/conf/private/blacklist.conf"}
+      {$destpath="${PlaScrDefaultBaseDirectory}/apache-httpd/conf/private/blacklist-soft.conf"}
     else
       {Write-Error "Cannot detect default destination path." -Category NotSpecified
       exit}
@@ -37,7 +39,7 @@ switch ($platform)
 "nginx"
   {if (!$destpath)
     {if ($IsWindows)
-      {$destpath="C:/plavormind/nginx/conf/private/blacklist.conf"}
+      {$destpath="${PlaScrDefaultBaseDirectory}/nginx/conf/private/blacklist.conf"}
     else
       {Write-Error "Cannot detect default destination path." -Category NotSpecified
       exit}
@@ -45,10 +47,10 @@ switch ($platform)
   }
 }
 
-$output=Get-FilePathFromUri $path
+$output=Get-FilePathFromURL $path
 if ($output)
-{$blacklist=((Get-Content $output -Force) -replace "#.*","").Trim()  | Where-Object {$PSItem -ne ""}
-if ($output -like "${tempdir}*")
+{$blacklist=((Get-Content $output -Force) -replace "#.*","").Trim() | Where-Object {$PSItem -ne ""}
+if ($output -like "${PlaScrTempDirectory}*")
   {Write-Verbose "Deleting a file that is no longer needed"
   Remove-Item $output -Force}
 
