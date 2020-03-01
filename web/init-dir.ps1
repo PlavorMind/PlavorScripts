@@ -14,6 +14,8 @@ if (!$dir)
 {$dir="${PlaScrDefaultBaseDirectory}/web"}
 
 Get-ConfigFromArchive "web" "${PlaScrTempDirectory}/web"
+if (Test-Path "${PlaScrTempDirectory}/web")
+{exit}
 
 Write-Verbose "Creating a directory for Adminer"
 New-Item "${PlaScrTempDirectory}/web/public/main/adminer" -Force -ItemType Directory
