@@ -9,48 +9,28 @@ Param
 [string]$private_data_dir) #Private data directory
 
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
-{."${PSScriptRoot}/../init-script.ps1"}
+{if (!(."${PSScriptRoot}/../init-script.ps1"))
+  {exit}
+}
 else
-{Write-Error "Cannot find initialize script." -Category ObjectNotFound
+{Write-Error "Cannot find init-script.ps1 file." -Category ObjectNotFound
 exit}
 
 if (!$composer_path)
 {if ($IsLinux)
-  {$composer_path="/plavormind/composer.phar"}
+  {$composer_path="${PlaScrDefaultBaseDirectory}/composer.phar"}
 elseif ($IsWindows)
-  {$composer_path="C:/plavormind/php-ts/data/composer.phar"}
+  {$composer_path="${PlaScrDefaultBaseDirectory}/php-ts/data/composer.phar"}
 else
   {Write-Error "Cannot detect default Composer path." -Category NotSpecified
   exit}
 }
-
 if (!$mediawiki_dir)
-{if ($IsLinux)
-  {$mediawiki_dir="/plavormind/web/public/wiki/mediawiki"}
-elseif ($IsWindows)
-  {$mediawiki_dir="C:/plavormind/web/public/wiki/mediawiki"}
-else
-  {Write-Error "Cannot detect default MediaWiki directory." -Category NotSpecified
-  exit}
-}
-
+{$mediawiki_dir="${PlaScrDefaultBaseDirectory}/web/public/wiki/mediawiki"}
 if (!$php_path)
-{if ($IsWindows)
-  {$php_path="C:/plavormind/php-ts/php.exe"}
-else
-  {Write-Error "Cannot detect default PHP path." -Category NotSpecified
-  exit}
-}
-
+{$php_path=$PlaScrDefaultPHPPath}
 if (!$private_data_dir)
-{if ($IsLinux)
-  {$private_data_dir="/plavormind/web/data/mediawiki"}
-elseif ($IsWindows)
-  {$private_data_dir="C:/plavormind/web/data/mediawiki"}
-else
-  {Write-Error "Cannot detect default private data directory." -Category NotSpecified
-  exit}
-}
+{$private_data_dir="${PlaScrDefaultBaseDirectory}/web/data/mediawiki"}
 
 if (!(Test-Path $composer_path))
 {Write-Error "Cannot find Composer." -Category NotInstalled
@@ -60,25 +40,32 @@ if (!(Test-Path $php_path))
 exit}
 
 if (!$core_branch)
-{$core_branch=(((Invoke-WebRequest "https://noc.wikimedia.org/conf/wikiversions.json" -DisableKeepAlive)."Content" | ConvertFrom-Json)."mediawikiwiki").Replace("php-","wmf/")}
-."${PSScriptRoot}/download.ps1" "${tempdir}/mw-upgrade" -composer_local_json "${mediawiki_dir}/composer.local.json" -composer_path $composer_path -core_branch $core_branch -extensions_branch $extra_branch -php_path $php_path -skins_branch $extra_branch
-Move-Item "${tempdir}/mw-upgrade" "${tempdir}/mediawiki" -Force
+{$wikimedia_mediawiki_version=Invoke-RestMethod "https://noc.wikimedia.org/conf/wikiversions.json" -DisableKeepAlive
+if ($wikimedia_mediawiki_version)
+  {$core_branch=($wikimedia_mediawiki_version."mediawikiwiki").Replace("php-","wmf/")}
+else
+  {Write-Error "Cannot detect branch for MediaWiki core."
+  exit}
+}
+
+."${PSScriptRoot}/download.ps1" "${PlaScrTempDirectory}/mw-upgrade" -composer_local_json "${mediawiki_dir}/composer.local.json" -composer_path $composer_path -core_branch $core_branch -extensions_branch $extra_branch -php_path $php_path -skins_branch $extra_branch
+Move-Item "${PlaScrTempDirectory}/mw-upgrade" "${PlaScrTempDirectory}/mediawiki" -Force
 
 if (Test-Path "${mediawiki_dir}/LocalSettings.php")
 {Write-Verbose "Copying existing LocalSettings.php file"
-Copy-Item "${mediawiki_dir}/LocalSettings.php" "${tempdir}/mediawiki/" -Force}
+Copy-Item "${mediawiki_dir}/LocalSettings.php" "${PlaScrTempDirectory}/mediawiki/" -Force}
 if (Test-Path "${mediawiki_dir}/data")
 {Write-Verbose "Copying existing data directory"
-Copy-Item "${mediawiki_dir}/data" "${tempdir}/mediawiki/" -Force -Recurse}
+Copy-Item "${mediawiki_dir}/data" "${PlaScrTempDirectory}/mediawiki/" -Force -Recurse}
 Write-Verbose "Deleting cache directory"
-Remove-Item "${tempdir}/mediawiki/cache" -Force -Recurse
+Remove-Item "${PlaScrTempDirectory}/mediawiki/cache" -Force -Recurse
 Write-Verbose "Deleting images directory"
-Remove-Item "${tempdir}/mediawiki/images" -Force -Recurse
+Remove-Item "${PlaScrTempDirectory}/mediawiki/images" -Force -Recurse
 
 if (Test-Path $mediawiki_dir)
 {Write-Warning "Renaming existing MediaWiki directory"
 Move-Item $mediawiki_dir "${mediawiki_dir}-old" -Force}
-Write-Verbose "Moving MediaWiki directory from temporary directory to destination directory"
-Move-Item "${tempdir}/mediawiki" $mediawiki_dir -Force
+Write-Verbose "Moving MediaWiki directory to destination directory"
+Move-Item "${PlaScrTempDirectory}/mediawiki" $mediawiki_dir -Force
 
 ."${PSScriptRoot}/maintenance.ps1" $mediawiki_dir -php_path $php_path -private_data_dir $private_data_dir -update
