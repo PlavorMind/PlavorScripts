@@ -3,9 +3,11 @@
 Param([Parameter()][switch]$allusers) #Apply to all users
 
 if (Test-Path "${PSScriptRoot}/../../init-script.ps1")
-{."${PSScriptRoot}/../../init-script.ps1"}
+{if (!(."${PSScriptRoot}/../../init-script.ps1"))
+  {exit}
+}
 else
-{Write-Error "Cannot find initialize script." -Category ObjectNotFound
+{Write-Error "Cannot find init-script.ps1 file." -Category ObjectNotFound
 exit}
 
 if (!$IsWindows)
