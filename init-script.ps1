@@ -25,7 +25,6 @@ else
   {Write-Error "Cannot download or find ${Path} archive."}
 }
 
-##TODO: TEST THIS!!!
 function Get-ConfigFromArchive
 {Param
 ([string]$Archive="https://github.com/PlavorMind/Configurations/archive/master.zip",
