@@ -5,30 +5,17 @@ Param
 [string]$private_data_dir) #Private data directory
 
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
-{."${PSScriptRoot}/../init-script.ps1"}
+{if (!(."${PSScriptRoot}/../init-script.ps1"))
+  {exit}
+}
 else
-{Write-Error "Cannot find initialize script." -Category ObjectNotFound
+{Write-Error "Cannot find init-script.ps1 file." -Category ObjectNotFound
 exit}
 
 if (!$mediawiki_dir)
-{if ($IsLinux)
-  {$mediawiki_dir="/plavormind/web/public/wiki/mediawiki"}
-elseif ($IsWindows)
-  {$mediawiki_dir="C:/plavormind/web/public/wiki/mediawiki"}
-else
-  {Write-Error "Cannot detect default MediaWiki directory." -Category NotSpecified
-  exit}
-}
-
+{$mediawiki_dir="${PlaScrDefaultBaseDirectory}/web/public/wiki/mediawiki"}
 if (!$private_data_dir)
-{if ($IsLinux)
-  {$private_data_dir="/plavormind/web/data/mediawiki"}
-elseif ($IsWindows)
-  {$private_data_dir="C:/plavormind/web/data/mediawiki"}
-else
-  {Write-Error "Cannot detect default private data directory." -Category NotSpecified
-  exit}
-}
+{$private_data_dir="${PlaScrDefaultBaseDirectory}/web/data/mediawiki"}
 
 if (Test-Path "${PSScriptRoot}/additional-files")
 {Write-Warning "Renaming existing directory for additional files"
@@ -41,11 +28,11 @@ if (Test-Path "${mediawiki_dir}/data")
 New-Item "${PSScriptRoot}/additional-files/data" -Force -ItemType Directory
 
 foreach ($wiki in Get-ChildItem "${mediawiki_dir}/data" -Directory -Force -Name)
-  {if (Test-Path "${mediawiki_dir}/data/${wiki}/logo.*")
+  {if (Test-Path "${mediawiki_dir}/data/${wiki}/logos")
     {Write-Verbose "Creating data/${wiki} directory"
     New-Item "${PSScriptRoot}/additional-files/data/${wiki}" -Force -ItemType Directory
-    Write-Verbose "Copying data/${wiki}/logo.* file"
-    Copy-Item "${mediawiki_dir}/data/${wiki}/logo.*" "${PSScriptRoot}/additional-files/data/${wiki}/" -Force -Recurse}
+    Write-Verbose "Copying data/${wiki}/logos directory"
+    Copy-Item "${mediawiki_dir}/data/${wiki}/logos" "${PSScriptRoot}/additional-files/data/${wiki}/" -Force -Recurse}
   }
 }
 
