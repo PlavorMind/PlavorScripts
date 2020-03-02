@@ -1,11 +1,11 @@
 #Initializes directories for MediaWiki.
 
 Param
-([string]$composer_path, #Path to Composer
+([string]$composer_path, #Path of Composer
 [string]$core_branch, #Branch for MediaWiki core
 [string]$extra_branch="master", #Branch for extensions and skins
 [Parameter(Position=0)][string]$mediawiki_dir, #Directory to initialize for MediaWiki
-[string]$php_path, #Path to PHP
+[string]$php_path, #Path of PHP
 [string]$private_data_dir) #Directory to initialize for private data
 
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
@@ -48,12 +48,18 @@ else
   exit}
 }
 
-Get-ConfigFromArchive "mediawiki" "${PlaScrTempDirectory}/mediawiki-config"
+Write-Verbose "Downloading configurations"
+Get-ItemFromArchive "mediawiki" "${PlaScrTempDirectory}/mediawiki-config"
 if (!(Test-Path "${PlaScrTempDirectory}/mediawiki-config"))
-{exit}
+{Write-Error "Cannot download configurations." -Category ConnectionError
+exit}
 
-."${PSScriptRoot}/download.ps1" "${PlaScrTempDirectory}/mw-install" -composer_local_json "${PlaScrTempDirectory}/mediawiki-config/composer.local.json" -composer_path $composer_path -core_branch $core_branch -extensions_branch $extra_branch -php_path $php_path -skins_branch $extra_branch
-Move-Item "${PlaScrTempDirectory}/mw-install" "${PlaScrTempDirectory}/mediawiki" -Force
+."${PSScriptRoot}/download.ps1" "${PlaScrTempDirectory}/mw-install" -branch $core_branch -composer_path $composer_path -php_path $php_path
+if (Test-Path "${PlaScrTempDirectory}/mw-install")
+{Move-Item "${PlaScrTempDirectory}/mw-install" "${PlaScrTempDirectory}/mediawiki" -Force
+."${PSScriptRoot}/download-extras.ps1" "${PlaScrTempDirectory}/mediawiki" -composer_local_json "${PlaScrTempDirectory}/mediawiki-config/composer.local.json" -composer_path $composer_path -extension_branch $extra_branch -php_path $php_path -skin_branch $extra_branch}
+else
+{exit}
 
 Write-Verbose "Applying configurations"
 Move-Item "${PlaScrTempDirectory}/mediawiki-config/*" "${PlaScrTempDirectory}/mediawiki/" -Force
