@@ -1,11 +1,11 @@
 #Upgrades MediaWiki.
 
 Param
-([string]$composer_path, #Path to Composer
+([string]$composer_path, #Path of Composer
 [string]$core_branch, #Branch for MediaWiki core
 [string]$extra_branch="master", #Branch for extensions and skins
 [Parameter(Position=0)][string]$mediawiki_dir, #MediaWiki directory
-[string]$php_path, #Path to PHP
+[string]$php_path, #Path of PHP
 [string]$private_data_dir) #Private data directory
 
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
@@ -48,8 +48,12 @@ else
   exit}
 }
 
-."${PSScriptRoot}/download.ps1" "${PlaScrTempDirectory}/mw-upgrade" -composer_local_json "${mediawiki_dir}/composer.local.json" -composer_path $composer_path -core_branch $core_branch -extensions_branch $extra_branch -php_path $php_path -skins_branch $extra_branch
-Move-Item "${PlaScrTempDirectory}/mw-upgrade" "${PlaScrTempDirectory}/mediawiki" -Force
+."${PSScriptRoot}/download.ps1" "${PlaScrTempDirectory}/mw-upgrade" -branch $core_branch -composer_path $composer_path -php_path $php_path
+if (Test-Path "${PlaScrTempDirectory}/mw-install")
+{Move-Item "${PlaScrTempDirectory}/mw-upgrade" "${PlaScrTempDirectory}/mediawiki" -Force
+."${PSScriptRoot}/download-extras.ps1" "${PlaScrTempDirectory}/mediawiki" -composer_local_json "${mediawiki_dir}/composer.local.json" -composer_path $composer_path -extension_branch $extra_branch -php_path $php_path -skin_branch $extra_branch}
+else
+{exit}
 
 if (Test-Path "${mediawiki_dir}/LocalSettings.php")
 {Write-Verbose "Copying existing LocalSettings.php file"
