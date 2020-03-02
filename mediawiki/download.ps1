@@ -1,8 +1,8 @@
 #Downloads MediaWiki.
 
 Param
-([string]$composer_path, #Path of Composer
-[string]$core_branch="master", #Branch for MediaWiki core
+([string]$branch="master", #Branch for MediaWiki
+[string]$composer_path, #Path of Composer
 [Parameter(Position=0)][string]$dir, #Directory to download MediaWiki
 [string]$php_path) #Path of PHP
 
@@ -36,7 +36,7 @@ if (!(Test-Path $php_path))
 exit}
 
 Write-Verbose "Downloading MediaWiki"
-Expand-ArchiveSmart "https://github.com/wikimedia/mediawiki/archive/${core_branch}.zip" "${PlaScrTempDirectory}/mediawiki"
+Expand-ArchiveSmart "https://github.com/wikimedia/mediawiki/archive/${branch}.zip" "${PlaScrTempDirectory}/mediawiki"
 if (!(Test-Path "${PlaScrTempDirectory}/mediawiki"))
 {Write-Error "Cannot download MediaWiki." -Category ConnectionError
 exit}
