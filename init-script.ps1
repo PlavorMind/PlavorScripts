@@ -75,7 +75,7 @@ if (Test-Path "${PlaScrTempDirectory}/get-itemfromarchive-extracts")
   else
     {Write-Error "Cannot find the item." -Category ObjectNotFound}
   Write-Verbose "Deleting a temporary directory"
-  Remove-Item Expand-ArchiveSmart $Archive "${PlaScrTempDirectory}/get-itemfromarchive-extracts" -Force -Recurse}
+  Remove-Item "${PlaScrTempDirectory}/get-itemfromarchive-extracts" -Force -Recurse}
 }
 
 #Creates a shortcut.
