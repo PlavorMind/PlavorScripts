@@ -20,9 +20,9 @@ if ($output)
     {Write-Verbose "Moving extracted items to destination directory"
     Move-Item "${PlaScrTempDirectory}/expand-archivesmart-extracts" $DestinationPath -Force}
 
-  Write-Verbose "Deleting a temporary file"
   if ($output -like "${PlaScrTempDirectory}*")
-    {Remove-Item $output -Force}
+    {Write-Verbose "Deleting a temporary file"
+    Remove-Item $output -Force}
   }
 else
   {Write-Error "Cannot download or find ${Path} archive." -Category ObjectNotFound}
