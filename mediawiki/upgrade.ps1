@@ -53,7 +53,7 @@ else
 if (Test-Path "${PlaScrTempDirectory}/mw-upgrade")
 {Move-Item "${PlaScrTempDirectory}/mw-upgrade" "${PlaScrTempDirectory}/mediawiki" -Force
 $mediawiki_dir_temp=$mediawiki_dir
-."${PSScriptRoot}/download-extras.ps1" "${PlaScrTempDirectory}/mediawiki" -composer_local_json "${mediawiki_dir}/composer.local.json" -composer_path $composer_path -extension_branch $extra_branch -extras_json $extras_json -php_path $php_path -skin_branch $extra_branch
+."${PSScriptRoot}/download-extras.ps1" "${PlaScrTempDirectory}/mediawiki" $extras_json -composer_local_json "${mediawiki_dir}/composer.local.json" -composer_path $composer_path -extension_branch $extra_branch -php_path $php_path -skin_branch $extra_branch
 $mediawiki_dir=$mediawiki_dir_temp}
 else
 {exit}
