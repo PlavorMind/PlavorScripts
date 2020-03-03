@@ -4,6 +4,7 @@ Param
 ([string]$composer_path, #Path of Composer
 [string]$core_branch, #Branch for MediaWiki core
 [string]$extra_branch="master", #Branch for extensions and skins
+[string]$extras_json, #File path or URL of JSON file for downloading extensions and skins
 [Parameter(Position=0)][string]$mediawiki_dir, #Directory to initialize for MediaWiki
 [string]$php_path, #Path of PHP
 [string]$private_data_dir) #Directory to initialize for private data
@@ -57,7 +58,7 @@ exit}
 ."${PSScriptRoot}/download.ps1" "${PlaScrTempDirectory}/mw-install" -branch $core_branch -composer_path $composer_path -php_path $php_path
 if (Test-Path "${PlaScrTempDirectory}/mw-install")
 {Move-Item "${PlaScrTempDirectory}/mw-install" "${PlaScrTempDirectory}/mediawiki" -Force
-."${PSScriptRoot}/download-extras.ps1" "${PlaScrTempDirectory}/mediawiki" -composer_local_json "${PlaScrTempDirectory}/mediawiki-config/composer.local.json" -composer_path $composer_path -extension_branch $extra_branch -php_path $php_path -skin_branch $extra_branch}
+."${PSScriptRoot}/download-extras.ps1" "${PlaScrTempDirectory}/mediawiki" -composer_local_json "${PlaScrTempDirectory}/mediawiki-config/composer.local.json" -composer_path $composer_path -extension_branch $extra_branch -extras_json $extras_json -php_path $php_path -skin_branch $extra_branch}
 else
 {exit}
 
