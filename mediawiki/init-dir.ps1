@@ -58,7 +58,9 @@ exit}
 ."${PSScriptRoot}/download.ps1" "${PlaScrTempDirectory}/mw-install" -branch $core_branch -composer_path $composer_path -php_path $php_path
 if (Test-Path "${PlaScrTempDirectory}/mw-install")
 {Move-Item "${PlaScrTempDirectory}/mw-install" "${PlaScrTempDirectory}/mediawiki" -Force
-."${PSScriptRoot}/download-extras.ps1" "${PlaScrTempDirectory}/mediawiki" -composer_local_json "${PlaScrTempDirectory}/mediawiki-config/composer.local.json" -composer_path $composer_path -extension_branch $extra_branch -extras_json $extras_json -php_path $php_path -skin_branch $extra_branch}
+$mediawiki_dir_temp=$mediawiki_dir
+."${PSScriptRoot}/download-extras.ps1" "${PlaScrTempDirectory}/mediawiki" -composer_local_json "${PlaScrTempDirectory}/mediawiki-config/composer.local.json" -composer_path $composer_path -extension_branch $extra_branch -extras_json $extras_json -php_path $php_path -skin_branch $extra_branch
+$mediawiki_dir=$mediawiki_dir_temp}
 else
 {exit}
 
