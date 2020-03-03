@@ -1,9 +1,9 @@
-#Installs MediaWiki.
+#Creates a wiki.
 
 #Parameter names should not contain "password" to avoid warnings
 Param
 ([Parameter(Position=0)][string]$mediawiki_dir, #MediaWiki directory
-[string]$php_path, #Path to PHP
+[string]$php_path, #Path of PHP
 [string]$private_data_dir, #Private data directory
 [Parameter(Mandatory=$true)][string]$pw_json, #JSON file containing passwords
 [Parameter(Mandatory=$true)][string]$user, #Username of the user that will be created during installation
@@ -31,9 +31,9 @@ if (!(Test-Path $pw_json))
 {Write-Error "Cannot find JSON file containing passwords." -Category ObjectNotFound
 exit}
 
-#JSON parsing part
-$database_password=""
-$user_password=""
+$passwords=Get-Content $pw_json -Force | ConvertFrom-Json
+$database_password=$passwords."database-password"
+$user_password=$passwords."user-password"
 
 if (Test-Path $mediawiki_dir)
 {Write-Verbose "Creating data directory"
