@@ -13,7 +13,7 @@ exit}
 if (!$dir)
 {$dir="${PlaScrDefaultBaseDirectory}/web"}
 
-Get-ConfigFromArchive "web" "${PlaScrTempDirectory}/web"
+Get-ItemFromArchive "web" "${PlaScrTempDirectory}/web"
 if (!(Test-Path "${PlaScrTempDirectory}/web"))
 {exit}
 
