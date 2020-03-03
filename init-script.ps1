@@ -28,20 +28,6 @@ else
   {Write-Error "Cannot download or find ${Path} archive." -Category ObjectNotFound}
 }
 
-#For backward compatibility
-function Get-ConfigFromArchive
-{Param
-([Parameter(Mandatory=$true,Position=0)][string]$ConfigPath,
-[Parameter(Mandatory=$true,Position=1)][string]$DestinationPath)
-
-Get-ItemFromArchive $ConfigPath $DestinationPath}
-
-#For backward compatibility
-function Get-FilePathFromUri
-{Param([Parameter(Mandatory=$true,Position=0)][string]$Uri)
-
-return Get-FilePathFromURL $Uri}
-
 #Downloads a file to temporary directory and returns path of downloaded file if URL is specified, otherwise returns specified item back if it exists.
 function Get-FilePathFromURL
 {Param([Parameter(Mandatory=$true,Position=0)][string]$URL) #File path or URL to check
