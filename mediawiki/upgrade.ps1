@@ -4,7 +4,7 @@ Param
 ([string]$composer_path, #Path of Composer
 [string]$core_branch, #Branch for MediaWiki core
 [string]$extra_branch="master", #Branch for extensions and skins
-[string]$extras_json, #File path or URL of JSON file for downloading extensions and skins
+[Parameter(Mandatory=$true)][string]$extras_json, #File path or URL of JSON file for downloading extensions and skins
 [Parameter(Position=0)][string]$mediawiki_dir, #MediaWiki directory
 [string]$php_path, #Path of PHP
 [string]$private_data_dir) #Private data directory
