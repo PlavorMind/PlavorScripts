@@ -1,9 +1,9 @@
-#Creates an IP address blacklist for specific platform.
+#Creates an IP address blacklist in specific type.
 
 Param
-([Parameter(Position=1)][string]$destpath, #Destination path or file name of firewall rule to save created IP address blacklist
-[Parameter(Mandatory=$true,Position=0)][string]$path, #File path or URL to an IP address blacklist source
-[Parameter(Mandatory=$true)][string]$platform) #Target platform
+([Parameter(Mandatory=$true,Position=0)][array]$sources, #Array of file paths or URLs of IP address blacklist sources
+[Parameter(Position=1)][string]$path, #Path to save IP address blacklist
+[string]$type) #Type for IP address blacklist
 
 if (Test-Path "${PSScriptRoot}/init-script.ps1")
 {if (!(."${PSScriptRoot}/init-script.ps1"))
@@ -13,71 +13,58 @@ else
 {Write-Error "Cannot find init-script.ps1 file." -Category ObjectNotFound
 exit}
 
-switch ($platform)
-{"apache-httpd"
-  {if (!$destpath)
-    {if ($IsWindows)
-      {$destpath="${PlaScrDefaultBaseDirectory}/apache-httpd/conf/private/blacklist-soft.conf"}
-    else
-      {Write-Error "Cannot detect default destination path." -Category NotSpecified
-      exit}
-    }
-  }
-"firewall"
-  {if ($IsWindows)
-    {if (!(Test-AdminPermission))
-      {Write-Error "This script must be run as administrator to create a firewall rule on Windows." -Category PermissionDenied
-      exit}
-
-    if (!$destpath)
-      {$destpath="ip-blacklist"}
-    }
-  else
-    {Write-Error "Your operating system is not supported."
-    exit}
-  }
-"nginx"
-  {if (!$destpath)
-    {if ($IsWindows)
-      {$destpath="${PlaScrDefaultBaseDirectory}/nginx/conf/private/blacklist.conf"}
-    else
-      {Write-Error "Cannot detect default destination path." -Category NotSpecified
-      exit}
-    }
-  }
-}
-
-$output=Get-FilePathFromURL $path
-if ($output)
-{$blacklist=((Get-Content $output -Force) -replace "#.*","").Trim() | Where-Object {$PSItem -ne ""}
-if ($output -like "${PlaScrTempDirectory}*")
-  {Write-Verbose "Deleting a file that is no longer needed"
-  Remove-Item $output -Force}
-
-switch ($platform)
+if (!$path -and $type)
+{switch ($type)
   {"apache-httpd"
-    {Write-Verbose "Creating IP address blacklist for Apache HTTP Server"
-    $result="Require not ip "
-    foreach ($blacklisted_ip in $blacklist)
-      {$result+="`"${blacklisted_ip}`" "}
-    $result > $destpath}
-  "firewall"
     {if ($IsWindows)
-      {if (Get-NetFirewallRule -ErrorAction Ignore -Name $destpath)
-        {Write-Verbose "Updating existing firewall rule with IP address blacklist source"
-        Set-NetFirewallRule -Name $destpath -RemoteAddress $blacklist}
-      else
-        {Write-Verbose "Creating a firewall rule with IP address blacklist source"
-        New-NetFirewallRule -Action Block -Description "Blocks some IP addresses" -DisplayName "IP address blacklist" -Name $destpath -RemoteAddress $blacklist}
-      }
+      {$path="${PlaScrDefaultBaseDirectory}/apache-httpd/conf/private/blacklist-soft.conf"}
+    else
+      {Write-Error "Cannot detect default path." -Category NotSpecified
+      exit}
     }
   "nginx"
-    {Write-Verbose "Creating IP address blacklist for nginx"
-    Out-Null > $destpath
-    foreach ($blacklisted_ip in $blacklist)
-      {"deny `"${blacklisted_ip}`";" >> $destpath}
+    {if ($IsWindows)
+      {$path="${PlaScrDefaultBaseDirectory}/nginx/conf/private/blacklist-soft.conf"}
+    else
+      {Write-Error "Cannot detect default path." -Category NotSpecified
+      exit}
     }
   }
 }
+
+$blacklists=@()
+foreach ($source in $sources)
+{$output=Get-FilePathFromURL $source
+if ($output)
+  {$blacklists+=$output}
 else
-{Write-Error "Cannot download or find IP address blacklist." -Category ObjectNotFound}
+  {Write-Error "Cannot download or find ${source} IP address blacklist source." -Category ObjectNotFound}
+}
+if ($blacklists.Count -lt 1)
+{exit}
+
+$blacklisted_ips=@()
+foreach ($blacklist in $blacklists)
+{$blacklisted_ips+=((Get-Content $blacklist -Force) -replace "#.*","").Trim() | Where-Object {$PSItem -ne ""}
+#Delete a temporary file here because it should be read before deleting.
+if ($blacklist -like "${PlaScrTempDirectory}*")
+  {Write-Verbose "Deleting a temporary file"
+  Remove-Item $output -Force}
+}
+
+switch ($type)
+{"apache-httpd"
+  {Write-Verbose "Creating IP address blacklist for Apache HTTP Server"
+  $result="Require not ip "
+  foreach ($blacklisted_ip in $blacklisted_ips)
+    {$result+="`"${blacklisted_ip}`" "}
+  $result > $path}
+"nginx"
+  {Write-Verbose "Creating IP address blacklist for nginx"
+  Out-Null > $path
+  foreach ($blacklisted_ip in $blacklisted_ips)
+    {"deny `"${blacklisted_ip}`";" >> $path}
+  }
+Default
+  {$blacklisted_ips}
+}
