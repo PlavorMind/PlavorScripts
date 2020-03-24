@@ -32,25 +32,20 @@ if (!$path -and $type)
   }
 }
 
-$blacklists=@()
+$blacklisted_ips=@()
 foreach ($source in $sources)
 {$output=Get-FilePathFromURL $source
 if ($output)
-  {$blacklists+=$output}
+  {$blacklisted_ips+=((Get-Content $output -Force) -replace "#.*","").Trim() | Where-Object {$PSItem -ne ""}
+  if ($output -like "${PlaScrTempDirectory}*")
+    {Write-Verbose "Deleting a temporary file"
+    Remove-Item $output -Force}
+  }
 else
   {Write-Error "Cannot download or find ${source} IP address blacklist source." -Category ObjectNotFound}
 }
-if ($blacklists.Count -lt 1)
+if ($blacklisted_ips.Count -lt 1)
 {exit}
-
-$blacklisted_ips=@()
-foreach ($blacklist in $blacklists)
-{$blacklisted_ips+=((Get-Content $blacklist -Force) -replace "#.*","").Trim() | Where-Object {$PSItem -ne ""}
-#Delete a temporary file here because it should be read before deleting.
-if ($blacklist -like "${PlaScrTempDirectory}*")
-  {Write-Verbose "Deleting a temporary file"
-  Remove-Item $output -Force}
-}
 
 switch ($type)
 {"apache-httpd"
