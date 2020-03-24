@@ -17,14 +17,14 @@ if (!$path -and $type)
 {switch ($type)
   {"apache-httpd"
     {if ($IsWindows)
-      {$path="${PlaScrDefaultBaseDirectory}/apache-httpd/conf/private/blacklist-soft.conf"}
+      {$path="${PlaScrDefaultBaseDirectory}/apache-httpd/conf/private/blacklist.conf"}
     else
       {Write-Error "Cannot detect default path." -Category NotSpecified
       exit}
     }
   "nginx"
     {if ($IsWindows)
-      {$path="${PlaScrDefaultBaseDirectory}/nginx/conf/private/blacklist-soft.conf"}
+      {$path="${PlaScrDefaultBaseDirectory}/nginx/conf/private/blacklist.conf"}
     else
       {Write-Error "Cannot detect default path." -Category NotSpecified
       exit}
