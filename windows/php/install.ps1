@@ -82,7 +82,7 @@ Write-Verbose "Moving PHP directory to destination directory"
 Move-Item "${PlaScrTempDirectory}/php" $dir -Force
 
 if (!$portable)
-{Write-Verbose "Creating scheduled task for starting PHP CGI/FastCGI automatically"
+{Write-Verbose "Creating a scheduled task for starting PHP CGI/FastCGI automatically"
 if (Test-Path "C:/Program Files/PowerShell/7-preview/pwsh.exe")
   {$action=New-ScheduledTaskAction "C:/Program Files/PowerShell/7-preview/pwsh.exe" "-ExecutionPolicy Bypass `"${path}`""}
 else
