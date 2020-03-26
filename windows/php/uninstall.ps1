@@ -5,9 +5,11 @@ Param
 [switch]$portable) #Uninstall in portable mode
 
 if (Test-Path "${PSScriptRoot}/../../init-script.ps1")
-{."${PSScriptRoot}/../../init-script.ps1"}
+{if (!(."${PSScriptRoot}/../../init-script.ps1"))
+  {exit}
+}
 else
-{Write-Error "Cannot find initialize script." -Category ObjectNotFound
+{Write-Error "Cannot find init-script.ps1 file." -Category ObjectNotFound
 exit}
 
 if (!$IsWindows)
@@ -33,7 +35,8 @@ if (Get-Process "phpdbg" -ErrorAction Ignore)
 {Stop-Process -Force -Name "phpdbg"}
 
 if (!$portable -and (Get-ScheduledTask "PHP CGI FastCGI" -ErrorAction Ignore))
-{Unregister-ScheduledTask "PHP CGI FastCGI" -Confirm:$false}
+{Write-Verbose "Deleting the scheduled task"
+Unregister-ScheduledTask "PHP CGI FastCGI" -Confirm:$false}
 
 Write-Verbose "Deleting PHP directory"
 Remove-Item $dir -Force -Recurse
