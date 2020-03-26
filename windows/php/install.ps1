@@ -23,8 +23,8 @@ if (!($portable -or (Test-AdminPermission)))
 exit}
 
 if (Test-Path "${PSScriptRoot}/../../filter-php-ini.ps1")
-{."${PSScriptRoot}/../../filter-php-ini.ps1" -destpath "${PlaScrTempDirectory}/php.ini"
-if (!(Test-Path "${PlaScrTempDirectory}/php.ini"))
+{."${PSScriptRoot}/../../filter-php-ini.ps1" -destpath "${PlaScrTempDirectory}/filtered-php.ini"
+if (!(Test-Path "${PlaScrTempDirectory}/filtered-php.ini"))
   {exit}
 }
 else
@@ -46,7 +46,7 @@ else
 {Write-Error "Cannot download or find APCu extension." -Category ObjectNotFound}
 
 Write-Verbose "Moving php.ini file"
-Move-Item "${PlaScrTempDirectory}/php.ini" "${PlaScrTempDirectory}/php/" -Force
+Move-Item "${PlaScrTempDirectory}/filtered-php.ini" "${PlaScrTempDirectory}/php/php.ini" -Force
 
 Write-Verbose "Creating data directory"
 New-Item "${PlaScrTempDirectory}/php/data" -Force -ItemType Directory
