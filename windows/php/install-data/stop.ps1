@@ -1,6 +1,6 @@
 #Stops PHP CGI/FastCGI.
 
-Param([Parameter()]$vb) #Parameter added just for making the -Verbose parameter work and does nothing
+Param([Parameter()]$x) #Parameter added just for making the -Verbose parameter work and does nothing
 
 if (Get-Process "php-cgi" -ErrorAction Ignore)
 {Write-Verbose "Stopping PHP CGI/FastCGI"
