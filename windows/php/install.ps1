@@ -36,7 +36,7 @@ if (!(Test-Path "${PlaScrTempDirectory}/php"))
 {Write-Error "Cannot download or find PHP." -Category ObjectNotFound
 exit}
 
-Expand-ArchiveSmart $php_archive "${PlaScrTempDirectory}/apcu"
+Expand-ArchiveSmart $apcu_archive "${PlaScrTempDirectory}/apcu"
 if (Test-Path "${PlaScrTempDirectory}/apcu")
 {Write-Verbose "Moving APCu extension"
 Move-Item "${PlaScrTempDirectory}/apcu/php_apcu.dll" "${PlaScrTempDirectory}/php/ext/" -Force
@@ -77,7 +77,11 @@ Remove-Item "${PlaScrTempDirectory}/php/logs" -Force -Recurse
 
 if (Test-Path $dir)
 {Write-Warning "Uninstalling existing PHP"
-."${PSScriptRoot}/uninstall.ps1" $dir}
+if ($portable)
+  {."${PSScriptRoot}/uninstall.ps1" $dir -portable}
+else
+  {."${PSScriptRoot}/uninstall.ps1" $dir}
+}
 Write-Verbose "Moving PHP directory to destination directory"
 Move-Item "${PlaScrTempDirectory}/php" $dir -Force
 
