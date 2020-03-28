@@ -5,9 +5,11 @@ Param
 [switch]$portable) #Uninstall in portable mode
 
 if (Test-Path "${PSScriptRoot}/../../init-script.ps1")
-{."${PSScriptRoot}/../../init-script.ps1"}
+{if (!(."${PSScriptRoot}/../../init-script.ps1"))
+  {exit}
+}
 else
-{Write-Error "Cannot find initialize script." -Category ObjectNotFound
+{Write-Error "Cannot find init-script.ps1 file." -Category ObjectNotFound
 exit}
 
 if (!$IsWindows)
@@ -39,7 +41,7 @@ if (!$portable)
 ."${dir}/bin/httpd.exe" -k uninstall
 
 if (Get-NetFirewallRule -ErrorAction Ignore -Name "apache-httpd")
-  {Write-Verbose "Deleting a firewall rule for allowing connections to Apache HTTP Server"
+  {Write-Verbose "Deleting the firewall rule"
   Remove-NetFirewallRule -Name "apache-httpd"}
 }
 
