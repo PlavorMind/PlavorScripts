@@ -3,9 +3,11 @@
 Param([Parameter(Position=0)][string]$apache_httpd_dir="C:/plavormind/apache-httpd") #Apache HTTP Server directory
 
 if (Test-Path "${PSScriptRoot}/../../init-script.ps1")
-{."${PSScriptRoot}/../../init-script.ps1"}
+{if (!(."${PSScriptRoot}/../../init-script.ps1"))
+  {exit}
+}
 else
-{Write-Error "Cannot find initialize script." -Category ObjectNotFound
+{Write-Error "Cannot find init-script.ps1 file." -Category ObjectNotFound
 exit}
 
 if (!$IsWindows)
