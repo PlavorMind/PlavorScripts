@@ -32,8 +32,8 @@ elseif ($IsMacOS)
 elseif ($IsWindows)
   {Select-String ";(linux|macos)_only" $output -NotMatch -Raw > $destpath}
 
-if ($output -like "${tempdir}*")
-  {Write-Verbose "Deleting a file that is no longer needed"
+if ($output -like "${PlaScrTempDirectory}*")
+  {Write-Verbose "Deleting a temporary file"
   Remove-Item $output -Force}
 }
 else
