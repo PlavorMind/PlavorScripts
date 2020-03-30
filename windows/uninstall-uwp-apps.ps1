@@ -1,6 +1,6 @@
 #Uninstalls some unnecessary UWP apps.
 
-Param([Parameter()]$vb) #Parameter added just for making the -Verbose parameter work and does nothing
+Param([Parameter()]$x) #Parameter added just for making the -Verbose parameter work and does nothing
 
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
 {if (!(."${PSScriptRoot}/../init-script.ps1"))
