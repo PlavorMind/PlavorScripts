@@ -118,10 +118,7 @@ elseif ($IsWindows)
 $PlaScrDefaultPHPPath="${PlaScrDefaultBaseDirectory}/php-ts/php.exe"
 $PlaScrTempDirectory=$Env:TEMP}
 
-#For backward compatibility
-$tempdir=$PlaScrTempDirectory
 #For suppressing warnings in VSCodium
 $PlaScrDefaultPHPPath | Out-Null
-$tempdir | Out-Null
 
 return $true
