@@ -1,9 +1,7 @@
 #Installs some apps.
 
 Param
-([Parameter()][string]$bleachbit_version="3.1.0.1479", #BleachBit unstable build version
-[string]$gimp_version="2.10.14", #GIMP version
-[string]$golang_version="1.13.6", #Go version
+([Parameter()][string]$gimp_version="2.10.18", #GIMP version
 [string]$imagemagick_version="7.0.9-17", #ImageMagick version
 [string]$inkscape_installer="https://inkscape.org/gallery/item/13318/inkscape-0.92.4-x64.exe", #URL or file path to Inkscape installer
 [string]$kdevelop_version="5.4-520", #KDevelop nightly build version
@@ -43,48 +41,23 @@ Invoke-WebRequest "https://aka.ms/vs/16/release/VC_redist.x64.exe" -DisableKeepA
 if (Test-Path "${PlaScrTempDirectory}/vc_redist.exe")
   {Write-Verbose "Installing"
   Start-Process "${PlaScrTempDirectory}/vc_redist.exe" -ArgumentList "/norestart /passive" -Wait
-  Write-Verbose "Deleting a file that is no longer needed"
+  Write-Verbose "Deleting a temporary file"
   Remove-Item "${PlaScrTempDirectory}/vc_redist.exe" -Force}
 else
   {Write-Error "Cannot download Microsoft Visual C++ Redistributable for Visual Studio 2019." -Category ConnectionError}
 }
 
-if ($bleachbit_version)
-{Write-Verbose "Downloading BleachBit"
-Invoke-WebRequest "https://ci.bleachbit.org/dl/${bleachbit_version}/BleachBit-${bleachbit_version}-setup-English.exe" -DisableKeepAlive -OutFile "${PlaScrTempDirectory}/bleachbit.exe"
-if (Test-Path "${PlaScrTempDirectory}/bleachbit.exe")
-  {Write-Verbose "Installing"
-  Start-Process "${PlaScrTempDirectory}/bleachbit.exe" -ArgumentList "/S" -Wait
-  Write-Verbose "Deleting a file that is no longer needed"
-  Remove-Item "${PlaScrTempDirectory}/bleachbit.exe" -Force}
-else
-  {Write-Error "Cannot download BleachBit." -Category ConnectionError}
-}
-
 if ($gimp_version -match "^(\d+\.\d+)\.\d+$")
 {$gimp_majorversion=$Matches[1]
 Write-Verbose "Downloading GIMP"
-Invoke-WebRequest "https://download.gimp.org/mirror/pub/gimp/v${gimp_majorversion}/windows/gimp-${gimp_version}-setup.exe" -DisableKeepAlive -OutFile "${PlaScrTempDirectory}/gimp.exe"
+Invoke-WebRequest "https://download.gimp.org/pub/gimp/v${gimp_majorversion}/windows/gimp-${gimp_version}-setup.exe" -DisableKeepAlive -OutFile "${PlaScrTempDirectory}/gimp.exe"
 if (Test-Path "${PlaScrTempDirectory}/gimp.exe")
   {Write-Verbose "Installing"
   Start-Process "${PlaScrTempDirectory}/gimp.exe" -ArgumentList "/S" -Wait
-  Write-Verbose "Deleting a file that is no longer needed"
+  Write-Verbose "Deleting a temporary file"
   Remove-Item "${PlaScrTempDirectory}/gimp.exe" -Force}
 else
   {Write-Error "Cannot download GIMP." -Category ConnectionError}
-}
-
-if ($golang_version)
-{Write-Verbose "Downloading Go"
-Invoke-WebRequest "https://dl.google.com/go/go${golang_version}.windows-amd64.msi" -DisableKeepAlive -OutFile "${PlaScrTempDirectory}/golang.msi"
-if (Test-Path "${PlaScrTempDirectory}/golang.msi")
-  {$installer="${PlaScrTempDirectory}/golang.msi".Replace("/","\")
-  Write-Verbose "Installing"
-  Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${installer}`" /norestart /passive" -Wait
-  Write-Verbose "Deleting a file that is no longer needed"
-  Remove-Item "${PlaScrTempDirectory}/golang.msi" -Force}
-else
-  {Write-Verbose "Cannot download Go." -Category ConnectionError}
 }
 
 if ($imagemagick_version)
@@ -93,7 +66,7 @@ Invoke-WebRequest "https://imagemagick.org/download/binaries/ImageMagick-${image
 if (Test-Path "${PlaScrTempDirectory}/imagemagick.exe")
   {Write-Verbose "Installing"
   Start-Process "${PlaScrTempDirectory}/imagemagick.exe" -ArgumentList "${inno_setup_parameters} /mergetasks=`"legacy_support`"" -Wait
-  Write-Verbose "Deleting a file that is no longer needed"
+  Write-Verbose "Deleting a temporary file"
   Remove-Item "${PlaScrTempDirectory}/imagemagick.exe" -Force
 
   Write-Verbose "Moving a shortcut"
@@ -112,7 +85,7 @@ if ($output)
   {Write-Verbose "Installing Inkscape"
   Start-Process $output -ArgumentList "/S" -Wait
   if ($output -like "${PlaScrTempDirectory}*")
-    {Write-Verbose "Deleting a file that is no longer needed"
+    {Write-Verbose "Deleting a temporary file"
     Remove-Item $output -Force}
   }
 else
@@ -125,7 +98,7 @@ Invoke-WebRequest "https://binary-factory.kde.org/view/Management/job/KDevelop_N
 if (Test-Path "${PlaScrTempDirectory}/kdevelop.exe")
   {Write-Verbose "Installing"
   Start-Process "${PlaScrTempDirectory}/kdevelop.exe" -ArgumentList "/S" -Wait
-  Write-Verbose "Deleting a file that is no longer needed"
+  Write-Verbose "Deleting a temporary file"
   Remove-Item "${PlaScrTempDirectory}/kdevelop.exe" -Force}
 else
   {Write-Error "Cannot download KDevelop." -Category ConnectionError}
@@ -138,7 +111,7 @@ if ($output)
   Write-Verbose "Installing LibreOffice"
   Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${installer}`" RebootYesNo=No REGISTER_ALL_MSO_TYPES=1 /norestart /passive" -Wait
   if ($output -like "${PlaScrTempDirectory}*")
-    {Write-Verbose "Deleting a file that is no longer needed"
+    {Write-Verbose "Deleting a temporary file"
     Remove-Item $output -Force}
   }
 else
