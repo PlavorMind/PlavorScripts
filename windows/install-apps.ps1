@@ -2,19 +2,19 @@
 
 Param
 ([Parameter()][string]$gimp_version="2.10.18", #GIMP version
-[string]$imagemagick_version="7.0.9-17", #ImageMagick version
-[string]$inkscape_installer="https://inkscape.org/gallery/item/13318/inkscape-0.92.4-x64.exe", #URL or file path to Inkscape installer
-[string]$kdevelop_version="5.4-520", #KDevelop nightly build version
-[string]$libreoffice_installer="https://dev-builds.libreoffice.org/pre-releases/win/x86_64/LibreOffice_6.4.0.2_Win_x64.msi", #URL or file path to LibreOffice installer
+[string]$imagemagick_version="7.0.10-6", #ImageMagick version
+[string]$inkscape_installer="https://inkscape.org/gallery/item/18071/inkscape-1.0rc1-x64.exe", #URL or file path to Inkscape installer
+[string]$kdevelop_version="5.5-56", #KDevelop nightly build version
+[string]$libreoffice_installer="https://dev-builds.libreoffice.org/pre-releases/win/x86_64/LibreOffice_6.4.3.2_Win_x64.msi", #URL or file path to LibreOffice installer
 [bool]$musicbrainz_picard=$true, #Whether to install MusicBrainz Picard
-[string]$nodejs_installer="https://nodejs.org/download/nightly/v13.2.1-nightly2019112294e4cbd808/node-v13.2.1-nightly2019112294e4cbd808-x64.msi", #URL or file path to Node.js installer
+[string]$nodejs_installer="https://nodejs.org/download/nightly/v13.13.1-nightly20200415947ddec091/node-v13.13.1-nightly20200415947ddec091-x64.msi", #URL or file path to Node.js installer
 [bool]$obs=$true, #Whether to install OBS Studio
-[string]$peazip_version="7.0.1", #PeaZip version
-[string]$python2_version="2.7.17", #Python 2 version
-[string]$python3_version="3.9.0a2", #Python 3 version
+[string]$peazip_version="7.2.0", #PeaZip version
+[string]$python2_version="2.7.18rc1", #Python 2 version
+[string]$python3_version="3.9.0a5", #Python 3 version
 [bool]$qview=$true, #Whether to install qView
-[string]$smplayer_version="19.10.0.9253", #SMPlayer development build version
-[string]$thunderbird_version="74.0a1", #Thunderbird version
+[string]$smplayer_version="19.10.0.9301", #SMPlayer development build version
+[string]$thunderbird_version="77.0a1", #Thunderbird version
 [bool]$vc_redist=$true, #Whether to install Microsoft Visual C++ Redistributable for Visual Studio 2019
 [bool]$vscodium=$true) #Whether to install VSCodium
 
@@ -94,7 +94,7 @@ else
 
 if ($kdevelop_version)
 {Write-Verbose "Downloading KDevelop"
-Invoke-WebRequest "https://binary-factory.kde.org/view/Management/job/KDevelop_Nightly_win64/lastSuccessfulBuild/artifact/kdevelop-${kdevelop_version}-windows-msvc2017_64-cl.exe" -DisableKeepAlive -OutFile "${PlaScrTempDirectory}/kdevelop.exe"
+Invoke-WebRequest "https://binary-factory.kde.org/view/Management/job/KDevelop_Stable_win64/lastSuccessfulBuild/artifact/kdevelop-${kdevelop_version}-windows-msvc2017_64-cl.exe" -DisableKeepAlive -OutFile "${PlaScrTempDirectory}/kdevelop.exe"
 if (Test-Path "${PlaScrTempDirectory}/kdevelop.exe")
   {Write-Verbose "Installing"
   Start-Process "${PlaScrTempDirectory}/kdevelop.exe" -ArgumentList "/S" -Wait
