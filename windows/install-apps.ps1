@@ -204,13 +204,13 @@ else
 }
 
 if ($qview)
-{$qview_installer=((Invoke-WebRequest "https://api.github.com/repos/jurplel/qView/releases/latest" -DisableKeepAlive)."Content" | ConvertFrom-Json)."assets"."browser_download_url" | Select-String "qView-.+-win64\.exe$" -Raw
+{$qview_installer=(Invoke-RestMethod "https://api.github.com/repos/jurplel/qView/releases/latest" -DisableKeepAlive)."assets"."browser_download_url" | Select-String "qView-.+-win64\.exe$" -Raw
 Write-Verbose "Downloading qView"
 Invoke-WebRequest $qview_installer -DisableKeepAlive -OutFile "${PlaScrTempDirectory}/qview.exe"
 if (Test-Path "${PlaScrTempDirectory}/qview.exe")
   {Write-Verbose "Installing"
   Start-Process "${PlaScrTempDirectory}/qview.exe" -ArgumentList "${inno_setup_parameters} /mergetasks=`"desktopicon`"" -Wait
-  Write-Verbose "Deleting a file that is no longer needed"
+  Write-Verbose "Deleting a temporary file"
   Remove-Item "${PlaScrTempDirectory}/qview.exe" -Force}
 else
   {Write-Error "Cannot download qView." -Category ConnectionError}
@@ -242,13 +242,13 @@ else
 }
 
 if ($vscodium)
-{$vscodium_installer=((Invoke-WebRequest "https://api.github.com/repos/VSCodium/vscodium/releases/latest" -DisableKeepAlive)."Content" | ConvertFrom-Json)."assets"."browser_download_url" | Select-String "VSCodiumSetup-x64-.+\.exe$" -Raw
+{$vscodium_installer=(Invoke-RestMethod "https://api.github.com/repos/VSCodium/vscodium/releases/latest" -DisableKeepAlive)."assets"."browser_download_url" | Select-String "VSCodiumSetup-x64-.+\.exe$" -Raw
 Write-Verbose "Downloading VSCodium"
 Invoke-WebRequest $vscodium_installer -DisableKeepAlive -OutFile "${PlaScrTempDirectory}/vscodium.exe"
 if (Test-Path "${PlaScrTempDirectory}/vscodium.exe")
   {Write-Verbose "Installing"
   Start-Process "${PlaScrTempDirectory}/vscodium.exe" -ArgumentList "${inno_setup_parameters} /mergetasks=`"addcontextmenufiles,addcontextmenufolders,addtopath,associatewithfiles,desktopicon,!runcode`"" -Wait
-  Write-Verbose "Deleting a file that is no longer needed"
+  Write-Verbose "Deleting a temporary file"
   Remove-Item "${PlaScrTempDirectory}/vscodium.exe" -Force}
 else
   {Write-Error "Cannot download VSCodium." -Category ConnectionError}
