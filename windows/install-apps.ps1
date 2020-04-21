@@ -119,13 +119,13 @@ else
 }
 
 if ($musicbrainz_picard)
-{$musicbrainz_picard_installer=((Invoke-WebRequest "https://api.github.com/repos/metabrainz/picard/releases/latest" -DisableKeepAlive)."Content" | ConvertFrom-Json)."assets"."browser_download_url" | Select-String "\.exe$" -Raw
+{$musicbrainz_picard_installer=(Invoke-RestMethod "https://api.github.com/repos/metabrainz/picard/releases/latest" -DisableKeepAlive)."assets"."browser_download_url" | Select-String "picard-setup-.+\.exe$" -Raw
 Write-Verbose "Downloading MusicBrainz Picard"
 Invoke-WebRequest $musicbrainz_picard_installer -DisableKeepAlive -OutFile "${PlaScrTempDirectory}/musicbrainz_picard.exe"
 if (Test-Path "${PlaScrTempDirectory}/musicbrainz_picard.exe")
   {Write-Verbose "Installing"
   Start-Process "${PlaScrTempDirectory}/musicbrainz_picard.exe" -ArgumentList "/S" -Wait
-  Write-Verbose "Deleting a file that is no longer needed"
+  Write-Verbose "Deleting a temporary file"
   Remove-Item "${PlaScrTempDirectory}/musicbrainz_picard.exe" -Force}
 else
   {Write-Error "Cannot download MusicBrainz Picard." -Category ConnectionError}
