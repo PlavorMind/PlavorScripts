@@ -8,8 +8,8 @@ Param
 [string]$libreoffice_installer="https://dev-builds.libreoffice.org/pre-releases/win/x86_64/LibreOffice_6.4.3.2_Win_x64.msi", #URL or file path to LibreOffice installer
 [bool]$musicbrainz_picard=$true, #Whether to install MusicBrainz Picard
 [string]$nodejs_installer="https://nodejs.org/download/nightly/v13.13.1-nightly20200415947ddec091/node-v13.13.1-nightly20200415947ddec091-x64.msi", #URL or file path to Node.js installer
-[bool]$obs=$true, #Whether to install OBS Studio
-[string]$peazip_version="7.2.0", #PeaZip version
+[string]$obs_version="25.0.4", #OBS Studio version
+[bool]$peazip=$true, #Whether to install PeaZip
 [string]$python2_version="2.7.18rc1", #Python 2 version
 [string]$python3_version="3.9.0a5", #Python 3 version
 [bool]$qview=$true, #Whether to install qView
@@ -89,7 +89,7 @@ if ($output)
     Remove-Item $output -Force}
   }
 else
-  {Write-Error "Cannot download or find Inkscape." -Category ConnectionError}
+  {Write-Error "Cannot download or find Inkscape." -Category ObjectNotFound}
 }
 
 if ($kdevelop_version)
@@ -115,7 +115,7 @@ if ($output)
     Remove-Item $output -Force}
   }
 else
-  {Write-Error "Cannot download or find LibreOffice." -Category ConnectionError}
+  {Write-Error "Cannot download or find LibreOffice." -Category ObjectNotFound}
 }
 
 if ($musicbrainz_picard)
@@ -142,29 +142,28 @@ if ($output)
     Remove-Item $output -Force}
   }
 else
-  {Write-Error "Cannot download or find Node.js." -Category ConnectionError}
+  {Write-Error "Cannot download or find Node.js." -Category ObjectNotFound}
 }
 
-if ($obs)
-{$obs_installer=((Invoke-WebRequest "https://api.github.com/repos/obsproject/obs-studio/releases/latest" -DisableKeepAlive)."Content" | ConvertFrom-Json)."assets"."browser_download_url" | Select-String "OBS-Studio-.+-Full-Installer-x64\.exe$" -Raw
-Write-Verbose "Downloading OBS Studio"
-Invoke-WebRequest $obs_installer -DisableKeepAlive -OutFile "${PlaScrTempDirectory}/obs.exe"
+if ($obs_version)
+{Write-Verbose "Downloading OBS Studio"
+Invoke-WebRequest "https://cdn-fastly.obsproject.com/downloads/OBS-Studio-${obs_version}-Full-Installer-x64.exe" -DisableKeepAlive -OutFile "${PlaScrTempDirectory}/obs.exe"
 if (Test-Path "${PlaScrTempDirectory}/obs.exe")
   {Write-Verbose "Installing"
   Start-Process "${PlaScrTempDirectory}/obs.exe" -ArgumentList "/S" -Wait
-  Write-Verbose "Deleting a file that is no longer needed"
+  Write-Verbose "Deleting a temporary file"
   Remove-Item "${PlaScrTempDirectory}/obs.exe" -Force}
 else
   {Write-Error "Cannot download OBS Studio." -Category ConnectionError}
 }
 
-if ($peazip_version)
+if ($peazip)
 {Write-Verbose "Downloading PeaZip"
-Invoke-WebRequest "http://www.peazip.org/downloads/peazip-${peazip_version}.WIN64.exe" -DisableKeepAlive -OutFile "${PlaScrTempDirectory}/peazip.exe"
+Invoke-WebRequest "https://sourceforge.net/projects/peazip/files/latest/download" -DisableKeepAlive -OutFile "${PlaScrTempDirectory}/peazip.exe" -UserAgent "Wget"
 if (Test-Path "${PlaScrTempDirectory}/peazip.exe")
   {Write-Verbose "Installing"
   Start-Process "${PlaScrTempDirectory}/peazip.exe" -ArgumentList $inno_setup_parameters -Wait
-  Write-Verbose "Deleting a file that is no longer needed"
+  Write-Verbose "Deleting a temporary file"
   Remove-Item "${PlaScrTempDirectory}/peazip.exe" -Force
 
   Write-Verbose "Moving a shortcut"
@@ -185,7 +184,7 @@ if (Test-Path "${PlaScrTempDirectory}/python2.msi")
   {$installer="${PlaScrTempDirectory}/python2.msi".Replace("/","\")
   Write-Verbose "Installing"
   Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${installer}`" /norestart /passive" -Wait
-  Write-Verbose "Deleting a file that is no longer needed"
+  Write-Verbose "Deleting a temporary file"
   Remove-Item "${PlaScrTempDirectory}/python2.msi" -Force}
 else
   {Write-Error "Cannot download Python 2." -Category ConnectionError}
@@ -198,7 +197,7 @@ Invoke-WebRequest "https://www.python.org/ftp/python/${python3_majorversion}/pyt
 if (Test-Path "${PlaScrTempDirectory}/python3.exe")
   {Write-Verbose "Installing"
   Start-Process "${PlaScrTempDirectory}/python3.exe" -ArgumentList "InstallAllUsers=1 PrependPath=1 /passive" -Wait
-  Write-Verbose "Deleting a file that is no longer needed"
+  Write-Verbose "Deleting a temporary file"
   Remove-Item "${PlaScrTempDirectory}/python3.exe" -Force}
 else
   {Write-Error "Cannot download Python 3." -Category ConnectionError}
