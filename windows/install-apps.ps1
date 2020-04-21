@@ -138,7 +138,7 @@ if ($output)
   Write-Verbose "Installing Node.js"
   Start-Process "C:/Windows/System32/msiexec.exe" -ArgumentList "/i `"${installer}`" /norestart /passive" -Wait
   if ($output -like "${PlaScrTempDirectory}*")
-    {Write-Verbose "Deleting a file that is no longer needed"
+    {Write-Verbose "Deleting a temporary file"
     Remove-Item $output -Force}
   }
 else
@@ -222,7 +222,7 @@ Invoke-WebRequest "https://sourceforge.net/projects/smplayer/files/SMPlayer/Deve
 if (Test-Path "${PlaScrTempDirectory}/smplayer.exe")
   {Write-Verbose "Installing"
   Start-Process "${PlaScrTempDirectory}/smplayer.exe" -ArgumentList "/S" -Wait
-  Write-Verbose "Deleting a file that is no longer needed"
+  Write-Verbose "Deleting a temporary file"
   Remove-Item "${PlaScrTempDirectory}/smplayer.exe" -Force}
 else
   {Write-Error "Cannot download SMPlayer." -Category ConnectionError}
@@ -235,7 +235,7 @@ Invoke-WebRequest "https://ftp.mozilla.org/pub/thunderbird/nightly/latest-comm-c
 if (Test-Path "${PlaScrTempDirectory}/thunderbird.exe")
   {Write-Verbose "Installing"
   Start-Process "${PlaScrTempDirectory}/thunderbird.exe" -ArgumentList "/S" -Wait
-  Write-Verbose "Deleting a file that is no longer needed"
+  Write-Verbose "Deleting a temporary file"
   Remove-Item "${PlaScrTempDirectory}/thunderbird.exe" -Force}
 else
   {Write-Error "Cannot download Thunderbird." -Category ConnectionError}
