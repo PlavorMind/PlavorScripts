@@ -9,6 +9,7 @@ Param
 [bool]$musicbrainz_picard=$true, #Whether to install MusicBrainz Picard
 [string]$nodejs_installer="https://nodejs.org/download/nightly/v13.13.1-nightly20200415947ddec091/node-v13.13.1-nightly20200415947ddec091-x64.msi", #URL or file path to Node.js installer
 [string]$obs_version="25.0.4", #OBS Studio version
+[bool]$onlyoffice, #Whether to install ONLYOFFICE Editors
 [bool]$peazip=$true, #Whether to install PeaZip
 [string]$python2_version="2.7.18rc1", #Python 2 version
 [string]$python3_version="3.9.0a5", #Python 3 version
@@ -155,6 +156,18 @@ if (Test-Path "${PlaScrTempDirectory}/obs.exe")
   Remove-Item "${PlaScrTempDirectory}/obs.exe" -Force}
 else
   {Write-Error "Cannot download OBS Studio." -Category ConnectionError}
+}
+
+if ($onlyoffice)
+{Write-Verbose "Downloading ONLYOFFICE Editors"
+Invoke-WebRequest "https://download.onlyoffice.com/install/desktop/editors/windows/distrib/onlyoffice/DesktopEditors_x64.exe" -DisableKeepAlive -OutFile "${PlaScrTempDirectory}/onlyoffice.exe"
+if (Test-Path "${PlaScrTempDirectory}/onlyoffice.exe")
+  {Write-Verbose "Installing"
+  Start-Process "${PlaScrTempDirectory}/onlyoffice.exe" -ArgumentList $inno_setup_parameters -Wait
+  Write-Verbose "Deleting a temporary file"
+  Remove-Item "${PlaScrTempDirectory}/onlyoffice.exe" -Force}
+else
+  {Write-Error "Cannot download ONLYOFFICE Editors." -Category ConnectionError}
 }
 
 if ($peazip)
