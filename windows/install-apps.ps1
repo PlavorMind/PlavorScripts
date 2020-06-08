@@ -1,7 +1,8 @@
 #Installs some apps.
 
 Param
-([Parameter()][string]$gimp_version="2.10.18", #GIMP version
+([Parameter()][bool]$audiorelay, #Whether to install AudioRelay
+[string]$gimp_version="2.10.18", #GIMP version
 [string]$imagemagick_version="7.0.10-6", #ImageMagick version
 [string]$inkscape_installer="https://inkscape.org/gallery/item/18071/inkscape-1.0rc1-x64.exe", #URL or file path to Inkscape installer
 [string]$kdevelop_version="5.5-56", #KDevelop nightly build version
@@ -46,6 +47,18 @@ if (Test-Path "${PlaScrTempDirectory}/vc_redist.exe")
   Remove-Item "${PlaScrTempDirectory}/vc_redist.exe" -Force}
 else
   {Write-Error "Cannot download Microsoft Visual C++ Redistributable for Visual Studio 2019." -Category ConnectionError}
+}
+
+if ($audiorelay)
+{Write-Verbose "Downloading AudioRelay"
+Invoke-WebRequest "https://audiorelay.net/download" -DisableKeepAlive -OutFile "${PlaScrTempDirectory}/audiorelay.exe"
+if (Test-Path "${PlaScrTempDirectory}/audiorelay.exe")
+  {Write-Verbose "Installing"
+  Start-Process "${PlaScrTempDirectory}/audiorelay.exe" -ArgumentList $inno_setup_parameters -Wait
+  Write-Verbose "Deleting a temporary file"
+  Remove-Item "${PlaScrTempDirectory}/audiorelay.exe" -Force}
+else
+  {Write-Error "Cannot download AudioRelay." -Category ConnectionError}
 }
 
 if ($gimp_version -match "^(\d+\.\d+)\.\d+$")
