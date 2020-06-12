@@ -1,7 +1,7 @@
 #Downloads extensions and skins for MediaWiki.
 
 Param
-([string]$composer_local_json="https://raw.githubusercontent.com/PlavorMind/Configurations/master/mediawiki/composer.local.json", #File path or URL of composer.local.json file
+([string]$composer_local_json, #File path or URL of composer.local.json file
 [string]$composer_path, #Path of Composer
 [string]$extension_branch="master", #Branch for extensions
 [Parameter(Mandatory=$true,Position=1)][string]$extras_json, #File path or URL of JSON file for downloading extensions and skins
