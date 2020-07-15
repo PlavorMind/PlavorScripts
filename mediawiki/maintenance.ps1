@@ -59,8 +59,12 @@ if ($flow_init)
     {Write-Warning "Skipped running scripts to initialize Flow: Cannot find Flow."}
   }
 
+Write-Verbose "Running purgeExpiredBlocks.php for ${target_wiki}"
+.$php_path "${mediawiki_dir}/maintenance/purgeExpiredBlocks.php" --wiki $target_wiki
 Write-Verbose "Running purgeExpiredUserrights.php for ${target_wiki}"
 .$php_path "${mediawiki_dir}/maintenance/purgeExpiredUserrights.php" --wiki $target_wiki
+Write-Verbose "Running purgeExpiredWatchlistItems.php for ${target_wiki}"
+.$php_path "${mediawiki_dir}/maintenance/purgeExpiredWatchlistItems.php" --wiki $target_wiki
 Write-Verbose "Running pruneFileCache.php for ${target_wiki}"
 .$php_path "${mediawiki_dir}/maintenance/pruneFileCache.php" --agedays 0 --wiki $target_wiki
 Write-Verbose "Running runJobs.php for ${target_wiki}"
