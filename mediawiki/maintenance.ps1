@@ -1,8 +1,7 @@
 #Runs some maintenance task for MediaWiki.
 
 Param
-([switch]$flow_init, #Run scripts to initialize Flow
-[switch]$init, #Run scripts to initialize MediaWiki
+([switch]$init, #Run scripts to initialize MediaWiki
 [Parameter(Position=0)][string]$mediawiki_dir, #MediaWiki directory
 [string]$php_path, #Path of PHP
 [string]$private_data_dir, #Private data directory
@@ -46,18 +45,6 @@ if ($init)
   .$php_path "${mediawiki_dir}/maintenance/emptyUserGroup.php" "bureaucrat" --wiki $target_wiki
   .$php_path "${mediawiki_dir}/maintenance/emptyUserGroup.php" "interface-admin" --wiki $target_wiki
   .$php_path "${mediawiki_dir}/maintenance/emptyUserGroup.php" "sysop" --wiki $target_wiki}
-
-if ($flow_init)
-  {if (Test-Path "${mediawiki_dir}/extensions/Flow")
-    {Write-Verbose "Running emptyUserGroup.php for ${target_wiki}"
-    .$php_path "${mediawiki_dir}/maintenance/emptyUserGroup.php" "flow-bot" --wiki $target_wiki
-    Write-Verbose "Running populateContentModel.php for ${target_wiki}"
-    .$php_path "${mediawiki_dir}/maintenance/populateContentModel.php" --ns=all --table=archive --wiki $target_wiki
-    .$php_path "${mediawiki_dir}/maintenance/populateContentModel.php" --ns=all --table=page --wiki $target_wiki
-    .$php_path "${mediawiki_dir}/maintenance/populateContentModel.php" --ns=all --table=revision --wiki $target_wiki}
-  else
-    {Write-Warning "Skipped running scripts to initialize Flow: Cannot find Flow."}
-  }
 
 Write-Verbose "Running purgeExpiredBlocks.php for ${target_wiki}"
 .$php_path "${mediawiki_dir}/maintenance/purgeExpiredBlocks.php" --wiki $target_wiki
