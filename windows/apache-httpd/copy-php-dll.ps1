@@ -25,9 +25,9 @@ if (!(Test-Path $php_dir))
 exit}
 
 Write-Verbose "Copying DLL files"
-Copy-Item "${php_dir}/icudt65.dll" "${apache_httpd_dir}/bin/" -Force
-Copy-Item "${php_dir}/icuin65.dll" "${apache_httpd_dir}/bin/" -Force
-Copy-Item "${php_dir}/icuio65.dll" "${apache_httpd_dir}/bin/" -Force
-Copy-Item "${php_dir}/icuuc65.dll" "${apache_httpd_dir}/bin/" -Force
+Copy-Item "${php_dir}/icudt66.dll" "${apache_httpd_dir}/bin/" -Force
+Copy-Item "${php_dir}/icuin66.dll" "${apache_httpd_dir}/bin/" -Force
+Copy-Item "${php_dir}/icuio66.dll" "${apache_httpd_dir}/bin/" -Force
+Copy-Item "${php_dir}/icuuc66.dll" "${apache_httpd_dir}/bin/" -Force
 Copy-Item "${php_dir}/libssh2.dll" "${apache_httpd_dir}/bin/" -Force
 Copy-Item "${php_dir}/libsqlite3.dll" "${apache_httpd_dir}/bin/" -Force
