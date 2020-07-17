@@ -2,7 +2,7 @@
 
 Param
 ([Parameter(Position=0)][string]$dir="C:/plavormind/apache-httpd", #Directory to install Apache HTTP Server
-[string]$php_dir="C:/plavormind/php-ts", #PHP directory
+[string]$php_dir="C:/plavormind/php", #PHP directory
 [switch]$portable, #Install in portable mode
 [string]$version="2.4.41", #Apache HTTP Server version
 [string]$web_dir="C:/plavormind/web/public") #Web public directory
