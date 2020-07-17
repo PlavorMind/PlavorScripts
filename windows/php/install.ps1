@@ -2,7 +2,7 @@
 
 Param
 ([string]$apcu_archive="https://windows.php.net/downloads/pecl/releases/apcu/5.1.18/php_apcu-5.1.18-7.4-ts-vc15-x64.zip", #File path or URL of APCu archive
-[Parameter(Position=0)][string]$dir="C:/plavormind/php-ts", #Directory to install PHP
+[Parameter(Position=0)][string]$dir="C:/plavormind/php", #Directory to install PHP
 [string]$php_archive="https://windows.php.net/downloads/snaps/php-7.4/r27bb0d9/php-7.4-ts-windows-vc15-x64-r27bb0d9.zip", #File path or URL of PHP archive
 [switch]$portable) #Install in portable mode
 
