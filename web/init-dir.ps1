@@ -26,7 +26,6 @@ if (!(Test-Path "${PlaScrTempDirectory}/web/public/main/adminer/index.php"))
 
 Write-Verbose "Creating directories for virtual hosts"
 New-Item "${PlaScrTempDirectory}/web/public/gitea" -Force -ItemType Directory
-New-Item "${PlaScrTempDirectory}/web/public/wiki" -Force -ItemType Directory
 
 if (Test-Path "${PSScriptRoot}/additional-files")
 {Write-Verbose "Copying additional files"
