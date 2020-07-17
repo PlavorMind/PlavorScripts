@@ -21,7 +21,7 @@ if (!$composer_path)
 {if ($IsLinux)
   {$composer_path="${PlaScrDefaultBaseDirectory}/composer.phar"}
 elseif ($IsWindows)
-  {$composer_path="${PlaScrDefaultBaseDirectory}/php-ts/data/composer.phar"}
+  {$composer_path="${PlaScrDefaultBaseDirectory}/php/data/composer.phar"}
 else
   {Write-Error "Cannot detect default Composer path." -Category NotSpecified
   exit}
