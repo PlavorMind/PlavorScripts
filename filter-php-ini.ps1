@@ -16,7 +16,7 @@ if (!$destpath)
 {if ($IsLinux)
   {$destpath="/etc/php/7.4/fpm/php.ini"}
 elseif ($IsWindows)
-  {$destpath="${PlaScrDefaultBaseDirectory}/php-ts/php.ini"}
+  {$destpath="${PlaScrDefaultBaseDirectory}/php/php.ini"}
 else
   {Write-Error "Cannot detect default destination path." -Category NotSpecified
   exit}
