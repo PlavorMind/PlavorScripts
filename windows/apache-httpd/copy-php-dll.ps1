@@ -3,7 +3,7 @@
 
 Param
 ([Parameter(Position=1)][string]$apache_httpd_dir="C:/plavormind/apache-httpd", #Apache HTTP Server directory
-[Parameter(Position=0)][string]$php_dir="C:/plavormind/php-ts") #PHP directory
+[Parameter(Position=0)][string]$php_dir="C:/plavormind/php") #PHP directory
 
 if (Test-Path "${PSScriptRoot}/../../init-script.ps1")
 {if (!(."${PSScriptRoot}/../../init-script.ps1"))
