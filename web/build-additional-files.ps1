@@ -29,5 +29,13 @@ New-Item "${PSScriptRoot}/additional-files/default" -Force -ItemType Directory
 
 if (Test-Path "${web_dir}/default/favicon.ico")
   {Write-Verbose "Copying default/favicon.ico file"
-  Copy-Item "${web_dir}/default/favicon.ico" "${PSScriptRoot}/additional-files/default/"}
+  Copy-Item "${web_dir}/default/favicon.ico" "${PSScriptRoot}/additional-files/default/" -Force}
 }
+
+if (Test-Path "${web_dir}/public/wiki/resources")
+{Write-Verbose "Creating public directory"
+New-Item "${PSScriptRoot}/additional-files/public" -Force -ItemType Directory
+Write-Verbose "Creating public/wiki directory"
+New-Item "${PSScriptRoot}/additional-files/public/wiki" -Force -ItemType Directory
+Write-Verbose "Copying public/wiki/resources directory"
+Copy-Item "${web_dir}/public/wiki/resources" "${PSScriptRoot}/additional-files/public/wiki/" -Force -Recurse}
