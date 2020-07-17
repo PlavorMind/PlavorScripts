@@ -115,7 +115,7 @@ elseif ($IsMacOS)
 $PlaScrTempDirectory="/private/tmp"}
 elseif ($IsWindows)
 {$PlaScrDefaultBaseDirectory="C:/plavormind"
-$PlaScrDefaultPHPPath="${PlaScrDefaultBaseDirectory}/php-ts/php.exe"
+$PlaScrDefaultPHPPath="${PlaScrDefaultBaseDirectory}/php/php.exe"
 $PlaScrTempDirectory=$Env:TEMP}
 
 #For suppressing warnings in VSCodium
