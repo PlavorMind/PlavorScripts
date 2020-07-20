@@ -1,6 +1,6 @@
-#Copys additional files for install.ps1 script
+#Copys additional files for install.ps1 script.
 
-Param([Parameter(Position=0)][string]$apache_httpd_dir="C:/plavormind/apache-httpd") #Apache HTTP Server directory
+Param([Parameter(Position=0)][string]$apache_httpd_dir) #Apache HTTP Server directory
 
 if (Test-Path "${PSScriptRoot}/../../init-script.ps1")
 {if (!(."${PSScriptRoot}/../../init-script.ps1"))
@@ -14,8 +14,11 @@ if (!$IsWindows)
 {Write-Error "Your operating system is not supported."
 exit}
 
+if (!$apache_httpd_dir)
+{$apache_httpd_dir="${PlaScrDefaultBaseDirectory}/apache-httpd"}
+
 if (!(Test-Path $apache_httpd_dir))
-{Write-Error "Cannot find Apache HTTP Server." -Category NotInstalled
+{Write-Error "Cannot find Apache HTTP Server directory." -Category NotInstalled
 exit}
 
 if (Test-Path "${PSScriptRoot}/additional-files")
