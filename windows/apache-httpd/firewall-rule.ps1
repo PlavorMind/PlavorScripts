@@ -12,12 +12,13 @@ else
 {Write-Error "Cannot find init-script.ps1 file." -Category ObjectNotFound
 exit}
 
-if (!$dir)
-{$dir="${PlaScrDefaultBaseDirectory}/apache-httpd"}
-
 if (!$IsWindows)
 {Write-Error "Your operating system is not supported."
 exit}
+
+if (!$dir)
+{$dir="${PlaScrDefaultBaseDirectory}/apache-httpd"}
+
 if (!(Test-AdminPermission))
 {Write-Error "This script must be run as administrator." -Category PermissionDenied
 exit}
