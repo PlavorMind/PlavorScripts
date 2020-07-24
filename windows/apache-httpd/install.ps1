@@ -1,11 +1,11 @@
 #Installs Apache HTTP Server.
 
 Param
-([Parameter(Position=0)][string]$dir="C:/plavormind/apache-httpd", #Directory to install Apache HTTP Server
-[string]$php_dir="C:/plavormind/php", #PHP directory
+([Parameter(Position=0)][string]$dir, #Directory to install Apache HTTP Server
+[string]$php_dir, #PHP directory
 [switch]$portable, #Install in portable mode
-[string]$version="2.4.41", #Apache HTTP Server version
-[string]$web_dir="C:/plavormind/web/public") #Web public directory
+[string]$version="2.4.43", #Apache HTTP Server version
+[string]$web_dir) #Web public directory
 
 if (Test-Path "${PSScriptRoot}/../../init-script.ps1")
 {if (!(."${PSScriptRoot}/../../init-script.ps1"))
@@ -18,6 +18,13 @@ exit}
 if (!$IsWindows)
 {Write-Error "Your operating system is not supported."
 exit}
+
+if (!$dir)
+{$dir="${PlaScrDefaultBaseDirectory}/apache-httpd"}
+if (!$php_dir)
+{$php_dir="${PlaScrDefaultBaseDirectory}/php"}
+if (!$web_dir)
+{$web_dir="${PlaScrDefaultBaseDirectory}/web/public"}
 
 if (!($portable -or (Test-AdminPermission)))
 {Write-Error "This script must be run as administrator unless you install in portable mode." -Category PermissionDenied
@@ -98,10 +105,4 @@ if (!$portable)
 {Write-Verbose "Installing service"
 ."${dir}/bin/httpd.exe" -k install
 
-if (Get-NetFirewallRule -ErrorAction Ignore -Name "apache-httpd")
-  {Write-Warning "Skipping creating a firewall rule for allowing connections to Apache HTTP Server: A rule with `"apache-httpd`" file name already exists."}
-else
-  {Write-Verbose "Creating a firewall rule for allowing connections to Apache HTTP Server"
-  $path="${dir}/bin/httpd.exe".Replace("/","\")
-  New-NetFirewallRule -Action Allow -Description "Allows connections to Apache HTTP Server" -DisplayName "Apache HTTP Server" -Name "apache-httpd" -Program $path}
-}
+."${PSScriptRoot}/firewall-rule.ps1" -dir $dir}
