@@ -42,7 +42,7 @@ if (!(Test-Path "${PlaScrTempDirectory}/mediawiki"))
 exit}
 
 Write-Verbose "Updating dependencies with Composer"
-.$php_path $composer_path update --no-cache --no-dev --working-dir="${PlaScrTempDirectory}/mediawiki"
+.$php_path $composer_path update --no-cache --no-dev --ignore-platform-req=composer-plugin-api --working-dir="${PlaScrTempDirectory}/mediawiki"
 
 Write-Verbose "Deleting files and directories that are unnecessary for running"
 Remove-Item "${PlaScrTempDirectory}/mediawiki/CODE_OF_CONDUCT.md" -Force
@@ -50,10 +50,8 @@ Remove-Item "${PlaScrTempDirectory}/mediawiki/composer.local.json-sample" -Force
 Remove-Item "${PlaScrTempDirectory}/mediawiki/FAQ" -Force
 Remove-Item "${PlaScrTempDirectory}/mediawiki/HISTORY" -Force
 Remove-Item "${PlaScrTempDirectory}/mediawiki/INSTALL" -Force
-Remove-Item "${PlaScrTempDirectory}/mediawiki/README" -Force
-Remove-Item "${PlaScrTempDirectory}/mediawiki/RELEASE-NOTES-*" -Force
+Remove-Item "${PlaScrTempDirectory}/mediawiki/README.md" -Force
 Remove-Item "${PlaScrTempDirectory}/mediawiki/SECURITY" -Force
-Remove-Item "${PlaScrTempDirectory}/mediawiki/UPGRADE" -Force
 Remove-Item "${PlaScrTempDirectory}/mediawiki/docs" -Force -Recurse
 Remove-Item "${PlaScrTempDirectory}/mediawiki/extensions/*" -Force -Recurse
 Remove-Item "${PlaScrTempDirectory}/mediawiki/maintenance/README" -Force
