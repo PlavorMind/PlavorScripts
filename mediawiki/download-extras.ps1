@@ -4,7 +4,7 @@ Param
 ([string]$composer_local_json, #File path or URL of composer.local.json file
 [string]$composer_path, #Path of Composer
 [string]$extension_branch="master", #Branch for extensions
-[Parameter(Mandatory=$true,Position=1)][string]$extras_json, #File path or URL of JSON file for downloading extensions and skins
+[Parameter(Position=1)][string]$extras_json="${HOME}/OneDrive/Documents/extras.json", #File path or URL of JSON file for downloading extensions and skins
 [Parameter(Position=0)][string]$mediawiki_dir, #MediaWiki directory
 [string]$php_path, #Path of PHP
 [string]$skin_branch="master") #Branch for skins
@@ -87,7 +87,7 @@ foreach ($extra_type in @("extensions","skins"))
       if (Test-Path "${mediawiki_dir}/${extra_type}/${extra}")
         {if ($extra_object."require-composer")
           {Write-Verbose $composer_updating
-          .$php_path $composer_path update --no-cache --no-dev --working-dir="${mediawiki_dir}/${extra_type}/${extra}"}
+          .$php_path $composer_path update --no-cache --no-dev --ignore-platform-req=composer-plugin-api --working-dir="${mediawiki_dir}/${extra_type}/${extra}"}
         }
       else
         {Write-Error $download_failed -Category ConnectionError}
@@ -107,6 +107,6 @@ else
   {Write-Verbose "Copying composer.local.json file"
   Copy-Item $output "${mediawiki_dir}/composer.local.json" -Force}
 Write-Verbose "Updating dependencies with Composer"
-.$php_path $composer_path update --no-cache --no-dev --working-dir=$mediawiki_dir}
+.$php_path $composer_path update --no-cache --no-dev --ignore-platform-req=composer-plugin-api --working-dir=$mediawiki_dir}
 else
 {Write-Error "Cannot download or find composer.local.json file." -Category ObjectNotFound}
