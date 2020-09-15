@@ -1,10 +1,10 @@
 #Runs some maintenance task for MediaWiki.
 
 Param
-([switch]$init, #Run scripts to initialize MediaWiki
+([string]$data_dir, #Data directory
+[switch]$init, #Run scripts to initialize MediaWiki
 [Parameter(Position=0)][string]$mediawiki_dir, #MediaWiki directory
 [string]$php_path, #Path of PHP
-[string]$private_data_dir, #Private data directory
 [switch]$update, #Run update.php script
 [string]$wiki) #Specify wiki ID to run scripts otherwise will run globally
 
@@ -16,12 +16,12 @@ else
 {Write-Error "Cannot find init-script.ps1 file." -Category ObjectNotFound
 exit}
 
+if (!$data_dir)
+{$data_dir="${PlaScrDefaultBaseDirectory}/web/data/mediawiki"}
 if (!$mediawiki_dir)
 {$mediawiki_dir="${PlaScrDefaultBaseDirectory}/web/public/wiki/mediawiki"}
 if (!$php_path)
 {$php_path=$PlaScrDefaultPHPPath}
-if (!$private_data_dir)
-{$private_data_dir="${PlaScrDefaultBaseDirectory}/web/data/mediawiki"}
 
 if (!(Test-Path $mediawiki_dir))
 {Write-Error "Cannot find MediaWiki directory." -Category NotInstalled
@@ -33,7 +33,7 @@ exit}
 if ($wiki)
 {$target_wikis=@($wiki)}
 else
-{$target_wikis=Get-ChildItem "${mediawiki_dir}/data" -Directory -Force -Name}
+{$target_wikis=Get-ChildItem "${data_dir}/per-wiki" -Directory -Force -Name}
 
 foreach ($target_wiki in $target_wikis)
 {if ($init -or $update)
