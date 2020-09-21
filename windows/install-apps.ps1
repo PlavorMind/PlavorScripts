@@ -15,6 +15,7 @@ Param
 [string]$python3_version="3.9.0a5", #Python 3 version
 [bool]$qview=$true, #Whether to install qView
 [string]$smplayer_version="19.10.0.9301", #SMPlayer development build version
+[bool]$swyh=$true, #Whether to install Stream What You Hear
 [string]$thunderbird_version="77.0a1", #Thunderbird version
 [bool]$vc_redist=$true, #Whether to install Microsoft Visual C++ Redistributable for Visual Studio 2019
 [bool]$vscodium=$true) #Whether to install VSCodium
@@ -239,6 +240,19 @@ if (Test-Path "${PlaScrTempDirectory}/smplayer.exe")
   Remove-Item "${PlaScrTempDirectory}/smplayer.exe" -Force}
 else
   {Write-Error "Cannot download SMPlayer." -Category ConnectionError}
+}
+
+if ($swyh)
+{$swyh_installer=(Invoke-RestMethod "https://api.github.com/repos/StreamWhatYouHear/SWYH/releases/latest" -DisableKeepAlive)."assets"."browser_download_url" | Select-String "SWYH_.+\.exe$" -Raw
+Write-Verbose "Downloading Stream What You Hear"
+Invoke-WebRequest $swyh_installer -DisableKeepAlive -OutFile "${PlaScrTempDirectory}/swyh.exe"
+if (Test-Path "${PlaScrTempDirectory}/swyh.exe")
+  {Write-Verbose "Installing"
+  Start-Process "${PlaScrTempDirectory}/swyh.exe" -ArgumentList "${inno_setup_parameters} /mergetasks=`"desktopicon`"" -Wait
+  Write-Verbose "Deleting a temporary file"
+  Remove-Item "${PlaScrTempDirectory}/swyh.exe" -Force}
+else
+  {Write-Error "Cannot download Stream What You Hear." -Category ConnectionError}
 }
 
 if ($thunderbird_version)
