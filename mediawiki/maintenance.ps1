@@ -46,13 +46,15 @@ if ($init)
   .$php_path "${mediawiki_dir}/maintenance/emptyUserGroup.php" "interface-admin" --wiki $target_wiki
   .$php_path "${mediawiki_dir}/maintenance/emptyUserGroup.php" "sysop" --wiki $target_wiki}
 
+Write-Verbose "Running pruneFileCache.php for ${target_wiki}"
+.$php_path "${mediawiki_dir}/maintenance/pruneFileCache.php" --agedays 0 --wiki $target_wiki
 Write-Verbose "Running purgeExpiredBlocks.php for ${target_wiki}"
 .$php_path "${mediawiki_dir}/maintenance/purgeExpiredBlocks.php" --wiki $target_wiki
 Write-Verbose "Running purgeExpiredUserrights.php for ${target_wiki}"
 .$php_path "${mediawiki_dir}/maintenance/purgeExpiredUserrights.php" --wiki $target_wiki
 Write-Verbose "Running purgeExpiredWatchlistItems.php for ${target_wiki}"
 .$php_path "${mediawiki_dir}/maintenance/purgeExpiredWatchlistItems.php" --wiki $target_wiki
-Write-Verbose "Running pruneFileCache.php for ${target_wiki}"
-.$php_path "${mediawiki_dir}/maintenance/pruneFileCache.php" --agedays 0 --wiki $target_wiki
+Write-Verbose "Running purgeParserCache.php for ${target_wiki}"
+.$php_path "${mediawiki_dir}/maintenance/purgeParserCache.php" --age 0 --wiki $target_wiki
 Write-Verbose "Running runJobs.php for ${target_wiki}"
 .$php_path "${mediawiki_dir}/maintenance/runJobs.php" --wiki $target_wiki}
