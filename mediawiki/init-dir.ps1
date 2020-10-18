@@ -3,11 +3,11 @@
 Param
 ([string]$composer_path, #Path of Composer
 [string]$core_branch, #Branch for MediaWiki core
+[string]$data_dir, #Directory to initialize for data
 [string]$extra_branch="master", #Branch for extensions and skins
-[Parameter(Mandatory=$true)][string]$extras_json, #File path or URL of JSON file for downloading extensions and skins
+[string]$extras_json="${HOME}/OneDrive/Documents/extras.json", #File path or URL of JSON file for downloading extensions and skins
 [Parameter(Position=0)][string]$mediawiki_dir, #Directory to initialize for MediaWiki
-[string]$php_path, #Path of PHP
-[string]$private_data_dir) #Directory to initialize for private data
+[string]$php_path) #Path of PHP
 
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
 {if (!(."${PSScriptRoot}/../init-script.ps1"))
@@ -26,12 +26,12 @@ else
   {Write-Error "Cannot detect default Composer path." -Category NotSpecified
   exit}
 }
+if (!$data_dir)
+{$data_dir="${PlaScrDefaultBaseDirectory}/web/data/mediawiki"}
 if (!$mediawiki_dir)
 {$mediawiki_dir="${PlaScrDefaultBaseDirectory}/web/public/wiki/mediawiki"}
 if (!$php_path)
 {$php_path=$PlaScrDefaultPHPPath}
-if (!$private_data_dir)
-{$private_data_dir="${PlaScrDefaultBaseDirectory}/web/data/mediawiki"}
 
 if (!(Test-Path $composer_path))
 {Write-Error "Cannot find Composer." -Category NotInstalled
