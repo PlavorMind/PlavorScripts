@@ -2,9 +2,7 @@
 
 Param
 ([string]$branch="master", #Branch for MediaWiki
-[string]$composer_path, #Path of Composer
-[Parameter(Position=0)][string]$dir, #Directory to download MediaWiki
-[string]$php_path) #Path of PHP
+[Parameter(Position=0)][string]$dir) #Directory to download MediaWiki
 
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
 {if (!(."${PSScriptRoot}/../init-script.ps1"))
@@ -14,26 +12,8 @@ else
 {Write-Error "Cannot find init-script.ps1 file." -Category ObjectNotFound
 exit}
 
-if (!$composer_path)
-{if ($IsLinux)
-  {$composer_path="${PlaScrDefaultBaseDirectory}/composer.phar"}
-elseif ($IsWindows)
-  {$composer_path="${PlaScrDefaultBaseDirectory}/php/data/composer.phar"}
-else
-  {Write-Error "Cannot detect default Composer path." -Category NotSpecified
-  exit}
-}
 if (!$dir)
 {$dir="${PlaScrDefaultBaseDirectory}/web/public/wiki/mediawiki"}
-if (!$php_path)
-{$php_path=$PlaScrDefaultPHPPath}
-
-if (!(Test-Path $composer_path))
-{Write-Error "Cannot find Composer." -Category NotInstalled
-exit}
-if (!(Test-Path $php_path))
-{Write-Error "Cannot find PHP." -Category NotInstalled
-exit}
 
 Write-Verbose "Downloading MediaWiki"
 Expand-ArchiveSmart "https://github.com/wikimedia/mediawiki/archive/${branch}.zip" "${PlaScrTempDirectory}/mediawiki"
@@ -41,8 +21,11 @@ if (!(Test-Path "${PlaScrTempDirectory}/mediawiki"))
 {Write-Error "Cannot download MediaWiki." -Category ConnectionError
 exit}
 
-Write-Verbose "Updating dependencies with Composer"
-.$php_path $composer_path update --no-cache --no-dev --ignore-platform-req=composer-plugin-api --working-dir="${PlaScrTempDirectory}/mediawiki"
+Write-Verbose "Downloading external dependencies"
+Expand-ArchiveSmart "https://github.com/wikimedia/mediawiki-vendor/archive/${branch}.zip" "${PlaScrTempDirectory}/mediawiki/vendor"
+if (!(Test-Path "${PlaScrTempDirectory}/mediawiki/vendor"))
+{Write-Error "Cannot download external dependencies." -Category ConnectionError
+exit}
 
 Write-Verbose "Deleting files and directories that are unnecessary for running"
 Remove-Item "${PlaScrTempDirectory}/mediawiki/CODE_OF_CONDUCT.md" -Force
