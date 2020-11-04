@@ -55,7 +55,7 @@ if (!(Test-Path "${PlaScrTempDirectory}/mediawiki-config"))
 {Write-Error "Cannot download configurations." -Category ConnectionError
 exit}
 
-."${PSScriptRoot}/download.ps1" "${PlaScrTempDirectory}/mw-install" -branch $core_branch -composer_path $composer_path -php_path $php_path
+."${PSScriptRoot}/download.ps1" "${PlaScrTempDirectory}/mw-install" -branch $core_branch
 if (Test-Path "${PlaScrTempDirectory}/mw-install")
 {Move-Item "${PlaScrTempDirectory}/mw-install" "${PlaScrTempDirectory}/mediawiki" -Force
 $mediawiki_dir_temp=$mediawiki_dir
