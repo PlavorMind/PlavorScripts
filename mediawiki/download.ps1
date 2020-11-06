@@ -22,6 +22,8 @@ if (!(Test-Path "${PlaScrTempDirectory}/mediawiki"))
 exit}
 
 Write-Verbose "Downloading external dependencies"
+if (Test-Path "${PlaScrTempDirectory}/mediawiki/vendor")
+{Remove-Item "${PlaScrTempDirectory}/mediawiki/vendor" -Force -Recurse}
 Expand-ArchiveSmart "https://github.com/wikimedia/mediawiki-vendor/archive/${branch}.zip" "${PlaScrTempDirectory}/mediawiki/vendor"
 if (!(Test-Path "${PlaScrTempDirectory}/mediawiki/vendor"))
 {Write-Error "Cannot download external dependencies." -Category ConnectionError
