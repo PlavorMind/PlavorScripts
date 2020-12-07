@@ -4,7 +4,7 @@ Param
 ([Parameter(Position=0)][string]$dir, #Directory to install Apache HTTP Server
 [string]$php_dir, #PHP directory
 [switch]$portable, #Install in portable mode
-[string]$version="2.4.43", #Apache HTTP Server version
+[string]$version="2.4.46", #Apache HTTP Server version
 [string]$web_dir) #Web public directory
 
 if (Test-Path "${PSScriptRoot}/../../init-script.ps1")
