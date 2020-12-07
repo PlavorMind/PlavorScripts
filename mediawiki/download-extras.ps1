@@ -87,7 +87,7 @@ foreach ($extra_type in @("extensions","skins"))
       if (Test-Path "${mediawiki_dir}/${extra_type}/${extra}")
         {if ($extra_object."require-composer")
           {Write-Verbose $composer_updating
-          .$php_path $composer_path update --no-cache --no-dev --ignore-platform-req=composer-plugin-api --working-dir="${mediawiki_dir}/${extra_type}/${extra}"}
+          .$php_path $composer_path update --no-cache --no-dev --working-dir="${mediawiki_dir}/${extra_type}/${extra}"}
         }
       else
         {Write-Error $download_failed -Category ConnectionError}
@@ -107,6 +107,6 @@ else
   {Write-Verbose "Copying composer.local.json file"
   Copy-Item $output "${mediawiki_dir}/composer.local.json" -Force}
 Write-Verbose "Updating dependencies with Composer"
-.$php_path $composer_path update --no-cache --no-dev --ignore-platform-req=composer-plugin-api --working-dir=$mediawiki_dir}
+.$php_path $composer_path update --no-cache --no-dev --working-dir=$mediawiki_dir}
 else
 {Write-Error "Cannot download or find composer.local.json file." -Category ObjectNotFound}
