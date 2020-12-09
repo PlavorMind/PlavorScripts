@@ -2,8 +2,7 @@
 
 Param
 ([Parameter(Position=0)][string]$dir, #Directory to install Composer
-[string]$php_path, #Path of PHP
-[switch]$portable) #Install in portable mode
+[string]$php_path) #Path of PHP
 
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
 {if (!(."${PSScriptRoot}/../init-script.ps1"))
@@ -33,22 +32,20 @@ else
 {Write-Error "Cannot download Composer." -Category ConnectionError
 exit}
 
+if (!(Test-Path "${PlaScrDefaultBaseDirectory}/path"))
+{Write-Verbose "Creating a directory for PATH"
+New-Item "${PlaScrDefaultBaseDirectory}/path" -Force -ItemType Directory}
+Write-Verbose "Creating a script for PATH"
+if ($IsWindows)
+{"@echo off" > "${PlaScrDefaultBaseDirectory}/path/composer.cmd"
+"`"${php_path}`" `"${dir}/composer.phar`" %*" >> "${PlaScrDefaultBaseDirectory}/path/composer.cmd"}
+else
+{"#!/bin/bash" > "${PlaScrDefaultBaseDirectory}/path/composer"
+"`"${php_path}`" `"${dir}/composer.phar`" `$*" >> "${PlaScrDefaultBaseDirectory}/path/composer"
+chmod +x "${PlaScrDefaultBaseDirectory}/path/composer"}
+
 if (Test-Path $dir)
 {Write-Warning "Deleting existing Composer directory"
 Remove-Item $dir -Force -Recurse}
 Write-Verbose "Moving Composer directory to destination directory"
 Move-Item "${PlaScrTempDirectory}/composer" $dir -Force
-
-if (!$portable)
-{if (!(Test-Path "${PlaScrDefaultBaseDirectory}/path"))
-  {Write-Verbose "Creating a directory for PATH"
-  New-Item "${PlaScrDefaultBaseDirectory}/path" -Force -ItemType Directory}
-Write-Verbose "Creating a script for PATH"
-if ($IsWindows)
-  {"@echo off" > "${PlaScrDefaultBaseDirectory}/path/composer.cmd"
-  "`"${php_path}`" `"${dir}/composer.phar`" %*" >> "${PlaScrDefaultBaseDirectory}/path/composer.cmd"}
-else
-  {"#!/bin/bash" > "${PlaScrDefaultBaseDirectory}/path/composer"
-  "`"${php_path}`" `"${dir}/composer.phar`" `$*" >> "${PlaScrDefaultBaseDirectory}/path/composer"
-  chmod +x "${PlaScrDefaultBaseDirectory}/path/composer"}
-}
