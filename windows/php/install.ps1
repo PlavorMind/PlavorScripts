@@ -2,7 +2,7 @@
 
 Param
 ([string]$apcu_archive="https://windows.php.net/downloads/pecl/releases/apcu/5.1.19/php_apcu-5.1.19-7.4-ts-vc15-x64.zip", #File path or URL of APCu archive
-[Parameter(Position=0)][string]$dir="C:/plavormind/php", #Directory to install PHP
+[Parameter(Position=0)][string]$dir, #Directory to install PHP
 [string]$php_archive="https://windows.php.net/downloads/releases/php-7.4.13-Win32-vc15-x64.zip", #File path or URL of PHP archive
 [switch]$portable) #Install in portable mode
 
@@ -18,12 +18,15 @@ if (!$IsWindows)
 {Write-Error "Your operating system is not supported."
 exit}
 
+if (!$dir)
+{$dir="${PlaScrDefaultBaseDirectory}/php"}
+
 if (!($portable -or (Test-AdminPermission)))
 {Write-Error "This script must be run as administrator unless you install in portable mode." -Category PermissionDenied
 exit}
 
-if (Test-Path "${PSScriptRoot}/../../filter-php-ini.ps1")
-{."${PSScriptRoot}/../../filter-php-ini.ps1" -destpath "${PlaScrTempDirectory}/filtered-php.ini"
+if (Test-Path "${PlaScrDirectory}/filter-php-ini.ps1")
+{."${PlaScrDirectory}/filter-php-ini.ps1" -destpath "${PlaScrTempDirectory}/filtered-php.ini"
 if (!(Test-Path "${PlaScrTempDirectory}/filtered-php.ini"))
   {exit}
 }
@@ -56,11 +59,6 @@ Invoke-WebRequest "https://curl.haxx.se/ca/cacert.pem" -DisableKeepAlive -OutFil
 if (!(Test-Path "${PlaScrTempDirectory}/php/data/cacert.pem"))
 {Write-Error "Cannot download CA certificate." -Category ConnectionError}
 
-Write-Verbose "Downloading Composer"
-Invoke-WebRequest "https://getcomposer.org/composer-1.phar" -DisableKeepAlive -OutFile "${PlaScrTempDirectory}/php/data/composer.phar"
-if (!(Test-Path "${PlaScrTempDirectory}/php/data/composer.phar"))
-{Write-Error "Cannot download Composer." -Category ConnectionError}
-
 Write-Verbose "Copying install data"
 Copy-Item "${PSScriptRoot}/install-data/start.ps1" "${PlaScrTempDirectory}/php/" -Force
 Copy-Item "${PSScriptRoot}/install-data/stop.ps1" "${PlaScrTempDirectory}/php/" -Force
@@ -73,7 +71,6 @@ Remove-Item "${PlaScrTempDirectory}/php/php.ini-production" -Force
 Remove-Item "${PlaScrTempDirectory}/php/README.md" -Force
 Remove-Item "${PlaScrTempDirectory}/php/readme-redist-bins.txt" -Force
 Remove-Item "${PlaScrTempDirectory}/php/snapshot.txt" -Force
-Remove-Item "${PlaScrTempDirectory}/php/logs" -Force -Recurse
 
 if (Test-Path $dir)
 {Write-Warning "Uninstalling existing PHP"
