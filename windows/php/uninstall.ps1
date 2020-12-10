@@ -37,9 +37,15 @@ if (Get-Process "php-win" -ErrorAction Ignore)
 if (Get-Process "phpdbg" -ErrorAction Ignore)
 {Stop-Process -Force -Name "phpdbg"}
 
-if (!$portable -and (Get-ScheduledTask "PHP CGI FastCGI" -ErrorAction Ignore))
-{Write-Verbose "Deleting the scheduled task"
-Unregister-ScheduledTask "PHP CGI FastCGI" -Confirm:$false}
+if (!$portable)
+{if (Test-Path "${PlaScrDefaultBaseDirectory}/path/php.cmd")
+  {Write-Verbose "Deleting the script for PATH"
+  Remove-Item "${PlaScrDefaultBaseDirectory}/path/php.cmd" -Force}
+
+if (Get-ScheduledTask "PHP CGI FastCGI" -ErrorAction Ignore)
+  {Write-Verbose "Deleting the scheduled task"
+  Unregister-ScheduledTask "PHP CGI FastCGI" -Confirm:$false}
+}
 
 Write-Verbose "Deleting PHP directory"
 Remove-Item $dir -Force -Recurse
