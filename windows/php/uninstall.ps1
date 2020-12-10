@@ -1,7 +1,7 @@
 #Uninstalls PHP.
 
 Param
-([Parameter(Position=0)][string]$dir="C:/plavormind/php", #PHP directory
+([Parameter(Position=0)][string]$dir, #PHP directory
 [switch]$portable) #Uninstall in portable mode
 
 if (Test-Path "${PSScriptRoot}/../../init-script.ps1")
@@ -15,6 +15,9 @@ exit}
 if (!$IsWindows)
 {Write-Error "Your operating system is not supported."
 exit}
+
+if (!$dir)
+{$dir="${PlaScrDefaultBaseDirectory}/php"}
 
 if (!($portable -or (Test-AdminPermission)))
 {Write-Error "This script must be run as administrator unless you uninstall in portable mode." -Category PermissionDenied
