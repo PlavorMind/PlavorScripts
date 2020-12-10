@@ -72,6 +72,14 @@ Remove-Item "${PlaScrTempDirectory}/php/README.md" -Force
 Remove-Item "${PlaScrTempDirectory}/php/readme-redist-bins.txt" -Force
 Remove-Item "${PlaScrTempDirectory}/php/snapshot.txt" -Force
 
+if (!$portable)
+{if (!(Test-Path "${PlaScrDefaultBaseDirectory}/path"))
+  {Write-Verbose "Creating a directory for PATH"
+  New-Item "${PlaScrDefaultBaseDirectory}/path" -Force -ItemType Directory}
+Write-Verbose "Creating a script for PATH"
+"@echo off" > "${PlaScrDefaultBaseDirectory}/path/composer.cmd"
+"`"${dir}/php.exe`" %*" >> "${PlaScrDefaultBaseDirectory}/path/composer.cmd"}
+
 if (Test-Path $dir)
 {Write-Warning "Uninstalling existing PHP"
 if ($portable)
