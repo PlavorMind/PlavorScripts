@@ -72,14 +72,6 @@ Remove-Item "${PlaScrTempDirectory}/php/README.md" -Force
 Remove-Item "${PlaScrTempDirectory}/php/readme-redist-bins.txt" -Force
 Remove-Item "${PlaScrTempDirectory}/php/snapshot.txt" -Force
 
-if (!$portable)
-{if (!(Test-Path "${PlaScrDefaultBaseDirectory}/path"))
-  {Write-Verbose "Creating a directory for PATH"
-  New-Item "${PlaScrDefaultBaseDirectory}/path" -Force -ItemType Directory}
-Write-Verbose "Creating a script for PATH"
-"@echo off" > "${PlaScrDefaultBaseDirectory}/path/composer.cmd"
-"`"${dir}/php.exe`" %*" >> "${PlaScrDefaultBaseDirectory}/path/composer.cmd"}
-
 if (Test-Path $dir)
 {Write-Warning "Uninstalling existing PHP"
 if ($portable)
@@ -91,4 +83,11 @@ Write-Verbose "Moving PHP directory to destination directory"
 Move-Item "${PlaScrTempDirectory}/php" $dir -Force
 
 if (!$portable)
-{."${PSScriptRoot}/scheduled-task.ps1" -dir $dir}
+{if (!(Test-Path "${PlaScrDefaultBaseDirectory}/path"))
+  {Write-Verbose "Creating a directory for PATH"
+  New-Item "${PlaScrDefaultBaseDirectory}/path" -Force -ItemType Directory}
+Write-Verbose "Creating a script for PATH"
+"@echo off" > "${PlaScrDefaultBaseDirectory}/path/composer.cmd"
+"`"${dir}/php.exe`" %*" >> "${PlaScrDefaultBaseDirectory}/path/composer.cmd"
+
+."${PSScriptRoot}/scheduled-task.ps1" -dir $dir}
