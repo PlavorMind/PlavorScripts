@@ -87,7 +87,7 @@ if (!$portable)
   {Write-Verbose "Creating a directory for PATH"
   New-Item "${PlaScrDefaultBaseDirectory}/path" -Force -ItemType Directory}
 Write-Verbose "Creating a script for PATH"
-"@echo off" > "${PlaScrDefaultBaseDirectory}/path/composer.cmd"
-"`"${dir}/php.exe`" %*" >> "${PlaScrDefaultBaseDirectory}/path/composer.cmd"
+"@echo off" > "${PlaScrDefaultBaseDirectory}/path/php.cmd"
+"`"${dir}/php.exe`" %*" >> "${PlaScrDefaultBaseDirectory}/path/php.cmd"
 
 ."${PSScriptRoot}/scheduled-task.ps1" -dir $dir}
