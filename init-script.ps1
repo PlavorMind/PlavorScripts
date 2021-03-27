@@ -1,6 +1,6 @@
-#Initializes functions, variables, etc. for PlavorScripts.
+# Initializes functions, variables, etc. for PlavorScripts.
 
-#Extract an archive and move an extract item to destination path if only 1 item is extracted, otherwise move extracted items into destination directory.
+# Extract an archive and move an extract item to destination path if only 1 item is extracted, otherwise move extracted items into destination directory.
 function Expand-ArchiveSmart
 {Param
 ([Parameter(Mandatory=$true,Position=1)][string]$DestinationPath, #Path to save extracted item if archive only contains 1 item, otherwise directory to save extracted items
@@ -28,7 +28,7 @@ else
   {Write-Error "Cannot download or find ${Path} archive." -Category ObjectNotFound}
 }
 
-#Downloads a file to temporary directory and returns path of downloaded file if URL is specified, otherwise returns specified item back if it exists.
+# Downloads a file to temporary directory and returns path of downloaded file if URL is specified, otherwise returns specified item back if it exists.
 function Get-FilePathFromURL
 {Param([Parameter(Mandatory=$true,Position=0)][string]$URL) #File path or URL to check
 
@@ -46,7 +46,7 @@ elseif (Test-Path $URL)
   {return $URL}
 return $false}
 
-#Get an item from an archive.
+# Get an item from an archive.
 function Get-ItemFromArchive
 {Param
 ([string]$Archive="https://github.com/PlavorMind/Configurations/archive/master.zip", #File path or URL of archive
@@ -64,8 +64,8 @@ if (Test-Path "${PlaScrTempDirectory}/get-itemfromarchive-extracts")
   Remove-Item "${PlaScrTempDirectory}/get-itemfromarchive-extracts" -Force -Recurse}
 }
 
-#Creates a shortcut.
-#This function only supports Windows.
+# Creates a shortcut.
+# This function only supports Windows.
 function New-Shortcut
 {Param
 ([Parameter(Position=2)][string]$Arguments, #Arguments to use when running app with shortcut
@@ -89,7 +89,7 @@ else
   {Write-Error "Cannot find the app." -Category ObjectNotFound}
 }
 
-#Returns whether the user has administrator permission on Windows, or root permission on Linux and macOS.
+# Returns whether the user has administrator permission on Windows, or root permission on Linux and macOS.
 function Test-AdminPermission
 {if ($IsWindows)
   {$permissions=New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
@@ -102,23 +102,29 @@ else
   }
 }
 
-if ($PSVersionTable."PSVersion"."Major" -lt 7)
-{Write-Error "PlavorScripts require PowerShell 7 or newer." -Category NotInstalled
-return $false}
+# Check requirements
+if ($PSVersionTable.PSVersion.Major -lt 7)
+  {throw 'PlavorScripts does not support PowerShell 6 or older.'}
+
+if ($IsMacOS)
+  {throw 'PlavorScripts does not support macOS.'}
+elseif ($IsWindows -and ([System.Environment]::OSVersion.Version.Major -lt 10))
+  {throw 'PlavorScripts does not support Windows NT 6.3 (Windows 8.1) or older.'}
+
+# Initialize variables
+$PlaScrDirectory=$PSScriptRoot
 
 if ($IsLinux)
-{$PlaScrDefaultBaseDirectory="/plavormind"
-$PlaScrDefaultPHPPath="/usr/bin/php"
-$PlaScrTempDirectory="/tmp"}
-elseif ($IsMacOS)
-{$PlaScrDefaultBaseDirectory="/plavormind"
-$PlaScrTempDirectory="/private/tmp"}
+  {$PlaScrDefaultBaseDirectory='/plavormind'
+  $PlaScrDefaultPHPPath='/usr/bin/php'
+  $PlaScrTempDirectory='/tmp'}
 elseif ($IsWindows)
-{$PlaScrDefaultBaseDirectory="C:/plavormind"
-$PlaScrDefaultPHPPath="${PlaScrDefaultBaseDirectory}/php/php.exe"
-$PlaScrTempDirectory=$Env:TEMP}
+  {$PlaScrDefaultBaseDirectory='C:/plavormind'
+  $PlaScrDefaultPHPPath="${PlaScrDefaultBaseDirectory}/php/php.exe"
+  $PlaScrTempDirectory=$Env:TEMP}
 
-#For suppressing warnings in VSCodium
+# Suppress warnings in VSCodium
 $PlaScrDefaultPHPPath | Out-Null
+$PlaScrDirectory | Out-Null
 
 return $true
