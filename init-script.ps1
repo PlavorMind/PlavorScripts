@@ -89,19 +89,6 @@ else
   {Write-Error "Cannot find the app." -Category ObjectNotFound}
 }
 
-# Returns whether the user has administrator permission on Windows, or root permission on Linux and macOS.
-function Test-AdminPermission
-{if ($IsWindows)
-  {$permissions=New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
-  return $permissions.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)}
-else
-  {if ((id --user) -eq 0)
-    {return $true}
-  else
-    {return $false}
-  }
-}
-
 # Check requirements
 if ($PSVersionTable.PSVersion.Major -lt 7)
   {throw 'PlavorScripts does not support PowerShell 6 or older.'}
@@ -122,6 +109,8 @@ elseif ($IsWindows)
   {$PlaScrDefaultBaseDirectory='C:/plavormind'
   $PlaScrDefaultPHPPath="${PlaScrDefaultBaseDirectory}/php/php.exe"
   $PlaScrTempDirectory=$Env:TEMP}
+
+."${PlaScrDirectory}/src/common-functions.ps1"
 
 # Suppress warnings in VSCodium
 $PlaScrDefaultPHPPath | Out-Null
