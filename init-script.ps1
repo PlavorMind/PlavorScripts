@@ -64,31 +64,6 @@ if (Test-Path "${PlaScrTempDirectory}/get-itemfromarchive-extracts")
   Remove-Item "${PlaScrTempDirectory}/get-itemfromarchive-extracts" -Force -Recurse}
 }
 
-# Creates a shortcut.
-# This function only supports Windows.
-function New-Shortcut
-{Param
-([Parameter(Position=2)][string]$Arguments, #Arguments to use when running app with shortcut
-[Parameter(Mandatory=$true,Position=0)][string]$Path, #Path to create shortcut
-[Parameter(Mandatory=$true,Position=1)][string]$TargetPath) #Path of app to run with shortcut
-
-if (Test-Path $TargetPath)
-  {if ($IsWindows)
-    {$shortcut=(New-Object "WScript.Shell").CreateShortcut($Path)
-    $shortcut.TargetPath=$TargetPath
-    if ($Arguments)
-      {$shortcut.Arguments=$Arguments
-      Write-Verbose "Creating a shortcut to ${TargetPath} ${Arguments} at ${Path}"}
-    else
-      {Write-Verbose "Creating a shortcut to ${TargetPath} at ${Path}"}
-    $shortcut.Save()}
-  else
-    {Write-Error "Your operating system is not supported." -Category NotImplemented}
-  }
-else
-  {Write-Error "Cannot find the app." -Category ObjectNotFound}
-}
-
 # Check requirements
 if ($PSVersionTable.PSVersion.Major -lt 7)
   {throw 'PlavorScripts does not support PowerShell 6 or older.'}
