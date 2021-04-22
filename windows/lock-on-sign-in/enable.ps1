@@ -1,29 +1,16 @@
-#Enables locking when a user signs in. Useful when using automatic login.
-
-Param([Parameter()][switch]$allusers) #Apply to all users
+# Enables automatically locking on sign in. Useful when using automatic login.
 
 if (Test-Path "${PSScriptRoot}/../../init-script.ps1")
-{if (!(."${PSScriptRoot}/../../init-script.ps1"))
-  {exit}
-}
+  {."${PSScriptRoot}/../../init-script.ps1" | Out-Null}
 else
-{Write-Error "Cannot find init-script.ps1 file." -Category ObjectNotFound
-exit}
+  {throw 'Cannot find init-script.ps1 file.'}
 
+# Check requirements
 if (!$IsWindows)
-{Write-Error "Your operating system is not supported."
-exit}
+  {throw 'This script does not support operating systems other than Windows.'}
 
-if ($allusers)
-{if (!(Test-AdminPermission))
-  {Write-Error "This script must be run as administrator to apply to all users." -Category PermissionDenied
-  exit}
-$path="C:/ProgramData/Microsoft/Windows/Start Menu/Programs/Startup/Lock.lnk"}
+if (Test-Path "${Env:APPDATA}/Microsoft/Windows/Start Menu/Programs/Startup/Lock.lnk")
+  {Write-Error 'Automatically locking on sign in is already enabled.'}
 else
-{$path="${Env:APPDATA}/Microsoft/Windows/Start Menu/Programs/Startup/Lock.lnk"}
-
-if (Test-Path $path)
-{Write-Error "Lock on Sign In is already enabled."}
-else
-{Write-Verbose "Enabling Lock on Sign In"
-New-Shortcut $path "C:/Windows/System32/rundll32.exe" -Arguments "user32.dll,LockWorkStation"}
+  {'Enabling automatically locking on sign in'
+  New-Shortcut "${Env:APPDATA}/Microsoft/Windows/Start Menu/Programs/Startup/Lock.lnk" 'C:/Windows/System32/rundll32.exe' -Parameters 'user32.dll, LockWorkStation'}
