@@ -1,29 +1,16 @@
-#Disables locking when a user signs in.
-
-Param([Parameter()][switch]$allusers) #Apply to all users
+# Disables automatically locking on sign in.
 
 if (Test-Path "${PSScriptRoot}/../../init-script.ps1")
-{if (!(."${PSScriptRoot}/../../init-script.ps1"))
-  {exit}
-}
+  {."${PSScriptRoot}/../../init-script.ps1" | Out-Null}
 else
-{Write-Error "Cannot find init-script.ps1 file." -Category ObjectNotFound
-exit}
+  {throw 'Cannot find init-script.ps1 file.'}
 
+# Check requirements
 if (!$IsWindows)
-{Write-Error "Your operating system is not supported."
-exit}
+  {throw 'This script does not support operating systems other than Windows.'}
 
-if ($allusers)
-{if (!(Test-AdminPermission))
-  {Write-Error "This script must be run as administrator to apply to all users." -Category PermissionDenied
-  exit}
-$path="C:/ProgramData/Microsoft/Windows/Start Menu/Programs/Startup/Lock.lnk"}
+if (Test-Path "${Env:APPDATA}/Microsoft/Windows/Start Menu/Programs/Startup/Lock.lnk")
+  {'Disabling automatically locking on sign in'
+  Remove-Item "${Env:APPDATA}/Microsoft/Windows/Start Menu/Programs/Startup/Lock.lnk" -Force}
 else
-{$path="${Env:APPDATA}/Microsoft/Windows/Start Menu/Programs/Startup/Lock.lnk"}
-
-if (Test-Path $path)
-{Write-Verbose "Disabling Lock on Sign In"
-Remove-Item $path -Force}
-else
-{Write-Error "Lock on Sign In is not enabled." -Category NotEnabled}
+  {Write-Error 'Automatically locking on sign in is not enabled.' -Category NotEnabled}
