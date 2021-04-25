@@ -74,16 +74,16 @@ elseif ($IsWindows -and ([System.Environment]::OSVersion.Version.Major -lt 10))
   {throw 'PlavorScripts does not support Windows NT 6.3 (Windows 8.1) or older.'}
 
 # Initialize variables
-$PlaScrDirectory=$PSScriptRoot
+$PlaScrDirectory = $PSScriptRoot
 
 if ($IsLinux)
-  {$PlaScrDefaultBaseDirectory='/plavormind'
-  $PlaScrDefaultPHPPath='/usr/bin/php'
-  $PlaScrTempDirectory='/tmp'}
+  {$PlaScrDefaultBaseDirectory = '/plavormind'
+  $PlaScrDefaultPHPPath = '/usr/bin/php'
+  $PlaScrTempDirectory = '/tmp'}
 elseif ($IsWindows)
-  {$PlaScrDefaultBaseDirectory='C:/plavormind'
-  $PlaScrDefaultPHPPath="${PlaScrDefaultBaseDirectory}/php/php.exe"
-  $PlaScrTempDirectory=$Env:TEMP}
+  {$PlaScrDefaultBaseDirectory = 'C:/plavormind'
+  $PlaScrDefaultPHPPath = "${PlaScrDefaultBaseDirectory}/php/php.exe"
+  $PlaScrTempDirectory = $Env:TEMP}
 
 ."${PlaScrDirectory}/src/common-functions.ps1"
 
