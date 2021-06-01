@@ -1,27 +1,32 @@
-#Upgrades MediaWiki.
+# Upgrades MediaWiki.
+# Hacky fix
 
 Param
-([string]$composer_path, #Path of Composer
-[string]$core_branch, #Branch for MediaWiki core
-[string]$data_dir, #Data directory
-[string]$extra_branch="master", #Branch for extensions and skins
-[string]$extras_json="${HOME}/OneDrive/Documents/extras.json", #File path or URL of JSON file for downloading extensions and skins
-[Parameter(Position=0)][string]$mediawiki_dir, #MediaWiki directory
-[string]$php_path) #Path of PHP
+# Path of Composer
+([string]$composer_path,
+# Branch for MediaWiki core
+[string]$core_branch,
+# Data directory
+[string]$data_dir,
+# Branch for extensions and skins
+[string]$extra_branch = 'master',
+# File path or URL of JSON file for downloading extensions and skins
+[string]$extras_json = "${HOME}/OneDrive/Documents/mediawiki-extras.json",
+# MediaWiki directory
+[Parameter(Position=0)][string]$mediawiki_dir,
+# Path of PHP
+[string]$php_path)
 
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
-{if (!(."${PSScriptRoot}/../init-script.ps1"))
-  {exit}
-}
+  {."${PSScriptRoot}/../init-script.ps1" | Out-Null}
 else
-{Write-Error "Cannot find init-script.ps1 file." -Category ObjectNotFound
-exit}
+  {throw 'Cannot find init-script.ps1 file.'}
 
 if (!$composer_path)
 {if ($IsLinux)
   {$composer_path="${PlaScrDefaultBaseDirectory}/composer.phar"}
 elseif ($IsWindows)
-  {$composer_path="${PlaScrDefaultBaseDirectory}/php/data/composer.phar"}
+  {$composer_path="${PlaScrDefaultBaseDirectory}/composer/composer.phar"}
 else
   {Write-Error "Cannot detect default Composer path." -Category NotSpecified
   exit}
