@@ -1,19 +1,19 @@
-#Downloads MediaWiki.
+# Downloads MediaWiki.
+# Hacky fix
 
 Param
-([string]$branch="master", #Branch for MediaWiki
-[Parameter(Position=0)][string]$dir) #Directory to download MediaWiki
+# Branch for MediaWiki
+([string]$branch = 'master',
+# Directory to download MediaWiki
+[Parameter(Position=0)][string]$dir)
 
 if (Test-Path "${PSScriptRoot}/../init-script.ps1")
-{if (!(."${PSScriptRoot}/../init-script.ps1"))
-  {exit}
-}
+  {."${PSScriptRoot}/../init-script.ps1" | Out-Null}
 else
-{Write-Error "Cannot find init-script.ps1 file." -Category ObjectNotFound
-exit}
+  {throw 'Cannot find init-script.ps1 file.'}
 
 if (!$dir)
-{$dir="${PlaScrDefaultBaseDirectory}/web/public/wiki/mediawiki"}
+  {$dir = "${PlaScrDefaultBaseDirectory}/web/public/wiki/mediawiki"}
 
 Write-Verbose "Downloading MediaWiki"
 Expand-ArchiveSmart "https://github.com/wikimedia/mediawiki/archive/${branch}.zip" "${PlaScrTempDirectory}/mediawiki"
