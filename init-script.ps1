@@ -38,7 +38,9 @@ if ($URL -match "^https?:\/\/")
   else
     {$filename="get-filepathfromurl"}
 
-  Invoke-WebRequest $URL -DisableKeepAlive -OutFile "${PlaScrTempDirectory}/${filename}"
+  # Hacky fix
+  #Invoke-WebRequest $URL -DisableKeepAlive -OutFile "${PlaScrTempDirectory}/${filename}"
+  Get-FileFromURL $URL "${PlaScrTempDirectory}/${filename}"
   if (Test-Path "${PlaScrTempDirectory}/${filename}")
     {return "${PlaScrTempDirectory}/${filename}"}
   }
