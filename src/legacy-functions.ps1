@@ -8,25 +8,25 @@ function Expand-ArchiveSmart
 
   $output = Get-FilePathFromURL $Path
 
-  if ($output)
-    {Write-Verbose "Extracting ${Path} archive"
-    Expand-Archive $output "${PlaScrTempDirectory}/expand-archivesmart-extracts/" -Force
+  if (!$output)
+    {Write-Error "Cannot download or find ${Path} archive." -Category ObjectNotFound
+    return}
 
-    if ((Get-ChildItem "${PlaScrTempDirectory}/expand-archivesmart-extracts" -Force -Name | Measure-Object).Count -eq 1)
-      {Write-Verbose 'Moving an extracted item to destination path'
-      Move-Item "${PlaScrTempDirectory}/expand-archivesmart-extracts/*" $DestinationPath -Force
-      Write-Verbose 'Deleting a temporary directory'
-      Remove-Item "${PlaScrTempDirectory}/expand-archivesmart-extracts" -Force -Recurse}
-    else
-      {Write-Verbose 'Moving extracted items to destination directory'
-      Move-Item "${PlaScrTempDirectory}/expand-archivesmart-extracts" $DestinationPath -Force}
+  Write-Verbose "Extracting ${Path} archive"
+  Expand-Archive $output "${PlaScrTempDirectory}/expand-archivesmart-extracts/" -Force
 
-    if ($output -like "${PlaScrTempDirectory}*")
-      {Write-Verbose 'Deleting a temporary file'
-      Remove-Item $output -Force}
-    }
+  if ((Get-ChildItem "${PlaScrTempDirectory}/expand-archivesmart-extracts" -Force -Name | Measure-Object).Count -eq 1)
+    {Write-Verbose 'Moving an extracted item to destination path'
+    Move-Item "${PlaScrTempDirectory}/expand-archivesmart-extracts/*" $DestinationPath -Force
+    Write-Verbose 'Deleting a temporary directory'
+    Remove-Item "${PlaScrTempDirectory}/expand-archivesmart-extracts" -Force -Recurse}
   else
-    {Write-Error "Cannot download or find ${Path} archive." -Category ObjectNotFound}
+    {Write-Verbose 'Moving extracted items to destination directory'
+    Move-Item "${PlaScrTempDirectory}/expand-archivesmart-extracts" $DestinationPath -Force}
+
+  if ($output -like "${PlaScrTempDirectory}*")
+    {Write-Verbose 'Deleting a temporary file'
+    Remove-Item $output -Force}
   }
 
 # Downloads a file to temporary directory and returns path of downloaded file if URL is specified, otherwise returns specified item back if it exists.
@@ -41,7 +41,6 @@ function Get-FilePathFromURL
     else
       {$filename = 'get-filepathfromurl'}
 
-    # Hacky fix
     Get-FileFromURL $URL "${PlaScrTempDirectory}/${filename}"
 
     if (Test-Path "${PlaScrTempDirectory}/${filename}")
@@ -64,13 +63,14 @@ function Get-ItemFromArchive
 
   Expand-ArchiveSmart $Archive "${PlaScrTempDirectory}/get-itemfromarchive-extracts"
 
-  if (Test-Path "${PlaScrTempDirectory}/get-itemfromarchive-extracts")
-    {if (Test-Path "${PlaScrTempDirectory}/get-itemfromarchive-extracts/${PathInArchive}")
-      {Write-Verbose 'Moving an item'
-      Move-Item "${PlaScrTempDirectory}/get-itemfromarchive-extracts/${PathInArchive}" $DestinationPath -Force}
-    else
-      {Write-Error 'Cannot find the item.' -Category ObjectNotFound}
+  if (!(Test-Path "${PlaScrTempDirectory}/get-itemfromarchive-extracts"))
+    {return}
 
-    Write-Verbose 'Deleting a temporary directory'
-    Remove-Item "${PlaScrTempDirectory}/get-itemfromarchive-extracts" -Force -Recurse}
-  }
+  if (Test-Path "${PlaScrTempDirectory}/get-itemfromarchive-extracts/${PathInArchive}")
+    {Write-Verbose 'Moving an item'
+    Move-Item "${PlaScrTempDirectory}/get-itemfromarchive-extracts/${PathInArchive}" $DestinationPath -Force}
+  else
+    {Write-Error 'Cannot find the item.' -Category ObjectNotFound}
+
+  Write-Verbose 'Deleting a temporary directory'
+  Remove-Item "${PlaScrTempDirectory}/get-itemfromarchive-extracts" -Force -Recurse}
