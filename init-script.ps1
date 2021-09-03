@@ -24,7 +24,7 @@ if ($IsLinux) {
 elseif ($IsWindows) {
   $PlaScrDefaultBaseDirectory = 'C:/plavormind'
   $PlaScrDefaultPHPPath = "${PlaScrDefaultBaseDirectory}/php/php.exe"
-  $PlaScrTempDirectory = $Env:TEMP
+  $PlaScrTempDirectory = 'Temp:'
   }
 
 # Initialize environment variables
