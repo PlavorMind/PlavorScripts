@@ -1,5 +1,50 @@
 <#
 .description
+Extracts an archive.
+#>
+function Expand-ArchiveEnhanced {
+  param (
+      # Path to save extracted items
+      [Parameter(Mandatory = $true, Position = 1)][string]$DestinationPath,
+      # Archive path
+      [Parameter(Mandatory = $true, Position = 0)][string]$Path
+    )
+
+  if (!(Test-Path $Path)) {
+    Write-Error 'Cannot find the archive.' -Category ObjectNotFound
+    return
+    }
+
+  if ($Path -match '\.tar(\.[gx]z)?$') {
+    $tar_additional_parameters = @()
+
+    if ($VerbosePreference -eq 'Continue') {
+      $tar_additional_parameters += '-v'
+      }
+
+    switch ($Matches[1]) {
+      '.gz' {
+        $tar_additional_parameters += '-z'
+        }
+      '.xz' {
+        $tar_additional_parameters += '-J'
+        }
+      }
+
+    Write-Verbose "Extracting ${Path} archive"
+    tar -C $DestinationPath -f $Path -mx @tar_additional_parameters
+    }
+  elseif ((Split-Path $Path -Extension) -eq '.zip') {
+    Write-Verbose "Extracting ${Path} archive"
+    Expand-Archive $Path $DestinationPath -Force
+    }
+  else {
+    Write-Error 'Expand-ArchiveEnhanced does not support extracting this type of archive.' -Category NotImplemented
+    }
+  }
+
+<#
+.description
 Downloads a file from specified URL.
 #>
 function Get-FileFromURL {
