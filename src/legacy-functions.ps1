@@ -5,14 +5,14 @@ function Expand-ArchiveSmart {
     [Parameter(Mandatory = $true, Position = 1)][string]$DestinationPath,
     # File path or URL of archive
     [Parameter(Mandatory = $true, Position = 0)][string]$Path
-    )
+  )
 
   $output = Get-FilePathFromURL $Path
 
   if (!$output) {
     Write-Error "Cannot download or find ${Path} archive." -Category ObjectNotFound
     return
-    }
+  }
 
   Write-Verbose "Extracting ${Path} archive"
   Expand-Archive $output "${PlaScrTempDirectory}/expand-archivesmart-extracts/" -Force
@@ -22,45 +22,45 @@ function Expand-ArchiveSmart {
     Move-Item "${PlaScrTempDirectory}/expand-archivesmart-extracts/*" $DestinationPath -Force
     Write-Verbose 'Deleting a temporary directory'
     Remove-Item "${PlaScrTempDirectory}/expand-archivesmart-extracts" -Force -Recurse
-    }
+  }
   else {
     Write-Verbose 'Moving extracted items to destination directory'
     Move-Item "${PlaScrTempDirectory}/expand-archivesmart-extracts" $DestinationPath -Force
-    }
+  }
 
   if ($output -like "${PlaScrTempDirectory}*") {
     Write-Verbose 'Deleting a temporary file'
     Remove-Item $output -Force
-    }
   }
+}
 
 # Downloads a file to temporary directory and returns path of downloaded file if URL is specified, otherwise returns specified item back if it exists.
 function Get-FilePathFromURL {
   param (
     # File path or URL to check
     [Parameter(Mandatory = $true, Position = 0)][string]$URL
-    )
+  )
 
   if ($URL -match '^https?:\/\/') {
     if ($URL -match "[^\\/:*?`"<>|]+\.[^\\/:*?`"<>|]+$") {
       $filename = $Matches[0]
-      }
+    }
     else {
       $filename = 'get-filepathfromurl'
-      }
+    }
 
     Get-FileFromURL $URL "${PlaScrTempDirectory}/${filename}"
 
     if (Test-Path "${PlaScrTempDirectory}/${filename}") {
       return "${PlaScrTempDirectory}/${filename}"
-      }
     }
+  }
   elseif (Test-Path $URL) {
     return $URL
-    }
+  }
 
   return $false
-  }
+}
 
 # Get an item from an archive.
 function Get-ItemFromArchive {
@@ -71,22 +71,22 @@ function Get-ItemFromArchive {
     [Parameter(Mandatory = $true, Position = 1)][string]$DestinationPath,
     # Path of item in archive
     [Parameter(Mandatory = $true, Position = 0)][string]$PathInArchive
-    )
+  )
 
   Expand-ArchiveSmart $Archive "${PlaScrTempDirectory}/get-itemfromarchive-extracts"
 
   if (!(Test-Path "${PlaScrTempDirectory}/get-itemfromarchive-extracts")) {
     return
-    }
+  }
 
   if (Test-Path "${PlaScrTempDirectory}/get-itemfromarchive-extracts/${PathInArchive}") {
     Write-Verbose 'Moving an item'
     Move-Item "${PlaScrTempDirectory}/get-itemfromarchive-extracts/${PathInArchive}" $DestinationPath -Force
-    }
+  }
   else {
     Write-Error 'Cannot find the item.' -Category ObjectNotFound
-    }
+  }
 
   Write-Verbose 'Deleting a temporary directory'
   Remove-Item "${PlaScrTempDirectory}/get-itemfromarchive-extracts" -Force -Recurse
-  }
+}
