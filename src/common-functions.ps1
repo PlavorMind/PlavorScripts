@@ -16,26 +16,26 @@ function Expand-ArchiveEnhanced {
   }
 
   if ($Path -match '\.tar(\.[gx]z)?$') {
-    $tar_additional_parameters = @()
+    $additional_parameters = @()
 
     if ($VerbosePreference -eq 'Continue') {
-      $tar_additional_parameters += '-v'
+      $additional_parameters += '-v'
     }
 
     switch ($Matches[1]) {
       '.gz' {
-        $tar_additional_parameters += '-z'
+        $additional_parameters += '-z'
       }
       '.xz' {
-        $tar_additional_parameters += '-J'
+        $additional_parameters += '-J'
       }
     }
 
-    Write-Verbose "Extracting ${Path} archive"
-    tar -C $DestinationPath -f $Path -mx @tar_additional_parameters
+    Write-Verbose "Extracting $Path archive"
+    tar -C $DestinationPath -f $Path -mx @additional_parameters
   }
   elseif ((Split-Path $Path -Extension) -eq '.zip') {
-    Write-Verbose "Extracting ${Path} archive"
+    Write-Verbose "Extracting $Path archive"
     Expand-Archive $Path $DestinationPath -Force
   }
   else {
@@ -57,7 +57,7 @@ function Get-FileFromURL {
 
   $ProgressPreference_temp = $ProgressPreference
   $ProgressPreference = 'SilentlyContinue'
-  Write-Verbose "Downloading a file from ${URL}"
+  Write-Verbose "Downloading a file from $URL"
   Invoke-WebRequest $URL -MaximumRetryCount 2 -OutFile $Path -RetryIntervalSec 3
   $ProgressPreference = $ProgressPreference_temp
 }
@@ -80,8 +80,7 @@ function New-Shortcut {
     Write-Error 'New-Shortcut does not support operating systems other than Windows.'
     return
   }
-
-  if (!(Test-Path $Target)) {
+  elseif (!(Test-Path $Target)) {
     Write-Error 'Cannot find the target.' -Category ObjectNotFound
     return
   }
@@ -90,12 +89,12 @@ function New-Shortcut {
   $shortcut = (New-Object -ComObject 'WScript.Shell').CreateShortcut($Path)
   $shortcut.TargetPath = $Target
 
-  if ($Parameters) {
+  if ($null -ne $Parameters) {
     $shortcut.Arguments = $Parameters
   }
 
-  $target_display = $Parameters ? "${Target} ${Parameters}" : $Target
-  Write-Verbose "Creating a shortcut to ${target_display} at ${Path}"
+  $target_display = $null -eq $Parameters ? $Target : "$Target $Parameters"
+  Write-Verbose "Creating a shortcut to $target_display at $Path"
   $shortcut.Save()
 }
 
