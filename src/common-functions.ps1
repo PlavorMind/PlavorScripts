@@ -16,23 +16,23 @@ function Expand-ArchiveEnhanced {
   }
 
   if ($Path -match '\.tar(\.[gx]z)?$') {
-    $additional_parameters = @()
+    $extraParameters = @()
 
     if ($VerbosePreference -eq 'Continue') {
-      $additional_parameters += '-v'
+      $extraParameters += '-v'
     }
 
     switch ($Matches[1]) {
       '.gz' {
-        $additional_parameters += '-z'
+        $extraParameters += '-z'
       }
       '.xz' {
-        $additional_parameters += '-J'
+        $extraParameters += '-J'
       }
     }
 
     Write-Verbose "Extracting $Path archive"
-    tar -C $DestinationPath -f $Path -mx @additional_parameters
+    tar -C $DestinationPath -f $Path -mx @extraParameters
   }
   elseif ((Split-Path $Path -Extension) -eq '.zip') {
     Write-Verbose "Extracting $Path archive"
@@ -85,7 +85,7 @@ function New-Shortcut {
     return
   }
 
-  # -ComObject parameter must be specified otherwise New-Object will throw an error in newer PowerShell versions.
+  # -ComObject parameter must be specified otherwise New-Object will throw an error.
   $shortcut = (New-Object -ComObject 'WScript.Shell').CreateShortcut($Path)
   $shortcut.TargetPath = $Target
 
@@ -93,8 +93,8 @@ function New-Shortcut {
     $shortcut.Arguments = $Parameters
   }
 
-  $target_display = $null -eq $Parameters ? $Target : "$Target $Parameters"
-  Write-Verbose "Creating a shortcut to $target_display at $Path"
+  $targetDisplay = $null -eq $Parameters ? $Target : "$Target $Parameters"
+  Write-Verbose "Creating a shortcut to $targetDisplay at $Path"
   $shortcut.Save()
 }
 
