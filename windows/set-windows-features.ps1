@@ -19,7 +19,7 @@ elseif (!(Test-AdminPermission)) {
   throw 'This script requires administrator permission.'
 }
 
-$settings_object = @{
+$settingsObject = @{
   disable = @(
     'MediaPlayback',
     'MicrosoftWindowsPowerShellV2',
@@ -31,44 +31,44 @@ $settings_object = @{
     'WindowsMediaPlayer',
     'WorkFolders-Client'
   )
-  enable = @(
-    'Microsoft-Windows-Subsystem-Linux'
-  )
+  enable = @()
 }
 
-$all_features_object = Get-WindowsOptionalFeature -Online
+$allFeaturesObject = Get-WindowsOptionalFeature -Online
 
 foreach ($action in 'disable', 'enable') {
-  $features = $settings_object.$action
+  $features = $settingsObject.$action
 
   foreach ($feature in $features) {
-    if ($feature -notin $all_features_object.FeatureName) {
-      Write-Error "$feature is not a valid feature." -Category InvalidData
+    if ($feature -notin $allFeaturesObject.FeatureName) {
+      Write-Error "$feature is not valid feature." -Category InvalidData
       continue
     }
 
-    $detailed_feature_object = Get-WindowsOptionalFeature -FeatureName $feature -Online
-    $feature_display_name = $detailed_feature_object.DisplayName
+    $featureObject = Get-WindowsOptionalFeature -FeatureName $feature -Online
+    $featureDisplayName = $featureObject.DisplayName
 
     switch ($action) {
       'disable' {
-        if ($detailed_feature_object.State -eq 'Disabled') {
-          Write-Warning "$feature_display_name ($feature) feature is already disabled."
-        }
-        else {
-          "Disabling $feature_display_name ($feature) feature"
-          Disable-WindowsOptionalFeature -FeatureName $feature -NoRestart -Online
-        }
+        $alreadySetState = 'Disabled'
+        $alreadySetWarning = "$featureDisplayName ($feature) feature is already disabled."
+        $setCmdlet = 'Disable-WindowsOptionalFeature'
+        $settingFeatureOutput = "Disabling $featureDisplayName ($feature) feature"
       }
       'enable' {
-        if ($detailed_feature_object.State -eq 'Enabled') {
-          Write-Warning "$feature_display_name ($feature) feature is already enabled."
-        }
-        else {
-          "Enabling $feature_display_name ($feature) feature"
-          Enable-WindowsOptionalFeature -FeatureName $feature -NoRestart -Online
-        }
+        $alreadySetState = 'Enabled'
+        $alreadySetWarning = "$featureDisplayName ($feature) feature is already enabled."
+        $setCmdlet = 'Enable-WindowsOptionalFeature'
+        $settingFeatureOutput = "Enabling $featureDisplayName ($feature) feature"
       }
+    }
+
+    if ($featureObject.State -eq $alreadySetState) {
+      Write-Warning $alreadySetWarning
+    }
+    else {
+      $settingFeatureOutput
+      .$setCmdlet -FeatureName $feature -NoRestart -Online
     }
   }
 }
