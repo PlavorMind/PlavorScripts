@@ -55,11 +55,16 @@ function Get-FileFromURL {
     [Parameter(Mandatory = $true, Position = 0)][string]$URL
   )
 
-  $ProgressPreference_temp = $ProgressPreference
+  $ProgressPreferenceTemp = $ProgressPreference
   $ProgressPreference = 'SilentlyContinue'
   Write-Verbose "Downloading a file from $URL"
-  Invoke-WebRequest $URL -MaximumRetryCount 2 -OutFile $Path -RetryIntervalSec 3
-  $ProgressPreference = $ProgressPreference_temp
+
+  try {
+    Invoke-WebRequest $URL -MaximumRetryCount 2 -OutFile $Path -RetryIntervalSec 3
+  }
+  finally {
+    $ProgressPreference = $ProgressPreferenceTemp
+  }
 }
 
 <#
@@ -89,7 +94,7 @@ function New-Shortcut {
   $shortcut = (New-Object -ComObject 'WScript.Shell').CreateShortcut($Path)
   $shortcut.TargetPath = $Target
 
-  if ($null -ne $Parameters) {
+  if ($Parameters -ne $null) {
     $shortcut.Arguments = $Parameters
   }
 
