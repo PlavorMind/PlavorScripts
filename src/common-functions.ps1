@@ -5,9 +5,9 @@ Extracts an archive.
 function Expand-ArchiveEnhanced {
   param (
     # Path to save extracted items
-    [Parameter(Mandatory = $true, Position = 1)][string]$DestinationPath,
+    [Parameter(Mandatory, Position = 1)][string]$DestinationPath,
     # Archive path
-    [Parameter(Mandatory = $true, Position = 0)][string]$Path
+    [Parameter(Mandatory, Position = 0)][string]$Path
   )
 
   if (!(Test-Path $Path)) {
@@ -50,9 +50,9 @@ Downloads a file from specified URL.
 function Get-FileFromURL {
   param (
     # Path to save downloaded file
-    [Parameter(Mandatory = $true, Position = 1)][string]$Path,
+    [Parameter(Mandatory, Position = 1)][string]$Path,
     # URL to download a file
-    [Parameter(Mandatory = $true, Position = 0)][string]$URL
+    [Parameter(Mandatory, Position = 0)][string]$URL
   )
 
   $ProgressPreferenceTemp = $ProgressPreference
@@ -76,9 +76,9 @@ function New-Shortcut {
     # Parameters to use when using the shortcut
     [Parameter(Position = 2)][string]$Parameters,
     # Shourtcut path
-    [Parameter(Mandatory = $true, Position = 0)][string]$Path,
+    [Parameter(Mandatory, Position = 0)][string]$Path,
     # Target of the shortcut
-    [Parameter(Mandatory = $true, Position = 1)][string]$Target
+    [Parameter(Mandatory, Position = 1)][string]$Target
   )
 
   if (!$IsWindows) {
@@ -90,15 +90,15 @@ function New-Shortcut {
     return
   }
 
-  # -ComObject parameter must be specified otherwise New-Object will throw an error.
+  # -ComObject parameter must be specified otherwise New-Object causes an error.
   $shortcut = (New-Object -ComObject 'WScript.Shell').CreateShortcut($Path)
   $shortcut.TargetPath = $Target
 
-  if ($Parameters -ne $null) {
+  if ($Parameters -ne '') {
     $shortcut.Arguments = $Parameters
   }
 
-  $targetDisplay = $null -eq $Parameters ? $Target : "$Target $Parameters"
+  $targetDisplay = $Parameters -eq '' ? $Target : "$Target $Parameters"
   Write-Verbose "Creating a shortcut to $targetDisplay at $Path"
   $shortcut.Save()
 }
