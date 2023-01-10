@@ -14,9 +14,9 @@ if (!$IsWindows) {
 $path = "$Env:APPDATA/Microsoft/Windows/Start Menu/Programs/Startup/Lock.lnk"
 
 if (Test-Path $path) {
-  Write-Error 'Automatically locking on sign in is already enabled.'
+  Write-Warning 'Automatically locking on sign in is already enabled.'
+  return
 }
-else {
-  'Enabling automatically locking on sign in'
-  New-Shortcut $path 'C:/Windows/System32/rundll32.exe' -Parameters 'user32.dll, LockWorkStation'
-}
+
+'Enabling automatically locking on sign in'
+New-Shortcut $path 'C:/Windows/System32/rundll32.exe' 'user32.dll, LockWorkStation'

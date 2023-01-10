@@ -13,10 +13,9 @@ if (!$IsWindows) {
 
 $path = "$Env:APPDATA/Microsoft/Windows/Start Menu/Programs/Startup/Lock.lnk"
 
-if (Test-Path $path) {
-  'Disabling automatically locking on sign in'
-  Remove-Item $path -Force
+if (!(Test-Path $path)) {
+  throw 'Automatically locking on sign in is not enabled.'
 }
-else {
-  Write-Error 'Automatically locking on sign in is not enabled.' -Category NotEnabled
-}
+
+'Disabling automatically locking on sign in'
+Remove-Item $path -Force
