@@ -65,10 +65,10 @@ foreach ($action in 'disable', 'enable') {
 
     if ($featureObject.State -eq $alreadySetState) {
       Write-Warning $alreadySetWarning
+      continue
     }
-    else {
-      $settingFeatureOutput
-      .$setCmdlet -FeatureName $feature -NoRestart -Online
-    }
+
+    $settingFeatureOutput
+    . $setCmdlet -FeatureName $feature -NoRestart -Online
   }
 }
