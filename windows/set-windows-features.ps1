@@ -1,7 +1,7 @@
 # Enables and disables Windows features.
 
 param (
-  # Parameter added just for making the -Verbose parameter work and does nothing
+  # Parameter added just to make -Verbose parameter work and does nothing
   [Parameter()]$x
 )
 
