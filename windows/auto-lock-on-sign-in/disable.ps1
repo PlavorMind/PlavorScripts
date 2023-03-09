@@ -11,7 +11,7 @@ if (!$IsWindows) {
   throw 'This script does not support operating systems other than Windows.'
 }
 
-$path = "$Env:APPDATA/Microsoft/Windows/Start Menu/Programs/Startup/Lock.lnk"
+$path = "$env:APPDATA/Microsoft/Windows/Start Menu/Programs/Startup/Lock.lnk"
 
 if (!(Test-Path $path)) {
   throw 'Automatically locking on sign in is not enabled.'
