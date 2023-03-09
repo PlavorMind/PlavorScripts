@@ -60,7 +60,7 @@ function Get-FileFromURL {
   Write-Verbose "Downloading a file from $URL"
 
   try {
-    Invoke-WebRequest $URL -MaximumRetryCount 2 -OutFile $Path -RetryIntervalSec 3
+    Invoke-WebRequest $URL -HttpVersion 2.0 -MaximumRetryCount 2 -OutFile $Path -RetryIntervalSec 3
   }
   finally {
     $ProgressPreference = $ProgressPreferenceTemp
