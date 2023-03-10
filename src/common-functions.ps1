@@ -117,3 +117,20 @@ function Test-AdminPermission {
     return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
   }
 }
+
+<#
+.description
+Returns if the PC is connected to internet.
+#>
+function Test-InternetConnection {
+  Write-Verbose 'Checking internet connection by making a request to https://example.com/'
+
+  try {
+    Invoke-WebRequest 'https://example.com/' -HttpVersion 2.0 -TimeoutSec 2 | Out-Null
+  }
+  catch {
+    return $false
+  }
+
+  return $true
+}
