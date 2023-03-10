@@ -39,6 +39,11 @@ $allFeaturesObject = Get-WindowsOptionalFeature -Online
 foreach ($action in 'disable', 'enable') {
   $features = $settingsObject.$action
 
+  if (($action -eq 'enable') -and !(($features.Count -eq 0) -or (Test-InternetConnection))) {
+    Write-Error 'Enabling features requires internet connection.'
+    continue
+  }
+
   foreach ($feature in $features) {
     if ($feature -notin $allFeaturesObject.FeatureName) {
       Write-Error "$feature is not valid feature." -Category InvalidData
