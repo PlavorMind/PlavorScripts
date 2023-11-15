@@ -11,7 +11,6 @@ elseif (![Environment]::Is64BitOperatingSystem) {
   throw 'PlavorScripts does not support 32-bit operating systems.'
 }
 
-# Initialize variables
 $PlaScrDirectory = $PSScriptRoot
 
 if ($IsLinux) {
@@ -21,19 +20,17 @@ if ($IsLinux) {
 }
 elseif ($IsWindows) {
   $PlaScrDefaultBaseDirectory = 'C:/plavormind'
-  $PlaScrDefaultPHPPath = "$PlaScrDefaultBaseDirectory/php/php.exe"
-  $PlaScrTempDirectory = $Env:TEMP
+  $PlaScrDefaultPHPPath = "$PlaScrDefaultBaseDirectory/php/app/php.exe"
+  $PlaScrTempDirectory = $env:TEMP
 }
 
-# Initialize environment variables
-$Env:POWERSHELL_TELEMETRY_OPTOUT = 1
+$env:POWERSHELL_TELEMETRY_OPTOUT = 1
 
-."$PlaScrDirectory/src/common-functions.ps1"
-."$PlaScrDirectory/src/legacy-functions.ps1"
-
-# Suppress warnings in VSCodium
-$PlaScrDefaultPHPPath | Out-Null
-$PlaScrDirectory | Out-Null
-$PlaScrTempDirectory | Out-Null
+. "$PlaScrDirectory/src/common-functions.ps1"
+. "$PlaScrDirectory/src/legacy-functions.ps1"
 
 return $true
+
+# Suppress warnings on VSCodium
+$PlaScrDefaultPHPPath > $null
+$PlaScrTempDirectory > $null
