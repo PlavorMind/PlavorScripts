@@ -1,7 +1,9 @@
 # Disables automatically locking on sign in.
 
+$ErrorActionPreference = 'Stop'
+
 if (Test-Path "$PSScriptRoot/../../init-script.ps1") {
-  ."$PSScriptRoot/../../init-script.ps1" | Out-Null
+  . "$PSScriptRoot/../../init-script.ps1" > $null
 }
 else {
   throw 'Cannot find init-script.ps1 file.'
