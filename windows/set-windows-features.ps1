@@ -1,12 +1,12 @@
 # Enables and disables Windows features.
 
 param (
-  # Parameter added just to make -Verbose parameter work and does nothing
-  [Parameter()]$x
+  # Path to the setting file
+  [string]$SettingFile = "$PSScriptRoot/../../new-plascr/data/settings/windows-features.json"
 )
 
 if (Test-Path "$PSScriptRoot/../init-script.ps1") {
-  ."$PSScriptRoot/../init-script.ps1" | Out-Null
+  . "$PSScriptRoot/../init-script.ps1" > $null
 }
 else {
   throw 'Cannot find init-script.ps1 file.'
@@ -18,62 +18,52 @@ if (!$IsWindows) {
 elseif (!(Test-AdminPermission)) {
   throw 'This script requires administrator permission.'
 }
-
-$settingsObject = @{
-  disable = @(
-    'MediaPlayback',
-    'MicrosoftWindowsPowerShellV2',
-    'MicrosoftWindowsPowerShellV2Root',
-    'MSRDC-Infrastructure',
-    'Printing-Foundation-Features',
-    'Printing-XPSServices-Features',
-    'SmbDirect',
-    'WindowsMediaPlayer',
-    'WorkFolders-Client'
-  )
-  enable = @()
+elseif (!(Test-Path $SettingFile)) {
+  throw 'Cannot find the setting file.'
 }
 
-$allFeaturesObject = Get-WindowsOptionalFeature -Online
+$settingFileContent = Get-Content $SettingFile -ErrorAction Stop -Raw
+$settings = ConvertFrom-Json $settingFileContent -ErrorAction Stop
+
+$allFeatures = Get-WindowsOptionalFeature -Online
 
 foreach ($action in 'disable', 'enable') {
-  $features = $settingsObject.$action
+  $featureNames = $settings.$action
 
-  if (($action -eq 'enable') -and !(($features.Count -eq 0) -or (Test-InternetConnection))) {
-    Write-Error 'Enabling features requires internet connection.'
+  if (($action -eq 'enable') -and !(($featureNames.Count -eq 0) -or (Test-InternetConnection))) {
+    Write-Error 'Enabling features requires the internet connection.' -Category ConnectionError
     continue
   }
 
-  foreach ($feature in $features) {
-    if ($feature -notin $allFeaturesObject.FeatureName) {
-      Write-Error "$feature is not valid feature." -Category InvalidData
+  foreach ($featureName in $featureNames) {
+    if ($featureName -notin $allFeatures.FeatureName) {
+      Write-Error "$featureName is not a valid feature." -Category InvalidData
       continue
     }
 
-    $featureObject = Get-WindowsOptionalFeature -FeatureName $feature -Online
-    $featureDisplayName = $featureObject.DisplayName
+    $feature = Get-WindowsOptionalFeature -FeatureName $featureName -Online
 
     switch ($action) {
       'disable' {
         $alreadySetState = 'Disabled'
-        $alreadySetWarning = "$featureDisplayName ($feature) feature is already disabled."
+        $alreadySetWarning = "$($feature.DisplayName) ($featureName) feature is already disabled."
         $setCmdlet = 'Disable-WindowsOptionalFeature'
-        $settingFeatureOutput = "Disabling $featureDisplayName ($feature) feature"
+        $settingFeatureOutput = "Disabling $($feature.DisplayName) ($featureName) feature"
       }
       'enable' {
         $alreadySetState = 'Enabled'
-        $alreadySetWarning = "$featureDisplayName ($feature) feature is already enabled."
+        $alreadySetWarning = "$($feature.DisplayName) ($featureName) feature is already enabled."
         $setCmdlet = 'Enable-WindowsOptionalFeature'
-        $settingFeatureOutput = "Enabling $featureDisplayName ($feature) feature"
+        $settingFeatureOutput = "Enabling $($feature.DisplayName) ($featureName) feature"
       }
     }
 
-    if ($featureObject.State -eq $alreadySetState) {
+    if ($feature.State -eq $alreadySetState) {
       Write-Warning $alreadySetWarning
       continue
     }
 
     $settingFeatureOutput
-    . $setCmdlet -FeatureName $feature -NoRestart -Online
+    & $setCmdlet -FeatureName $featureName -NoRestart -Online
   }
 }
